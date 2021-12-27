@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="list_image_view_size">40dp</dimen>
+    <dimen name="list_min_height">72dp</dimen>
+    <dimen name="activity_horizontal_margin">32dp</dimen>
+    <dimen name="colon_end_margin">4dp</dimen>
+    <dimen name="label_drawable_padding">4dp</dimen>
+    <dimen name="card_padding">32dp</dimen>
+</resources>

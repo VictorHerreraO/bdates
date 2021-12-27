@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="?selectableItemBackground"
+    android:clickable="true"
+    android:focusable="true"
+    android:minHeight="@dimen/list_min_height"
+    android:paddingHorizontal="@dimen/activity_horizontal_margin"
+    android:paddingVertical="16dp">
+
+    <TextView
+        android:id="@+id/lbl_initial_value"
+        android:layout_width="@dimen/list_image_view_size"
+        android:layout_height="@dimen/list_image_view_size"
+        android:gravity="center"
+        android:textColor="@color/white"
+        android:textSize="18dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="SpUsage"
+        tools:text="V" />
+
+    <TextView
+        android:id="@+id/lbl_name_value"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:ellipsize="end"
+        android:singleLine="true"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/lbl_initial_value"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="Víctor Herrera" />
+
+    <TextView
+        android:id="@+id/lbl_date_value"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:drawablePadding="@dimen/label_drawable_padding"
+        android:text="@string/friend_bdate_value_colon"
+        app:drawableStartCompat="@drawable/baseline_cake_black_18"
+        app:drawableTint="@color/deep_orange"
+        app:layout_constraintStart_toStartOf="@id/lbl_name_value"
+        app:layout_constraintTop_toBottomOf="@id/lbl_name_value"
+        tools:text="25 Jul:" />
+
+    <TextView
+        android:id="@+id/lbl_age_value"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/colon_end_margin"
+        android:text="@string/friend_age_value"
+        app:layout_constraintStart_toEndOf="@id/lbl_date_value"
+        app:layout_constraintTop_toBottomOf="@id/lbl_name_value"
+        tools:text="27 años" />
+</androidx.constraintlayout.widget.ConstraintLayout>

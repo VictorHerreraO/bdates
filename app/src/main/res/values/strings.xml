@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Cumpleaños</string>
+    <string name="friend_bdate_value_colon">%s:</string>
+    <string name="friend_age_value">cumple %d años</string>
+    <string name="sharing_congratulations">Felicidades</string>
+    <string name="ellipsis_text">%s…</string>
+</resources>
