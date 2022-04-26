@@ -5,9 +5,9 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import com.soyvictorherrera.bdates.R
-import com.soyvictorherrera.bdates.modules.eventList.domain.model.Event
+import com.soyvictorherrera.bdates.modules.eventList.framework.presentation.EventViewState
 
-class EventListAdapter : ListAdapter<Event, EventListHolder>(EventDiffUtil) {
+class EventListAdapter : ListAdapter<EventViewState, EventListHolder>(EventDiffUtil) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): EventListHolder {
         return EventListHolder(
             itemView = LayoutInflater.from(parent.context).inflate(
@@ -23,7 +23,12 @@ class EventListAdapter : ListAdapter<Event, EventListHolder>(EventDiffUtil) {
     }
 }
 
-object EventDiffUtil : DiffUtil.ItemCallback<Event>() {
-    override fun areItemsTheSame(oldItem: Event, newItem: Event) = oldItem.id == newItem.id
-    override fun areContentsTheSame(oldItem: Event, newItem: Event) = oldItem == newItem
+object EventDiffUtil : DiffUtil.ItemCallback<EventViewState>() {
+    override fun areItemsTheSame(oldItem: EventViewState, newItem: EventViewState): Boolean {
+        return oldItem.id == newItem.id
+    }
+
+    override fun areContentsTheSame(oldItem: EventViewState, newItem: EventViewState): Boolean {
+        return oldItem == newItem
+    }
 }

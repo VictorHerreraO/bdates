@@ -17,15 +17,23 @@ class EventListViewModel @Inject constructor(
     private val getEventListUseCase: UseCase<Unit, Flow<List<Event>>>
 ) : ViewModel() {
 
-    private val _events = MutableLiveData<List<Event>>()
-    val events: LiveData<List<Event>>
+    private val _events = MutableLiveData<List<EventViewState>>()
+    val events: LiveData<List<EventViewState>>
         get() = _events
 
     init {
         viewModelScope.launch {
             getEventListUseCase(Unit).collect { events ->
-                _events.value = events.sortedBy {
-                    it.name
+                _events.value = events.sortedBy { event ->
+                    event.monthOfYear
+                }.map { event ->
+                    EventViewState(
+                        id = event.id,
+                        remainingTimeValue = "0",
+                        remainingTimeUnit = "Días",
+                        name = event.name,
+                        description = "${event.dayOfMonth} / ${event.monthOfYear}"
+                    )
                 }
             }
         }
