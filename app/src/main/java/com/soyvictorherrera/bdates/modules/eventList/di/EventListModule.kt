@@ -1,6 +1,10 @@
 package com.soyvictorherrera.bdates.modules.eventList.di
 
+import android.app.Application
+import android.content.res.AssetManager
+import com.soyvictorherrera.bdates.BdatesApp
 import com.soyvictorherrera.bdates.core.arch.UseCase
+import com.soyvictorherrera.bdates.modules.eventList.data.datasource.AssetFileManager
 import com.soyvictorherrera.bdates.modules.eventList.data.datasource.EventDataSourceContract
 import com.soyvictorherrera.bdates.modules.eventList.data.datasource.EventDatasource
 import com.soyvictorherrera.bdates.modules.eventList.data.repository.EventRepository
@@ -18,8 +22,18 @@ import kotlinx.coroutines.flow.Flow
 object EventListModule {
 
     @Provides
-    fun provideEventDataSourceContract(): EventDataSourceContract {
-        return EventDatasource()
+    fun provideAssetManager(app: Application): AssetManager {
+        return app.assets
+    }
+
+    @Provides
+    fun provideAssetFileManager(assetManager: AssetManager): AssetFileManager {
+        return AssetFileManager(assetManager)
+    }
+
+    @Provides
+    fun provideEventDataSourceContract(assetFileManager: AssetFileManager): EventDataSourceContract {
+        return EventDatasource(assetFileManager)
     }
 
     @Provides
