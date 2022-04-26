@@ -5,6 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="?selectableItemBackground"
+    android:clickable="true"
+    android:focusable="true"
     android:minHeight="@dimen/dimen_72"
     android:paddingHorizontal="@dimen/dimen_16">
 
