@@ -33,6 +33,7 @@
             android:layout_marginTop="@dimen/dimen_8"
             android:paddingStart="@dimen/dimen_16"
             android:paddingEnd="@dimen/dimen_0"
+            android:clipToPadding="false"
             tools:layout_height="120dp"
             tools:listitem="@layout/item_event_birth_day" />
 

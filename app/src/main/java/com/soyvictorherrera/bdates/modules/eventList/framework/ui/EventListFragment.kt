@@ -8,11 +8,14 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
+import androidx.core.content.ContextCompat
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.soyvictorherrera.bdates.R
 import com.soyvictorherrera.bdates.databinding.FragmentEventListBinding
 import com.soyvictorherrera.bdates.modules.eventList.framework.presentation.EventListViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -59,7 +62,17 @@ class EventListFragment : Fragment() {
             else RecyclerView.VERTICAL,
             false
         ).also {
-            recyclerTodayEvents.layoutManager = it
+            recyclerTodayEvents.apply {
+                layoutManager = it
+                val decoration = DividerItemDecoration(requireContext(), it.orientation)
+                decoration.setDrawable(
+                    ContextCompat.getDrawable(
+                        requireContext(),
+                        R.drawable.item_decorator_day_events
+                    )!!
+                )
+                addItemDecoration(decoration)
+            }
         }
         todayAdapter = TodayEventListAdapter().also {
             recyclerTodayEvents.adapter = it

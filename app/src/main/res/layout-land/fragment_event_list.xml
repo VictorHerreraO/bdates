@@ -33,7 +33,6 @@
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="@dimen/dimen_8"
             android:layout_weight="1"
-            android:paddingHorizontal="@dimen/dimen_16"
             tools:layout_width="120dp"
             tools:listitem="@layout/item_event_birth_day" />
 
