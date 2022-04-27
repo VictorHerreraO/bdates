@@ -7,32 +7,61 @@
     android:background="#3C2A59">
 
     <LinearLayout
-        android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:id="@+id/layout_today_events"
+        android:layout_width="@dimen/dimen_0"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingVertical="@dimen/dimen_16"
+        app:layout_constraintBottom_toTopOf="@id/layout_upcoming_events"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_chainStyle="packed">
+
+        <TextView
+            android:id="@+id/lbl_today_events"
+            style="@style/TextAppearance.MaterialComponents.Headline5"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/dimen_16"
+            android:text="Hoy celebramos" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler_today_events"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimen_8"
+            android:paddingStart="@dimen/dimen_16"
+            android:paddingEnd="@dimen/dimen_0"
+            tools:layout_height="120dp"
+            tools:listitem="@layout/item_event_birth_day" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/layout_upcoming_events"
+        android:layout_width="@dimen/dimen_0"
+        android:layout_height="@dimen/dimen_0"
         android:background="@drawable/background_bottom_sheet"
         android:orientation="vertical"
         android:paddingTop="@dimen/dimen_16"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toBottomOf="@id/layout_today_events">
 
         <TextView
             style="@style/TextAppearance.MaterialComponents.Headline5"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="@dimen/dimen_16"
-            android:text="Próximos eventos" />
+            android:text="Se viene lo bueno" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recycler_events"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginTop="@dimen/dimen_8"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
             tools:itemCount="5"
             tools:listitem="@layout/item_event" />
     </LinearLayout>

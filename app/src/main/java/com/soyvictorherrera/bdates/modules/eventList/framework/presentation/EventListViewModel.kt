@@ -24,12 +24,17 @@ class EventListViewModel @Inject constructor(
     val events: LiveData<List<EventViewState>>
         get() = _events
 
+    private val _todayEvents = MutableLiveData<List<TodayEventViewState>>()
+    val todayEvents: LiveData<List<TodayEventViewState>>
+        get() = _todayEvents
+
     private val today: LocalDate = LocalDate.now()
     private val longFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("EE, dd/MM")
 
     init {
         viewModelScope.launch {
             getEventListUseCase(Unit).collect { events ->
+                val todayOccurrences = mutableListOf<TodayEventViewState>()
 
                 _events.value = events.map { event ->
                     // Add event occurrences
@@ -46,6 +51,22 @@ class EventListViewModel @Inject constructor(
                 }.sortedBy { event ->
                     // Sort by upcoming
                     event.nextOccurrence
+                }.filter { event ->
+                    // Remove today occurrences
+                    val currentYearOccurrence = event.currentYearOccurrence!!
+                    return@filter if (currentYearOccurrence == today) {
+                        todayOccurrences.add(
+                            TodayEventViewState(
+                                id = event.id,
+                                friendAge = event.year?.let { birthYear ->
+                                    today.year.minus(birthYear).toString()
+                                },
+                                friendName = event.name,
+                                eventType = "Cumpleaños"
+                            )
+                        )
+                        false
+                    } else true
                 }.map { event ->
                     // Map to View State
                     val nextOccurrence = event.nextOccurrence!!
@@ -59,18 +80,13 @@ class EventListViewModel @Inject constructor(
                         description = nextOccurrence.let { date ->
                             val formatted = date.format(longFormatter)
                             return@let event.year?.let { birthYear ->
-                                val birthDate = LocalDate.of(
-                                    birthYear,
-                                    date.month,
-                                    date.dayOfMonth
-                                )
-                                "$formatted • Cumple " + ChronoUnit.YEARS
-                                    .between(birthDate, nextOccurrence)
-                                    .toString()
+                                val yearsOld = nextOccurrence.year.minus(birthYear)
+                                "$formatted • Cumple $yearsOld"
                             } ?: formatted
                         }
                     )
                 }
+                _todayEvents.value = todayOccurrences
             }
         }
     }
