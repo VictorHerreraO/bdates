@@ -2,7 +2,6 @@ package com.soyvictorherrera.bdates.modules.eventList.di
 
 import android.app.Application
 import android.content.res.AssetManager
-import com.soyvictorherrera.bdates.BdatesApp
 import com.soyvictorherrera.bdates.core.arch.UseCase
 import com.soyvictorherrera.bdates.modules.eventList.data.datasource.AssetFileManager
 import com.soyvictorherrera.bdates.modules.eventList.data.datasource.EventDataSourceContract
@@ -10,6 +9,8 @@ import com.soyvictorherrera.bdates.modules.eventList.data.datasource.EventDataso
 import com.soyvictorherrera.bdates.modules.eventList.data.repository.EventRepository
 import com.soyvictorherrera.bdates.modules.eventList.data.repository.EventRepositoryContract
 import com.soyvictorherrera.bdates.modules.eventList.domain.model.Event
+import com.soyvictorherrera.bdates.modules.eventList.domain.usecase.FilterEventListArgs
+import com.soyvictorherrera.bdates.modules.eventList.domain.usecase.FilterEventListUseCase
 import com.soyvictorherrera.bdates.modules.eventList.domain.usecase.GetEventListUseCase
 import dagger.Module
 import dagger.Provides
@@ -52,6 +53,11 @@ object EventListModule {
         return GetEventListUseCase(
             repository = repository
         )
+    }
+
+    @Provides
+    fun provideFilterEventListUseCase(): UseCase<FilterEventListArgs, Flow<List<Event>>> {
+        return FilterEventListUseCase()
     }
 
 }

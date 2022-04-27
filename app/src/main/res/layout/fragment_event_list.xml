@@ -57,6 +57,22 @@
             android:layout_marginHorizontal="@dimen/dimen_16"
             android:text="Se viene lo bueno" />
 
+        <EditText
+            android:id="@+id/input_search"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/dimen_16"
+            android:layout_marginVertical="@dimen/dimen_8"
+            android:background="@drawable/background_search_bar"
+            android:drawableStart="@drawable/ic_baseline_search_18"
+            android:drawablePadding="@dimen/dimen_8"
+            android:gravity="center_vertical"
+            android:hint="Busca un cumpleaños por nombre"
+            android:imeOptions="actionSearch"
+            android:importantForAutofill="no"
+            android:inputType="text"
+            android:padding="@dimen/dimen_8" />
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recycler_events"
             android:layout_width="match_parent"

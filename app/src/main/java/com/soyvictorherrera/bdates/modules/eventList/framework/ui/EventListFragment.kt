@@ -1,9 +1,13 @@
 package com.soyvictorherrera.bdates.modules.eventList.framework.ui
 
+import android.app.Activity
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputMethodManager
+import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -55,11 +59,33 @@ class EventListFragment : Fragment() {
         }
     }
 
-    private fun setupListeners() {
+    private fun setupListeners() = with(binding) {
         viewModel.events.observe(viewLifecycleOwner, adapter::submitList)
         viewModel.todayEvents.observe(viewLifecycleOwner) {
             todayAdapter.submitList(it)
-            binding.layoutTodayEvents.visibility = if (it.isEmpty()) View.GONE else View.VISIBLE
+            layoutTodayEvents.visibility = if (it.isEmpty()) View.GONE else View.VISIBLE
+        }
+
+        inputSearch.addTextChangedListener { text ->
+            viewModel.onQueryTextChanged(text.toString())
+        }
+        inputSearch.setOnEditorActionListener { _, actionId, _ ->
+            return@setOnEditorActionListener when (actionId) {
+                EditorInfo.IME_ACTION_SEARCH -> {
+                    hideSoftKeyboard()
+                    true
+                }
+                else -> false
+            }
+        }
+    }
+
+    private fun hideSoftKeyboard() {
+        activity?.let {
+            it.currentFocus?.let { view ->
+                (it.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager)
+                    .hideSoftInputFromWindow(view.windowToken, 0)
+            }
         }
     }
 
