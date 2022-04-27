@@ -1,6 +1,7 @@
 package com.soyvictorherrera.bdates.modules.eventList.framework.ui
 
 import android.app.Activity
+import android.content.res.Configuration
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -45,13 +46,19 @@ class EventListFragment : Fragment() {
     }
 
     private fun initRecyclerView() = with(binding) {
+        val orientation = resources.configuration.orientation
         LinearLayoutManager(requireActivity()).also {
             recyclerEvents.layoutManager = it
         }
         adapter = EventListAdapter().also {
             recyclerEvents.adapter = it
         }
-        LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false).also {
+        LinearLayoutManager(
+            requireContext(),
+            if (orientation == Configuration.ORIENTATION_PORTRAIT) RecyclerView.HORIZONTAL
+            else RecyclerView.VERTICAL,
+            false
+        ).also {
             recyclerTodayEvents.layoutManager = it
         }
         todayAdapter = TodayEventListAdapter().also {
