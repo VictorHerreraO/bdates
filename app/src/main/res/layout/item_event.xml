@@ -10,11 +10,13 @@
     android:minHeight="@dimen/dimen_72"
     android:paddingHorizontal="@dimen/dimen_16">
 
+    <!-- TODO: cambiar colores harcodeados -->
+
     <LinearLayout
         android:id="@+id/layout_remaining_time"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/dimen_56"
-        android:background="@color/cyan_light"
+        android:background="#6EBEB1"
         android:gravity="center"
         android:minWidth="@dimen/dimen_56"
         android:orientation="vertical"
@@ -27,15 +29,37 @@
             style="@style/TextAppearance.MaterialComponents.Headline6"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textColor="@color/white"
             tools:text="6" />
 
         <TextView
             android:id="@+id/lbl_remaining_time_unit"
-            style="@style/TextAppearance.MaterialComponents.Caption"
+            style="@style/TextAppearance.MaterialComponents.Overline"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            tools:text="Days" />
+            android:textColor="@color/white"
+            tools:text="DAYS" />
     </LinearLayout>
+
+    <TextView
+        android:id="@+id/lbl_event_emoji"
+        android:layout_width="@dimen/dimen_56"
+        android:layout_height="@dimen/dimen_56"
+        android:background="#EEEEEE"
+        android:gravity="center"
+        android:textSize="@dimen/text_18"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@id/layout_remaining_time"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="🎂" />
+
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/barrier_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:barrierDirection="end"
+        app:constraint_referenced_ids="layout_remaining_time,lbl_event_emoji" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline_baseline_title"
@@ -46,7 +70,7 @@
 
     <TextView
         android:id="@+id/lbl_event_name"
-        style="@style/TextAppearance.MaterialComponents.Body2"
+        style="@style/TextAppearance.MaterialComponents.Body1"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dimen_16"
@@ -54,7 +78,7 @@
         android:maxLines="1"
         app:layout_constraintBaseline_toBottomOf="@id/guideline_baseline_title"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/layout_remaining_time"
+        app:layout_constraintStart_toEndOf="@id/barrier_icon"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="Dwight Schrute" />
 
@@ -76,7 +100,7 @@
         android:maxLines="1"
         app:layout_constraintBaseline_toTopOf="@id/guideline_baseline_subtitle"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/layout_remaining_time"
+        app:layout_constraintStart_toEndOf="@id/barrier_icon"
         tools:text="Monday, 03/21 • Turns 37" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

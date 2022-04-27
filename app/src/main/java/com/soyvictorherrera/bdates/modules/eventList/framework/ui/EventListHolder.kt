@@ -10,9 +10,10 @@ class EventListHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
     fun render(event: EventViewState) = with(binding) {
         lblRemainingTimeValue.text = event.remainingTimeValue
-        lblRemainingTimeUnit.text = event.remainingTimeUnit
+        lblRemainingTimeUnit.text = event.remainingTimeUnit.uppercase()
         lblEventName.text = event.name
         lblEventDesc.text = event.description
+        lblEventEmoji.text = "🎂"
     }
 
 }
