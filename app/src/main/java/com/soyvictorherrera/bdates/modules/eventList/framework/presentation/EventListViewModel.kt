@@ -34,7 +34,7 @@ class EventListViewModel @Inject constructor(
         get() = _todayEvents
 
     private val today: LocalDate = LocalDate.now()
-    private val longFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("EE, dd/MM")
+    private val longFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("EEEE, dd/MM")
 
     private var allEvents by Delegates.observable(emptyList<Event>()) { _, _, list ->
         processEventList(list)
