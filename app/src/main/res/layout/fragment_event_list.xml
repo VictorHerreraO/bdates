@@ -3,8 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="#3C2A59">
+    android:layout_height="match_parent">
 
     <LinearLayout
         android:id="@+id/layout_today_events"
@@ -24,16 +23,17 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="@dimen/dimen_16"
-            android:text="Hoy celebramos" />
+            android:text="Hoy celebramos"
+            android:textColor="?colorOnPrimary" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recycler_today_events"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dimen_8"
+            android:clipToPadding="false"
             android:paddingStart="@dimen/dimen_16"
             android:paddingEnd="@dimen/dimen_0"
-            android:clipToPadding="false"
             tools:layout_height="120dp"
             tools:listitem="@layout/item_event_birth_day" />
 

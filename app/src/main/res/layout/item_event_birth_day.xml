@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="120dp"
     android:layout_height="120dp"
-    android:backgroundTint="#695C7E"
+    android:backgroundTint="?colorPrimaryVariant"
     android:clickable="true"
     android:focusable="true"
     app:cardCornerRadius="@dimen/dimen_16"
@@ -19,26 +20,28 @@
             android:id="@+id/lbl_age_value"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="41"
-            android:textColor="#F6AF65"
+            android:textColor="?colorAccent"
             android:textSize="@dimen/text_34"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            tools:text="41" />
 
         <TextView
             android:id="@+id/lbl_friend_name"
             style="@style/TextAppearance.MaterialComponents.Body2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Michael Scott Herrera"
-            android:textAlignment="center" />
+            android:textAlignment="center"
+            android:textColor="?colorOnPrimaryVariant"
+            tools:text="Michael Scott Herrera" />
 
         <TextView
             android:id="@+id/lbl_event_type"
             style="@style/TextAppearance.MaterialComponents.Overline"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="BIRTHDAY"
-            android:textAlignment="center" />
+            android:textAlignment="center"
+            android:textColor="?colorOnPrimaryVariant"
+            tools:text="BIRTHDAY" />
 
     </LinearLayout>
 
