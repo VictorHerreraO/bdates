@@ -10,8 +10,6 @@
     android:minHeight="@dimen/dimen_72"
     android:paddingHorizontal="@dimen/dimen_16">
 
-    <!-- TODO: cambiar colores harcodeados -->
-
     <LinearLayout
         android:id="@+id/layout_remaining_time"
         android:layout_width="wrap_content"

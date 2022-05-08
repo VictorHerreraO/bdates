@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.soyvictorherrera.bdates.core.arch.UseCase
+import com.soyvictorherrera.bdates.core.resource.ResourceManagerContract
 import com.soyvictorherrera.bdates.modules.eventList.domain.model.Event
 import com.soyvictorherrera.bdates.modules.eventList.domain.usecase.FilterEventListArgs
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -19,6 +20,7 @@ import kotlin.properties.Delegates
 
 @HiltViewModel
 class EventListViewModel @Inject constructor(
+    private val resourceManager: ResourceManagerContract,
     private val getEventListUseCase: UseCase<Unit, Flow<List<Event>>>,
     private val filterEventListUseCase: UseCase<FilterEventListArgs, Flow<List<Event>>>
 ) : ViewModel() {
@@ -84,18 +86,24 @@ class EventListViewModel @Inject constructor(
             }.map { event ->
                 // Map to View State
                 val nextOccurrence = event.nextOccurrence!!
+                val remainingTime = ChronoUnit.DAYS
+                    .between(today, nextOccurrence)
                 EventViewState(
                     id = event.id,
-                    remainingTimeValue = ChronoUnit.DAYS
-                        .between(today, nextOccurrence)
-                        .toString(),
-                    remainingTimeUnit = "Días",
+                    remainingTimeValue = remainingTime.toString(),
+                    remainingTimeUnit = remainingTime.let {
+                        if (it == 1L) resourceManager.getString("time_unit_day")
+                        else resourceManager.getString("time_unit_days")
+                    },
                     name = event.name,
                     description = nextOccurrence.let { date ->
                         val formatted = date.format(longFormatter)
                         return@let event.year?.let { birthYear ->
                             val yearsOld = nextOccurrence.year.minus(birthYear)
-                            "$formatted • Cumple $yearsOld"
+                            "$formatted " + resourceManager.getString(
+                                identifier = "event_birthday_description",
+                                yearsOld
+                            )
                         } ?: formatted
                     }
                 )
@@ -111,7 +119,7 @@ class EventListViewModel @Inject constructor(
                     today.year.minus(birthYear).toString()
                 },
                 friendName = event.name,
-                eventType = "Cumpleaños"
+                eventType = resourceManager.getString("event_birthday_title")
             )
         }
     }
