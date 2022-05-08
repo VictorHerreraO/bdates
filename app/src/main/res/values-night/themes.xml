@@ -1,16 +1,20 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="Theme.Bdates" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
+    <style name="Theme.Bdates" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!-- Primary brand color. -->
-        <item name="colorPrimary">@color/cyan_dark</item>
-        <item name="colorPrimaryVariant">@color/cyan</item>
+        <item name="colorPrimary">@color/Bossanova</item>
+        <item name="colorPrimaryVariant">@color/Dolphin</item>
         <item name="colorOnPrimary">@color/white</item>
         <!-- Secondary brand color. -->
-        <item name="colorSecondary">@color/deep_orange_dark</item>
-        <item name="colorSecondaryVariant">@color/deep_orange_light</item>
-        <item name="colorOnSecondary">@color/black</item>
+        <item name="colorSecondary">#388A7C</item>
+        <item name="colorSecondaryVariant">@color/Tradewind</item>
+        <item name="colorOnSecondary">@color/white</item>
         <!-- Status bar color. -->
-        <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
+        <item name="android:statusBarColor" tools:targetApi="l">?colorPrimary</item>
         <!-- Customize your theme here. -->
+        <item name="android:windowBackground">?colorPrimary</item>
+        <item name="colorSurfaceElevated">@color/Cod_Gray</item>
+        <item name="colorOnPrimaryVariant">@color/white</item>
+        <item name="colorAccent">@color/Rajah</item>
     </style>
 </resources>
