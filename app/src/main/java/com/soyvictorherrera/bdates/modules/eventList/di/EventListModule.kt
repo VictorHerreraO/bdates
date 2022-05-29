@@ -4,6 +4,7 @@ import android.app.Application
 import android.content.res.AssetManager
 import com.soyvictorherrera.bdates.core.arch.UseCase
 import com.soyvictorherrera.bdates.modules.eventList.data.datasource.AssetFileManager
+import com.soyvictorherrera.bdates.modules.eventList.data.datasource.AssetFileManagerContract
 import com.soyvictorherrera.bdates.modules.eventList.data.datasource.EventDataSourceContract
 import com.soyvictorherrera.bdates.modules.eventList.data.datasource.EventDatasource
 import com.soyvictorherrera.bdates.modules.eventList.data.repository.EventRepository
@@ -28,12 +29,12 @@ object EventListModule {
     }
 
     @Provides
-    fun provideAssetFileManager(assetManager: AssetManager): AssetFileManager {
+    fun provideAssetFileManager(assetManager: AssetManager): AssetFileManagerContract {
         return AssetFileManager(assetManager)
     }
 
     @Provides
-    fun provideEventDataSourceContract(assetFileManager: AssetFileManager): EventDataSourceContract {
+    fun provideEventDataSourceContract(assetFileManager: AssetFileManagerContract): EventDataSourceContract {
         return EventDatasource(assetFileManager)
     }
 

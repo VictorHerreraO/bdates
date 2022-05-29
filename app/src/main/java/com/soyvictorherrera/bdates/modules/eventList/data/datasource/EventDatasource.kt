@@ -8,7 +8,7 @@ import org.json.JSONArray
 import org.json.JSONObject
 
 class EventDatasource constructor(
-    private val assets: AssetFileManager
+    private val assets: AssetFileManagerContract
 ) : EventDataSourceContract {
     companion object {
         const val EVENTS_FILE = "events.json"
