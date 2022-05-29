@@ -1,6 +1,7 @@
 package com.soyvictorherrera.bdates.modules.eventList.data.datasource
 
 import android.util.Log
+import com.soyvictorherrera.bdates.core.arch.Mapper
 import com.soyvictorherrera.bdates.modules.eventList.domain.model.Event
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
@@ -8,7 +9,8 @@ import org.json.JSONArray
 import org.json.JSONObject
 
 class EventDatasource constructor(
-    private val assets: AssetFileManagerContract
+    private val assets: AssetFileManagerContract,
+    private val jsonToEventMapper: Mapper<JSONObject, Event>
 ) : EventDataSourceContract {
     companion object {
         const val EVENTS_FILE = "events.json"
@@ -22,7 +24,7 @@ class EventDatasource constructor(
 
             array.forEach { node ->
                 if (node is JSONObject) {
-                    events.add(node.toEvent())
+                    events.add(jsonToEventMapper.map(node))
                 }
             }
 
