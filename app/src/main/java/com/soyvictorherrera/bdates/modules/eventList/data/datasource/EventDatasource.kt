@@ -7,6 +7,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 import org.json.JSONArray
 import org.json.JSONObject
+import timber.log.Timber
 
 class EventDatasource constructor(
     private val assets: AssetFileManagerContract,
