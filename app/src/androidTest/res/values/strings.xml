@@ -1,0 +1,5 @@
+<resources>
+    <string name="test_string_no_args">test string</string>
+    <string name="test_string_with_args">test string #%d = %s is %b</string>
+    <string name="test_string_with_int_arg">%d should be an int</string>
+</resources>
