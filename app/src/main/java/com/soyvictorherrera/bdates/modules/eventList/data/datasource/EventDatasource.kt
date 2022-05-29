@@ -1,6 +1,5 @@
 package com.soyvictorherrera.bdates.modules.eventList.data.datasource
 
-import android.util.Log
 import com.soyvictorherrera.bdates.core.arch.Mapper
 import com.soyvictorherrera.bdates.modules.eventList.domain.model.Event
 import kotlinx.coroutines.flow.Flow
@@ -31,7 +30,7 @@ class EventDatasource constructor(
 
             flowOf(events)
         } catch (e: Exception) {
-            Log.w(this::class.simpleName, e)
+            Timber.w(e)
             flowOf(emptyList())
         }
 
