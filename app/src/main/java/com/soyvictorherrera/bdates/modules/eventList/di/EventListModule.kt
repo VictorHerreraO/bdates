@@ -66,7 +66,7 @@ object EventListModule {
     }
 
     @Provides
-    fun provideFilterEventListUseCase(): UseCase<FilterEventListArgs, Flow<List<Event>>> {
+    fun provideFilterEventListUseCase(): UseCase<FilterEventListArgs, Result<List<Event>>> {
         return FilterEventListUseCase()
     }
 
