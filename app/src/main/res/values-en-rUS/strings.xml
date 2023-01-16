@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Birthdays</string>
-    <string name="friend_age_value">turns %d</string>
-    <string name="sharing_congratulations">Congratulations</string>
     <string name="title_today_occasions">Today\'s occasions</string>
     <string name="title_today_occasions_break_line">Today\'s\noccasions</string>
     <string name="title_upcoming_events">Upcoming big days</string>
