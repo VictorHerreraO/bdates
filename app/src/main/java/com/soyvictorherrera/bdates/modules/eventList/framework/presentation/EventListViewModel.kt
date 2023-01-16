@@ -10,7 +10,6 @@ import com.soyvictorherrera.bdates.modules.eventList.domain.model.Event
 import com.soyvictorherrera.bdates.modules.eventList.domain.usecase.FilterEventListArgs
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.time.LocalDate
@@ -75,7 +74,7 @@ class EventListViewModel @Inject constructor(
     }
 
     private fun processEventList(events: List<Event>) = viewModelScope.launch {
-        _events.value = filterEventListUseCase(
+        filterEventListUseCase(
             FilterEventListArgs(
                 eventList = events,
                 query = query
@@ -114,11 +113,14 @@ class EventListViewModel @Inject constructor(
             onFailure = {
                 Timber.e(it)
                 emptyList()
-            })
+            }
+        ).let {
+            _events.value = it
+        }
     }
 
     private fun processDayEventList(events: List<Event>) {
-        _todayEvents.value = events.map { event ->
+        events.map { event ->
             TodayEventViewState(
                 id = event.id,
                 friendAge = event.year?.let { birthYear ->
@@ -127,6 +129,8 @@ class EventListViewModel @Inject constructor(
                 friendName = event.name,
                 eventType = resourceManager.getString("event_birthday_title")
             )
+        }.let {
+            _todayEvents.value = it
         }
     }
 
