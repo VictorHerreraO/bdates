@@ -5,10 +5,10 @@ import java.io.IOException
 
 class AssetFileManager(
     private val assets: AssetManager
-) {
+): AssetFileManagerContract {
 
     @Throws(IOException::class)
-    fun openAsString(fileName: String): String {
+    override fun openAsString(fileName: String): String {
         val inputStream = assets.open(fileName)
         val size = inputStream.available()
         val buffer = ByteArray(size)

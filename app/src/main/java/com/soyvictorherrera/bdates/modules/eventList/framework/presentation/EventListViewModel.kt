@@ -10,8 +10,8 @@ import com.soyvictorherrera.bdates.modules.eventList.domain.model.Event
 import com.soyvictorherrera.bdates.modules.eventList.domain.usecase.FilterEventListArgs
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
@@ -22,7 +22,7 @@ import kotlin.properties.Delegates
 class EventListViewModel @Inject constructor(
     private val resourceManager: ResourceManagerContract,
     private val getEventListUseCase: UseCase<Unit, Flow<List<Event>>>,
-    private val filterEventListUseCase: UseCase<FilterEventListArgs, Flow<List<Event>>>
+    private val filterEventListUseCase: UseCase<FilterEventListArgs, Result<List<Event>>>
 ) : ViewModel() {
 
     private val _events = MutableLiveData<List<EventViewState>>()
@@ -79,40 +79,48 @@ class EventListViewModel @Inject constructor(
                 eventList = events,
                 query = query
             )
-        ).collect { filtered ->
-            _events.value = filtered.sortedBy { event ->
-                // Sort by upcoming
-                event.nextOccurrence
-            }.map { event ->
-                // Map to View State
-                val nextOccurrence = event.nextOccurrence!!
-                val remainingTime = ChronoUnit.DAYS
-                    .between(today, nextOccurrence)
-                EventViewState(
-                    id = event.id,
-                    remainingTimeValue = remainingTime.toString(),
-                    remainingTimeUnit = remainingTime.let {
-                        if (it == 1L) resourceManager.getString("time_unit_day")
-                        else resourceManager.getString("time_unit_days")
-                    },
-                    name = event.name,
-                    description = nextOccurrence.let { date ->
-                        val formatted = date.format(longFormatter)
-                        return@let event.year?.let { birthYear ->
-                            val yearsOld = nextOccurrence.year.minus(birthYear)
-                            "$formatted " + resourceManager.getString(
-                                identifier = "event_birthday_description",
-                                yearsOld
-                            )
-                        } ?: formatted
-                    }
-                )
+        ).fold(
+            onSuccess = { filtered ->
+                filtered.sortedBy { event ->
+                    // Sort by upcoming
+                    event.nextOccurrence
+                }.map { event ->
+                    // Map to View State
+                    val nextOccurrence = event.nextOccurrence!!
+                    val remainingTime = ChronoUnit.DAYS
+                        .between(today, nextOccurrence)
+                    EventViewState(
+                        id = event.id,
+                        remainingTimeValue = remainingTime.toString(),
+                        remainingTimeUnit = remainingTime.let {
+                            if (it == 1L) resourceManager.getString("time_unit_day")
+                            else resourceManager.getString("time_unit_days")
+                        },
+                        name = event.name,
+                        description = nextOccurrence.let { date ->
+                            val formatted = date.format(longFormatter)
+                            return@let event.year?.let { birthYear ->
+                                val yearsOld = nextOccurrence.year.minus(birthYear)
+                                "$formatted " + resourceManager.getString(
+                                    identifier = "event_birthday_description",
+                                    yearsOld
+                                )
+                            } ?: formatted
+                        }
+                    )
+                }
+            },
+            onFailure = {
+                Timber.e(it)
+                emptyList()
             }
+        ).let {
+            _events.value = it
         }
     }
 
     private fun processDayEventList(events: List<Event>) {
-        _todayEvents.value = events.map { event ->
+        events.map { event ->
             TodayEventViewState(
                 id = event.id,
                 friendAge = event.year?.let { birthYear ->
@@ -121,6 +129,8 @@ class EventListViewModel @Inject constructor(
                 friendName = event.name,
                 eventType = resourceManager.getString("event_birthday_title")
             )
+        }.let {
+            _todayEvents.value = it
         }
     }
 
