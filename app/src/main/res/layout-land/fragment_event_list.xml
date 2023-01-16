@@ -24,7 +24,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="@dimen/dimen_16"
-            android:text="Hoy\ncelebramos"
+            android:text="@string/title_today_occasions_break_line"
             android:textColor="?colorOnPrimary" />
 
         <androidx.recyclerview.widget.RecyclerView
@@ -56,7 +56,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="@dimen/dimen_16"
-            android:text="Se viene lo bueno" />
+            android:text="@string/title_upcoming_events" />
 
         <EditText
             android:id="@+id/input_search"
@@ -68,7 +68,7 @@
             android:drawableStart="@drawable/ic_baseline_search_18"
             android:drawablePadding="@dimen/dimen_8"
             android:gravity="center_vertical"
-            android:hint="Busca un cumpleaños por nombre"
+            android:hint="@string/hint_search_event_by_name"
             android:imeOptions="actionSearch"
             android:importantForAutofill="no"
             android:inputType="text"
