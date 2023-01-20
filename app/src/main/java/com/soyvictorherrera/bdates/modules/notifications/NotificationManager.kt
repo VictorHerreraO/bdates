@@ -63,7 +63,7 @@ class NotificationManager @Inject constructor(
             context,
             0,
             intent,
-            PendingIntent.FLAG_UPDATE_CURRENT
+            PendingIntent.FLAG_IMMUTABLE
         )
         val builder = NotificationCompat.Builder(context, NotificationChannel.CHANNEL_DAY_EVENTS)
             .setSmallIcon(R.drawable.ic_launcher_foreground)
