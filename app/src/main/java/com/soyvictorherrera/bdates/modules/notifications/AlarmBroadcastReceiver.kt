@@ -11,7 +11,7 @@ import javax.inject.Inject
 class AlarmBroadcastReceiver : BroadcastReceiver() {
 
     @Inject
-    lateinit var notificationManager: NotificationManager
+    lateinit var notificationManager: NotificationManagerContract
 
     override fun onReceive(context: Context?, intent: Intent?) {
         if (intent?.action == NotificationAction.NOTIFY_DAY_EVENTS) {
