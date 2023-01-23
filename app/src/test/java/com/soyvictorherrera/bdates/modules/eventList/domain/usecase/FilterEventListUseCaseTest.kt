@@ -2,9 +2,12 @@ package com.soyvictorherrera.bdates.modules.eventList.domain.usecase
 
 import com.google.common.truth.Truth.assertThat
 import com.soyvictorherrera.bdates.modules.eventList.domain.model.Event
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Test
 
+@OptIn(ExperimentalCoroutinesApi::class)
 class FilterEventListUseCaseTest {
 
     private lateinit var useCase: FilterEventListUseCase
@@ -15,7 +18,7 @@ class FilterEventListUseCaseTest {
     }
 
     @Test
-    fun filter_event_by_name() {
+    fun filter_event_by_name() = runTest {
         val expectedName = "expected event name"
         val expectedEvent = eventA().copy(name = expectedName)
         val nonMatchingEvent = eventB()
@@ -24,7 +27,7 @@ class FilterEventListUseCaseTest {
             query = "expected"
         )
 
-        val result = useCase.invoke(params)
+        val result = useCase.execute(params)
 
         assertThat(result.isSuccess).isTrue()
         val filtered = result.getOrThrow()
@@ -33,14 +36,14 @@ class FilterEventListUseCaseTest {
     }
 
     @Test
-    fun filter_event_by_name_with_empty_query_returns_all() {
+    fun filter_event_by_name_with_empty_query_returns_all() = runTest {
         val expectedList = expectedEventList()
         val params = FilterEventListArgs(
             eventList = expectedList,
             query = ""
         )
 
-        val result = useCase.invoke(params)
+        val result = useCase.execute(params)
 
         assertThat(result.isSuccess).isTrue()
         val filtered = result.getOrThrow()
@@ -50,14 +53,14 @@ class FilterEventListUseCaseTest {
     }
 
     @Test
-    fun filter_event_by_name_with_non_matching_query_returns_none() {
+    fun filter_event_by_name_with_non_matching_query_returns_none() = runTest {
         val expectedList = expectedEventList()
         val params = FilterEventListArgs(
             eventList = expectedList,
             query = "not found"
         )
 
-        val result = useCase.invoke(params)
+        val result = useCase.execute(params)
 
         assertThat(result.isSuccess).isTrue()
         val filtered = result.getOrThrow()

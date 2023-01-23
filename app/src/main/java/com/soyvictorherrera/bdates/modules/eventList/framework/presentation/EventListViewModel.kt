@@ -4,12 +4,11 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.soyvictorherrera.bdates.core.arch.UseCase
 import com.soyvictorherrera.bdates.core.resource.ResourceManagerContract
+import com.soyvictorherrera.bdates.modules.date.DateProviderContract
 import com.soyvictorherrera.bdates.modules.eventList.domain.model.Event
-import com.soyvictorherrera.bdates.modules.eventList.domain.usecase.FilterEventListArgs
+import com.soyvictorherrera.bdates.modules.eventList.domain.usecase.*
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.time.LocalDate
@@ -20,9 +19,11 @@ import kotlin.properties.Delegates
 
 @HiltViewModel
 class EventListViewModel @Inject constructor(
+    dateProvider: DateProviderContract,
     private val resourceManager: ResourceManagerContract,
-    private val getEventListUseCase: UseCase<Unit, Flow<List<Event>>>,
-    private val filterEventListUseCase: UseCase<FilterEventListArgs, Result<List<Event>>>
+    private val getDayEventList: GetDayEventListUseCaseContract,
+    private val getNonDayEventList: GetNonDayEventListUseCaseContract,
+    private val filterEventListUseCase: FilterEventListUseCaseContract
 ) : ViewModel() {
 
     private val _events = MutableLiveData<List<EventViewState>>()
@@ -33,7 +34,7 @@ class EventListViewModel @Inject constructor(
     val todayEvents: LiveData<List<TodayEventViewState>>
         get() = _todayEvents
 
-    private val today: LocalDate = LocalDate.now()
+    private val today: LocalDate = dateProvider.currentLocalDate
     private val longFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("EEEE, dd/MM")
 
     private var allEvents by Delegates.observable(emptyList<Event>()) { _, _, list ->
@@ -46,25 +47,8 @@ class EventListViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            getEventListUseCase(Unit).collect { events ->
-                val (dayEvents, allEvents) = events.map { event ->
-                    // Add event occurrences
-                    val currentYearOccurrence = LocalDate.of(
-                        today.year,
-                        event.monthOfYear,
-                        event.dayOfMonth
-                    )
-                    event.copy(
-                        currentYearOccurrence = currentYearOccurrence,
-                        nextOccurrence = if (currentYearOccurrence.isAfter(today)) currentYearOccurrence
-                        else currentYearOccurrence.plusYears(1L)
-                    )
-                }.partition { event ->
-                    event.currentYearOccurrence == today
-                }
-                this@EventListViewModel.dayEvents = dayEvents
-                this@EventListViewModel.allEvents = allEvents
-            }
+            this@EventListViewModel.dayEvents = getDayEventList.execute()
+            this@EventListViewModel.allEvents = getNonDayEventList.execute()
         }
     }
 
@@ -74,7 +58,7 @@ class EventListViewModel @Inject constructor(
     }
 
     private fun processEventList(events: List<Event>) = viewModelScope.launch {
-        filterEventListUseCase(
+        filterEventListUseCase.execute(
             FilterEventListArgs(
                 eventList = events,
                 query = query
