@@ -7,8 +7,9 @@ import kotlinx.coroutines.flow.flowOf
 import org.json.JSONArray
 import org.json.JSONObject
 import timber.log.Timber
+import javax.inject.Inject
 
-class EventDatasource constructor(
+class EventDatasource @Inject constructor(
     private val assets: AssetFileManagerContract,
     private val jsonToEventMapper: Mapper<JSONObject, Event>
 ) : EventDataSourceContract {
