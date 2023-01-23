@@ -1,14 +1,13 @@
 package com.soyvictorherrera.bdates.modules.eventList.framework.presentation
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.soyvictorherrera.bdates.core.arch.UseCase
 import com.soyvictorherrera.bdates.core.resource.ResourceManagerContract
 import com.soyvictorherrera.bdates.modules.eventList.domain.model.Event
-import com.soyvictorherrera.bdates.modules.eventList.domain.usecase.FilterEventListArgs
+import com.soyvictorherrera.bdates.modules.eventList.domain.usecase.FilterEventListUseCaseContract
+import com.soyvictorherrera.bdates.modules.eventList.domain.usecase.GetEventListUseCaseContract
 import com.soyvictorherrera.bdates.util.MainCoroutineRule
 import com.soyvictorherrera.bdates.util.getOrAwaitValue
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
@@ -36,10 +35,10 @@ class EventListViewModelTest {
     lateinit var mockResources: ResourceManagerContract
 
     @Mock
-    lateinit var mockGetEventListUseCase: UseCase<Unit, Flow<List<Event>>>
+    lateinit var mockGetEventListUseCase: GetEventListUseCaseContract
 
     @Mock
-    lateinit var mockFilterEventListUseCase: UseCase<FilterEventListArgs, Result<List<Event>>>
+    lateinit var mockFilterEventListUseCase: FilterEventListUseCaseContract
 
     private lateinit var subjectUnderTest: EventListViewModel
 
@@ -69,8 +68,8 @@ class EventListViewModelTest {
                 nextOccurrence = tomorrow
             )
         )
-        whenever(mockGetEventListUseCase.invoke(Unit)).thenReturn(flowOf(events))
-        whenever(mockFilterEventListUseCase.invoke(any())).then { Result.success(events) }
+        whenever(mockGetEventListUseCase.execute()).thenReturn(flowOf(events))
+        whenever(mockFilterEventListUseCase.execute(any())).then { Result.success(events) }
 
         advanceUntilIdle()
         val result: List<EventViewState> = subjectUnderTest.events.getOrAwaitValue()
@@ -88,11 +87,12 @@ class EventListViewModelTest {
                 dayOfMonth = today.dayOfMonth,
                 monthOfYear = today.monthValue,
                 year = today.year,
+                currentYearOccurrence = today,
                 nextOccurrence = today
             )
         )
-        whenever(mockGetEventListUseCase.invoke(Unit)).thenReturn(flowOf(events))
-        whenever(mockFilterEventListUseCase.invoke(any())).then { Result.success(events) }
+        whenever(mockGetEventListUseCase.execute()).thenReturn(flowOf(events))
+        whenever(mockFilterEventListUseCase.execute(any())).then { Result.success(events) }
 
         advanceUntilIdle()
         val result: List<TodayEventViewState> = subjectUnderTest.todayEvents.getOrAwaitValue()
