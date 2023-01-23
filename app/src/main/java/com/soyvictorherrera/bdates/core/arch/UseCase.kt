@@ -1,5 +1,5 @@
 package com.soyvictorherrera.bdates.core.arch
 
-abstract class UseCase<Params, ReturnValue> {
-    abstract operator fun invoke(params: Params): ReturnValue
+interface UseCase<Params, ReturnValue> {
+    suspend fun execute(params: Params): ReturnValue
 }
