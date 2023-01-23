@@ -21,7 +21,8 @@ import kotlin.properties.Delegates
 class EventListViewModel @Inject constructor(
     dateProvider: DateProviderContract,
     private val resourceManager: ResourceManagerContract,
-    private val getEventListUseCase: GetEventListUseCaseContract,
+    private val getDayEventList: GetDayEventListUseCaseContract,
+    private val getNonDayEventList: GetNonDayEventListUseCaseContract,
     private val filterEventListUseCase: FilterEventListUseCaseContract
 ) : ViewModel() {
 
@@ -46,13 +47,8 @@ class EventListViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            getEventListUseCase.execute().collect { events ->
-                val (dayEvents, allEvents) = events.partition { event ->
-                    event.currentYearOccurrence == today
-                }
-                this@EventListViewModel.dayEvents = dayEvents
-                this@EventListViewModel.allEvents = allEvents
-            }
+            this@EventListViewModel.dayEvents = getDayEventList.execute()
+            this@EventListViewModel.allEvents = getNonDayEventList.execute()
         }
     }
 

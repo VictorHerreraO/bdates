@@ -13,8 +13,12 @@ import com.soyvictorherrera.bdates.modules.eventList.data.repository.EventReposi
 import com.soyvictorherrera.bdates.modules.eventList.domain.model.Event
 import com.soyvictorherrera.bdates.modules.eventList.domain.usecase.FilterEventListUseCase
 import com.soyvictorherrera.bdates.modules.eventList.domain.usecase.FilterEventListUseCaseContract
+import com.soyvictorherrera.bdates.modules.eventList.domain.usecase.GetDayEventListUseCase
+import com.soyvictorherrera.bdates.modules.eventList.domain.usecase.GetDayEventListUseCaseContract
 import com.soyvictorherrera.bdates.modules.eventList.domain.usecase.GetEventListUseCase
 import com.soyvictorherrera.bdates.modules.eventList.domain.usecase.GetEventListUseCaseContract
+import com.soyvictorherrera.bdates.modules.eventList.domain.usecase.GetNonDayEventListUseCase
+import com.soyvictorherrera.bdates.modules.eventList.domain.usecase.GetNonDayEventListUseCaseContract
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
@@ -50,6 +54,16 @@ abstract class EventListModule {
     abstract fun bindEventRepositoryContract(
         eventRepository: EventRepository
     ): EventRepositoryContract
+
+    @Binds
+    abstract fun bindGetDayEventListUseCaseContract(
+        getDayEventListUseCase: GetDayEventListUseCase
+    ): GetDayEventListUseCaseContract
+
+    @Binds
+    abstract fun bindGetNonDayEventListUseCaseContract(
+        getNonDayEventListUseCase: GetNonDayEventListUseCase
+    ): GetNonDayEventListUseCaseContract
 
     companion object {
         @Provides

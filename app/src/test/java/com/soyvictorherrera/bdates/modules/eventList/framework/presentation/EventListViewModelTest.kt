@@ -5,11 +5,12 @@ import com.soyvictorherrera.bdates.core.resource.ResourceManagerContract
 import com.soyvictorherrera.bdates.modules.date.DateProviderContract
 import com.soyvictorherrera.bdates.modules.eventList.domain.model.Event
 import com.soyvictorherrera.bdates.modules.eventList.domain.usecase.FilterEventListUseCaseContract
-import com.soyvictorherrera.bdates.modules.eventList.domain.usecase.GetEventListUseCaseContract
+import com.soyvictorherrera.bdates.modules.eventList.domain.usecase.GetDayEventListUseCaseContract
+import com.soyvictorherrera.bdates.modules.eventList.domain.usecase.GetNonDayEventListUseCaseContract
 import com.soyvictorherrera.bdates.util.MainCoroutineRule
 import com.soyvictorherrera.bdates.util.getOrAwaitValue
+import java.time.LocalDate
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
@@ -21,7 +22,6 @@ import org.mockito.Mock
 import org.mockito.junit.MockitoJUnitRunner
 import org.mockito.kotlin.any
 import org.mockito.kotlin.whenever
-import java.time.LocalDate
 
 @OptIn(ExperimentalCoroutinesApi::class)
 @RunWith(MockitoJUnitRunner::class)
@@ -39,7 +39,10 @@ class EventListViewModelTest {
     lateinit var mockResources: ResourceManagerContract
 
     @Mock
-    lateinit var mockGetEventListUseCase: GetEventListUseCaseContract
+    lateinit var mockGetDayEventList: GetDayEventListUseCaseContract
+
+    @Mock
+    lateinit var mockGetNonDayEventList: GetNonDayEventListUseCaseContract
 
     @Mock
     lateinit var mockFilterEventListUseCase: FilterEventListUseCaseContract
@@ -56,7 +59,8 @@ class EventListViewModelTest {
         subjectUnderTest = EventListViewModel(
             dateProvider = mockDateProvider,
             resourceManager = mockResources,
-            getEventListUseCase = mockGetEventListUseCase,
+            getDayEventList = mockGetDayEventList,
+            getNonDayEventList = mockGetNonDayEventList,
             filterEventListUseCase = mockFilterEventListUseCase
         )
     }
@@ -74,7 +78,8 @@ class EventListViewModelTest {
                 nextOccurrence = tomorrow
             )
         )
-        whenever(mockGetEventListUseCase.execute()).thenReturn(flowOf(events))
+        whenever(mockGetNonDayEventList.execute()).thenReturn(events)
+        whenever(mockGetDayEventList.execute()).thenReturn(emptyList())
         whenever(mockFilterEventListUseCase.execute(any())).then { Result.success(events) }
 
         advanceUntilIdle()
@@ -97,7 +102,8 @@ class EventListViewModelTest {
                 nextOccurrence = today
             )
         )
-        whenever(mockGetEventListUseCase.execute()).thenReturn(flowOf(events))
+        whenever(mockGetDayEventList.execute()).thenReturn(events)
+        whenever(mockGetNonDayEventList.execute()).thenReturn(emptyList())
         whenever(mockFilterEventListUseCase.execute(any())).then { Result.success(events) }
 
         advanceUntilIdle()
