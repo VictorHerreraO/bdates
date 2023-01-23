@@ -2,6 +2,7 @@ package com.soyvictorherrera.bdates.modules.eventList.framework.presentation
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.soyvictorherrera.bdates.core.resource.ResourceManagerContract
+import com.soyvictorherrera.bdates.modules.date.DateProviderContract
 import com.soyvictorherrera.bdates.modules.eventList.domain.model.Event
 import com.soyvictorherrera.bdates.modules.eventList.domain.usecase.FilterEventListUseCaseContract
 import com.soyvictorherrera.bdates.modules.eventList.domain.usecase.GetEventListUseCaseContract
@@ -32,6 +33,9 @@ class EventListViewModelTest {
     val mainCoroutineRule = MainCoroutineRule()
 
     @Mock
+    lateinit var mockDateProvider: DateProviderContract
+
+    @Mock
     lateinit var mockResources: ResourceManagerContract
 
     @Mock
@@ -46,9 +50,11 @@ class EventListViewModelTest {
 
     @Before
     fun setup() {
+        whenever(mockDateProvider.currentLocalDate).thenReturn(today)
         whenever(mockResources.getString(any(), any())).thenReturn("string")
 
         subjectUnderTest = EventListViewModel(
+            dateProvider = mockDateProvider,
             resourceManager = mockResources,
             getEventListUseCase = mockGetEventListUseCase,
             filterEventListUseCase = mockFilterEventListUseCase

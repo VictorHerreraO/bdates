@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.soyvictorherrera.bdates.core.resource.ResourceManagerContract
+import com.soyvictorherrera.bdates.modules.date.DateProviderContract
 import com.soyvictorherrera.bdates.modules.eventList.domain.model.Event
 import com.soyvictorherrera.bdates.modules.eventList.domain.usecase.*
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -18,6 +19,7 @@ import kotlin.properties.Delegates
 
 @HiltViewModel
 class EventListViewModel @Inject constructor(
+    dateProvider: DateProviderContract,
     private val resourceManager: ResourceManagerContract,
     private val getEventListUseCase: GetEventListUseCaseContract,
     private val filterEventListUseCase: FilterEventListUseCaseContract
@@ -31,7 +33,7 @@ class EventListViewModel @Inject constructor(
     val todayEvents: LiveData<List<TodayEventViewState>>
         get() = _todayEvents
 
-    private val today: LocalDate = LocalDate.now()
+    private val today: LocalDate = dateProvider.currentLocalDate
     private val longFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("EEEE, dd/MM")
 
     private var allEvents by Delegates.observable(emptyList<Event>()) { _, _, list ->
