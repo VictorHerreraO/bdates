@@ -4,8 +4,7 @@ import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
-import android.os.Build
-import androidx.annotation.RequiresApi
+import androidx.annotation.DrawableRes
 import androidx.core.app.NotificationCompat
 import com.soyvictorherrera.bdates.R
 import com.soyvictorherrera.bdates.core.HomeNavigationActivity
@@ -39,7 +38,7 @@ class NotificationManager @Inject constructor(
             context,
             0,
             intent,
-            PendingIntent.FLAG_MUTABLE
+            PendingIntent.FLAG_IMMUTABLE
         )
         val alarmTime = Calendar.getInstance().apply {
             timeInMillis = System.currentTimeMillis()
@@ -55,28 +54,57 @@ class NotificationManager @Inject constructor(
         Timber.d("Inexact repeating alarm set")
     }
 
-    override fun showDayEventsReminder() {
-        val intent = Intent(context, HomeNavigationActivity::class.java).apply {
-            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+    override fun showDayEventsReminder(eventCount: Int, eventName: String) {
+        if (eventCount <= 0) {
+            Timber.v("eventCount is 0")
+            return
         }
-        val pendingIntent = PendingIntent.getActivity(
-            context,
-            0,
-            intent,
-            PendingIntent.FLAG_IMMUTABLE
+        val pendingIntent = buildOpenAppPendingIntent()
+        val title = context.resources.getQuantityString(
+            R.plurals.notification_title_day_event,
+            eventCount,
+            eventCount
         )
-        val builder = NotificationCompat.Builder(context, NotificationChannel.CHANNEL_DAY_EVENTS)
-            .setSmallIcon(R.drawable.ic_launcher_foreground)
-            .setContentTitle("🍰 There is 1 birthday happening today!")
-            .setContentText("Today is {name} birthday. Make sure to say hi 👋")
-            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-            .setContentIntent(pendingIntent)
-            .setAutoCancel(true)
-        notificationManager.notify(NotificationId.ID_DAY_EVENTS, builder.build())
-        Timber.d("Day events reminder notification sent")
+        val content = context.resources.getQuantityString(
+            R.plurals.notification_content_day_event,
+            eventCount,
+            eventName,
+            eventCount.dec()
+        )
+        Timber.d("Showing Day events reminder notification")
+        showNotification(
+            notificationId = NotificationId.ID_DAY_EVENTS,
+            channelId = NotificationChannel.CHANNEL_DAY_EVENTS,
+            title = title,
+            content = content,
+            pendingIntent = pendingIntent
+        )
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
+    private fun showNotification(
+        notificationId: Int,
+        channelId: String,
+        title: String,
+        content: String? = null,
+        pendingIntent: PendingIntent? = null,
+        autoCancel: Boolean = true,
+        @DrawableRes smallIcon: Int = R.drawable.ic_launcher_foreground,
+        priority: Int = NotificationCompat.PRIORITY_DEFAULT,
+    ) {
+        val builder = NotificationCompat.Builder(context, channelId)
+            .setSmallIcon(smallIcon)
+            .setContentTitle(title)
+            .setContentText(content)
+            .setPriority(priority)
+            .setContentIntent(pendingIntent)
+            .setAutoCancel(autoCancel)
+
+        notificationManager.notify(
+            notificationId, builder.build()
+        )
+        Timber.v("Notification pushed to $channelId")
+    }
+
     private fun createNotificationChannels() {
         Timber.v("Creating notification channels...")
         // Day events notification channel
@@ -87,7 +115,6 @@ class NotificationManager @Inject constructor(
         )
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     private fun createNotificationChannel(
         channelId: String,
         channelName: String,
@@ -103,5 +130,17 @@ class NotificationManager @Inject constructor(
         }
         notificationManager.createNotificationChannel(channel)
         Timber.v("$channelName notification channel created")
+    }
+
+    private fun buildOpenAppPendingIntent(): PendingIntent {
+        val intent = Intent(context, HomeNavigationActivity::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        }
+        return PendingIntent.getActivity(
+            context,
+            0,
+            intent,
+            PendingIntent.FLAG_IMMUTABLE
+        )
     }
 }

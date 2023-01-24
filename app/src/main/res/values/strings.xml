@@ -8,4 +8,10 @@
     <string name="time_unit_days">días</string>
     <string name="event_birthday_title">Cumpleaños</string>
     <string name="event_birthday_description">• Cumple %d</string>
+
+    <!-- Notifications -->
+    <string name="notification_title_single_day_event">🍰 ¡Hay un cumpleaños que celebrar el día de hoy!</string>
+    <string name="notification_title_multiple_day_event">🍰 ¡Hay %d cumpleaños que celebrar el día de hoy!</string>
+    <string name="notification_content_single_day_event">Hoy es cumpleaños de %s. Asegúrate de saludar 👋</string>
+    <string name="notification_content_multiple_day_event">Hoy es cumpleaños de %s y %d más. Asegúrate de saludar 👋</string>
 </resources>

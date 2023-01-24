@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <plurals name="notification_title_day_event" translatable="false">
+        <item quantity="one">@string/notification_title_single_day_event</item>
+        <item quantity="other">@string/notification_title_multiple_day_event</item>
+    </plurals>
+
+    <plurals name="notification_content_day_event" translatable="false">
+        <item quantity="one">@string/notification_content_single_day_event</item>
+        <item quantity="other">@string/notification_content_multiple_day_event</item>
+    </plurals>
+</resources>
