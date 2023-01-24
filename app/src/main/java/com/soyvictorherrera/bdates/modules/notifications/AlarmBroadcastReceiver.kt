@@ -14,32 +14,13 @@ import kotlinx.coroutines.runBlocking
 class AlarmBroadcastReceiver : BroadcastReceiver() {
 
     @Inject
-    lateinit var notificationManager: NotificationManagerContract
-
-    @Inject
-    lateinit var getDayEventList: GetDayEventListUseCaseContract
+    lateinit var dayNotificationDelegate: DayNotificationDelegateContract
 
     override fun onReceive(context: Context?, intent: Intent?) {
         if (intent?.action == NotificationAction.NOTIFY_DAY_EVENTS) {
             Timber.d("Notify day events action intent received")
             // Here I should fetch day events and notify
-            notifyDayEvents()
+            dayNotificationDelegate.notifyDayEvents()
         }
-    }
-
-    private fun notifyDayEvents() {
-        val dayEvents: List<Event> = runBlocking {
-            getDayEventList.execute()
-        }
-
-        if (dayEvents.isEmpty()) {
-            Timber.d("No events for today")
-            return
-        }
-
-        notificationManager.showDayEventsReminder(
-            eventCount = dayEvents.size,
-            eventName = dayEvents.first().name
-        )
     }
 }

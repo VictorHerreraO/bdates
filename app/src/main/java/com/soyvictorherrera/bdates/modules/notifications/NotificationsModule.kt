@@ -12,7 +12,6 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 abstract class NotificationsModule {
 
-
     @Binds
     @Singleton
     abstract fun bindContext(
@@ -24,4 +23,10 @@ abstract class NotificationsModule {
     abstract fun bindNotificationManagerContract(
         notificationManager: NotificationManager
     ): NotificationManagerContract
+
+    @Binds
+    @Singleton
+    abstract fun bindDayNotificationDelegateContract(
+        dayNotificationDelegate: DayNotificationDelegate
+    ): DayNotificationDelegateContract
 }
