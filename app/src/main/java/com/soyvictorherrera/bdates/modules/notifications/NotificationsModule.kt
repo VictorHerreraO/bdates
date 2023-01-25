@@ -2,6 +2,8 @@ package com.soyvictorherrera.bdates.modules.notifications
 
 import android.app.Application
 import android.content.Context
+import com.soyvictorherrera.bdates.modules.notifications.delegate.DayNotificationDelegate
+import com.soyvictorherrera.bdates.modules.notifications.delegate.DayNotificationDelegateContract
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn

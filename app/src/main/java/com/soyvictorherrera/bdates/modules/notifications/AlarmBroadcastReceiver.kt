@@ -3,12 +3,10 @@ package com.soyvictorherrera.bdates.modules.notifications
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import com.soyvictorherrera.bdates.modules.eventList.domain.model.Event
-import com.soyvictorherrera.bdates.modules.eventList.domain.usecase.GetDayEventListUseCaseContract
+import com.soyvictorherrera.bdates.modules.notifications.delegate.DayNotificationDelegateContract
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 import javax.inject.Inject
-import kotlinx.coroutines.runBlocking
 
 @AndroidEntryPoint
 class AlarmBroadcastReceiver : BroadcastReceiver() {

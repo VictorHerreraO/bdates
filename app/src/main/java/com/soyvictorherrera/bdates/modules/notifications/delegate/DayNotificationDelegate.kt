@@ -1,7 +1,8 @@
-package com.soyvictorherrera.bdates.modules.notifications
+package com.soyvictorherrera.bdates.modules.notifications.delegate
 
 import com.soyvictorherrera.bdates.modules.eventList.domain.model.Event
 import com.soyvictorherrera.bdates.modules.eventList.domain.usecase.GetDayEventListUseCaseContract
+import com.soyvictorherrera.bdates.modules.notifications.NotificationManagerContract
 import javax.inject.Inject
 import kotlinx.coroutines.runBlocking
 import timber.log.Timber
