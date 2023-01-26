@@ -8,4 +8,5 @@ object NotificationChannel {
 }
 object NotificationId {
     const val ID_DAY_EVENTS = 101
+    const val ID_UPCOMING_EVENTS = 102
 }

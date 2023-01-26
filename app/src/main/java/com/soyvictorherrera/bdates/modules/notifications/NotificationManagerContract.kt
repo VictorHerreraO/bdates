@@ -13,4 +13,9 @@ interface NotificationManagerContract {
      * Display a notification for day events
      */
     fun showDayEventsReminder(eventCount: Int, eventName: String)
+
+    /**
+     * Display a notification for upcoming events
+     */
+    fun showUpcomingEventsReminder(eventCount: Int, eventName: String, eventDateString: String)
 }

@@ -81,6 +81,43 @@ class NotificationManager @Inject constructor(
         )
     }
 
+    override fun showUpcomingEventsReminder(
+        eventCount: Int,
+        eventName: String,
+        eventDateString: String
+    ) {
+        if (eventCount <= 0) {
+            Timber.v("event count is 0")
+        }
+        val pendingIntent = buildOpenAppPendingIntent()
+        val title = context.resources.getQuantityString(
+            R.plurals.notification_title_upcoming_event,
+            eventCount,
+            eventCount
+        )
+        val args: Array<Any> = arrayListOf<Any>().apply {
+            add(eventName)
+            val others = eventCount.dec()
+            if (others > 0) {
+                add(others)
+            }
+            add(eventDateString)
+        }.toArray()
+        val content = context.resources.getQuantityString(
+            R.plurals.notification_content_upcoming_event,
+            eventCount,
+            *args
+        )
+        Timber.d("Showing Upcoming event reminder notification")
+        showNotification(
+            notificationId = NotificationId.ID_UPCOMING_EVENTS,
+            channelId = NotificationChannel.CHANNEL_DAY_EVENTS,
+            title = title,
+            content = content,
+            pendingIntent = pendingIntent
+        )
+    }
+
     private fun showNotification(
         notificationId: Int,
         channelId: String,
