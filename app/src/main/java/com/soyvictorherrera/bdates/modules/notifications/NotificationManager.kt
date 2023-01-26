@@ -73,6 +73,7 @@ class NotificationManager @Inject constructor(
         )
         Timber.d("Showing Day events reminder notification")
         showNotification(
+            smallIcon = R.drawable.ic_celebration_48,
             notificationId = NotificationId.ID_DAY_EVENTS,
             channelId = NotificationChannel.CHANNEL_EVENT_REMINDERS,
             title = title,
@@ -110,6 +111,7 @@ class NotificationManager @Inject constructor(
         )
         Timber.d("Showing Upcoming event reminder notification")
         showNotification(
+            smallIcon = R.drawable.ic_event_48,
             notificationId = NotificationId.ID_UPCOMING_EVENTS,
             channelId = NotificationChannel.CHANNEL_EVENT_REMINDERS,
             title = title,
