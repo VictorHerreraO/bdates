@@ -11,4 +11,7 @@ abstract class DateModule {
 
     @Binds
     abstract fun bindDateProviderContract(dateProvider: DateProvider): DateProviderContract
+
+    @Binds
+    abstract fun bindDateFormattersContract(dateFormatters: DateFormatters): DateFormattersContract
 }
