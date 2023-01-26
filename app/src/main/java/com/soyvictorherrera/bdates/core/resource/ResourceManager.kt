@@ -1,6 +1,7 @@
 package com.soyvictorherrera.bdates.core.resource
 
 import android.content.Context
+import androidx.annotation.StringRes
 
 class ResourceManager(
     context: Context
@@ -24,7 +25,7 @@ class ResourceManager(
         }
     }
 
-    override fun getString(identifier: Int, vararg args: Any?): String {
-        return resources.getString(identifier, args)
+    override fun getString(@StringRes identifier: Int, vararg args: Any?): String {
+        return resources.getString(identifier, *args)
     }
 }
