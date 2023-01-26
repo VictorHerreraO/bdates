@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.map
 import java.time.LocalDate
 import javax.inject.Inject
 
-const val ONE_YEAR = 1L
+private const val ONE_YEAR = 1L
 
 interface GetEventListUseCaseContract : UseCase<Unit, Flow<List<Event>>> {
     suspend fun execute(): Flow<List<Event>>
