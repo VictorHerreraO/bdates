@@ -1,4 +1,4 @@
-package com.soyvictorherrera.bdates.modules.date
+package com.soyvictorherrera.bdates.core.date
 
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -8,7 +8,8 @@ class DateProvider @Inject constructor(
     private val formatters: DateFormattersContract
 ) : DateProviderContract {
     override val currentLocalDate: LocalDate
-        get() = LocalDate.now()
+        get() = LocalDate.of(2023, 6, 1)
+
     override val currentLocalDateTime: LocalDateTime
         get() = LocalDateTime.now()
 

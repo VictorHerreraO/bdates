@@ -1,7 +1,7 @@
 package com.soyvictorherrera.bdates.modules.eventList.domain.usecase
 
 import com.google.common.truth.Truth.assertThat
-import com.soyvictorherrera.bdates.modules.date.DateProviderContract
+import com.soyvictorherrera.bdates.core.date.DateProviderContract
 import com.soyvictorherrera.bdates.modules.eventList.data.repository.EventRepositoryContract
 import com.soyvictorherrera.bdates.modules.eventList.domain.model.Event
 import kotlinx.coroutines.flow.first

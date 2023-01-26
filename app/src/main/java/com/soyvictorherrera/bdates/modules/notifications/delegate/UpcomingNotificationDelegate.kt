@@ -1,6 +1,6 @@
 package com.soyvictorherrera.bdates.modules.notifications.delegate
 
-import com.soyvictorherrera.bdates.modules.date.DateProviderContract
+import com.soyvictorherrera.bdates.core.date.DateProviderContract
 import com.soyvictorherrera.bdates.modules.eventList.domain.model.Event
 import com.soyvictorherrera.bdates.modules.eventList.domain.usecase.GetUpcomingEventListUseCaseContract
 import com.soyvictorherrera.bdates.modules.notifications.NotificationManagerContract

@@ -1,6 +1,6 @@
 package com.soyvictorherrera.bdates.modules.eventList.domain.usecase
 
-import com.soyvictorherrera.bdates.modules.date.DateProviderContract
+import com.soyvictorherrera.bdates.core.date.DateProviderContract
 import com.soyvictorherrera.bdates.modules.eventList.domain.model.Event
 import java.time.LocalDate
 import kotlinx.coroutines.flow.flowOf

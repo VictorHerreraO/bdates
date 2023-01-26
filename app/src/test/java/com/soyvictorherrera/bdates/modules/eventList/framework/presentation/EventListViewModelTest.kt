@@ -2,7 +2,7 @@ package com.soyvictorherrera.bdates.modules.eventList.framework.presentation
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.soyvictorherrera.bdates.core.resource.ResourceManagerContract
-import com.soyvictorherrera.bdates.modules.date.DateProviderContract
+import com.soyvictorherrera.bdates.core.date.DateProviderContract
 import com.soyvictorherrera.bdates.modules.eventList.domain.model.Event
 import com.soyvictorherrera.bdates.modules.eventList.domain.usecase.FilterEventListUseCaseContract
 import com.soyvictorherrera.bdates.modules.eventList.domain.usecase.GetDayEventListUseCaseContract
@@ -18,6 +18,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.ArgumentMatchers.anyString
 import org.mockito.Mock
 import org.mockito.junit.MockitoJUnitRunner
 import org.mockito.kotlin.any
@@ -54,7 +55,7 @@ class EventListViewModelTest {
     @Before
     fun setup() {
         whenever(mockDateProvider.currentLocalDate).thenReturn(today)
-        whenever(mockResources.getString(any(), any())).thenReturn("string")
+        whenever(mockResources.getString(anyString(), any())).thenReturn("string")
 
         subjectUnderTest = EventListViewModel(
             dateProvider = mockDateProvider,

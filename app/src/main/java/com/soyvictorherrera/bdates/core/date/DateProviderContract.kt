@@ -1,4 +1,4 @@
-package com.soyvictorherrera.bdates.modules.date
+package com.soyvictorherrera.bdates.core.date
 
 import java.time.LocalDate
 import java.time.LocalDateTime

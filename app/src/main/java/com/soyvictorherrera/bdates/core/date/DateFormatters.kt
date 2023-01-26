@@ -1,4 +1,4 @@
-package com.soyvictorherrera.bdates.modules.date
+package com.soyvictorherrera.bdates.core.date
 
 import com.soyvictorherrera.bdates.R
 import com.soyvictorherrera.bdates.core.resource.ResourceManagerContract

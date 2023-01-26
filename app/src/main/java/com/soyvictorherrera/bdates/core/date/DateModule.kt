@@ -1,4 +1,4 @@
-package com.soyvictorherrera.bdates.modules.date
+package com.soyvictorherrera.bdates.core.date
 
 import dagger.Binds
 import dagger.Module
