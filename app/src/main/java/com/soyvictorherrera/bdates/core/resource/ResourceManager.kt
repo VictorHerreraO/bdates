@@ -24,4 +24,7 @@ class ResourceManager(
         }
     }
 
+    override fun getString(identifier: Int, vararg args: Any?): String {
+        return resources.getString(identifier, args)
+    }
 }
