@@ -4,6 +4,8 @@ import android.app.Application
 import android.content.Context
 import com.soyvictorherrera.bdates.modules.notifications.delegate.DayNotificationDelegate
 import com.soyvictorherrera.bdates.modules.notifications.delegate.DayNotificationDelegateContract
+import com.soyvictorherrera.bdates.modules.notifications.delegate.UpcomingEventNotificationDelegate
+import com.soyvictorherrera.bdates.modules.notifications.delegate.UpcomingEventNotificationDelegateContract
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -31,4 +33,10 @@ abstract class NotificationsModule {
     abstract fun bindDayNotificationDelegateContract(
         dayNotificationDelegate: DayNotificationDelegate
     ): DayNotificationDelegateContract
+
+    @Binds
+    @Singleton
+    abstract fun bindUpcomingEventNotificationDelegateContract(
+        upcomingEventNotificationDelegate: UpcomingEventNotificationDelegate
+    ): UpcomingEventNotificationDelegateContract
 }
