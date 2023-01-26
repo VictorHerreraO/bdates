@@ -19,12 +19,13 @@ class AlarmBroadcastReceiver : BroadcastReceiver() {
     lateinit var upcomingEventNotificationDelegate: UpcomingEventNotificationDelegateContract
 
     override fun onReceive(context: Context?, intent: Intent?) {
-        if (intent?.action == NotificationAction.NOTIFY_DAY_EVENTS) {
-            Timber.d("Notify day events action intent received")
-            // Here I should fetch day events and notify
-            dayNotificationDelegate.notifyDayEvents()
-
-            upcomingEventNotificationDelegate.notifyUpcomingEvents()
+        if (intent?.action != NotificationAction.NOTIFY_EVENTS) {
+            return
         }
+        Timber.d("Notify day events action intent received")
+        // Here I should fetch day events and notify
+        dayNotificationDelegate.notifyDayEvents()
+
+        upcomingEventNotificationDelegate.notifyUpcomingEvents()
     }
 }

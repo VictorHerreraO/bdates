@@ -32,7 +32,7 @@ class NotificationManager @Inject constructor(
 
     override fun setupDayEventsReminder() {
         val intent = Intent(context, AlarmBroadcastReceiver::class.java).apply {
-            action = NotificationAction.NOTIFY_DAY_EVENTS
+            action = NotificationAction.NOTIFY_EVENTS
         }
         val pendingIntent = PendingIntent.getBroadcast(
             context,
@@ -74,7 +74,7 @@ class NotificationManager @Inject constructor(
         Timber.d("Showing Day events reminder notification")
         showNotification(
             notificationId = NotificationId.ID_DAY_EVENTS,
-            channelId = NotificationChannel.CHANNEL_DAY_EVENTS,
+            channelId = NotificationChannel.CHANNEL_EVENT_REMINDERS,
             title = title,
             content = content,
             pendingIntent = pendingIntent
@@ -111,7 +111,7 @@ class NotificationManager @Inject constructor(
         Timber.d("Showing Upcoming event reminder notification")
         showNotification(
             notificationId = NotificationId.ID_UPCOMING_EVENTS,
-            channelId = NotificationChannel.CHANNEL_DAY_EVENTS,
+            channelId = NotificationChannel.CHANNEL_EVENT_REMINDERS,
             title = title,
             content = content,
             pendingIntent = pendingIntent
@@ -144,11 +144,11 @@ class NotificationManager @Inject constructor(
 
     private fun createNotificationChannels() {
         Timber.v("Creating notification channels...")
-        // Day events notification channel
+        // Event reminders notification channel
         createNotificationChannel(
-            channelId = NotificationChannel.CHANNEL_DAY_EVENTS,
-            channelName = "Day Events",
-            channelDescription = "Daily reminders for day events"
+            channelId = NotificationChannel.CHANNEL_EVENT_REMINDERS,
+            channelName = context.getString(R.string.notification_channel_name_event_reminders),
+            channelDescription = context.getString(R.string.notification_channel_description_event_reminders)
         )
     }
 
