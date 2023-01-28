@@ -31,11 +31,11 @@
         </activity>
 
         <receiver
-            android:name=".modules.notifications.AlarmBroadcastReceiver"
+            android:name=".modules.notifications.receiver.AlarmBroadcastReceiver"
             android:enabled="true"
             android:exported="true" />
         <receiver
-            android:name=".modules.notifications.AlarmBootReceiver"
+            android:name=".modules.notifications.receiver.AlarmBootReceiver"
             android:enabled="true"
             android:exported="true">
             <intent-filter>
