@@ -57,7 +57,7 @@ class DayNotificationDelegateTest {
 
         subjectUnderTest.notifyDayEvents()
 
-        verify(mockNotificationManager).showDayEventsReminder(eq(1), anyString())
+        verify(mockNotificationManager).showDayEventsReminder(eq(1), eq(event.name))
     }
 
     @Test
