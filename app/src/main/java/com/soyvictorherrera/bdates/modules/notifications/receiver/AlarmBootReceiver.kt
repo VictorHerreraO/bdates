@@ -5,8 +5,8 @@ import android.content.Context
 import android.content.Intent
 import com.soyvictorherrera.bdates.modules.notifications.NotificationManagerContract
 import dagger.hilt.android.AndroidEntryPoint
-import timber.log.Timber
 import javax.inject.Inject
+import timber.log.Timber
 
 const val ACTION_BOOT_COMPLETED = "android.intent.action.BOOT_COMPLETED"
 

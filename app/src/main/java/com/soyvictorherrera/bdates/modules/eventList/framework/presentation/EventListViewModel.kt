@@ -4,17 +4,20 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.soyvictorherrera.bdates.core.resource.ResourceManagerContract
 import com.soyvictorherrera.bdates.core.date.DateProviderContract
+import com.soyvictorherrera.bdates.core.resource.ResourceManagerContract
 import com.soyvictorherrera.bdates.modules.eventList.domain.model.Event
-import com.soyvictorherrera.bdates.modules.eventList.domain.usecase.*
+import com.soyvictorherrera.bdates.modules.eventList.domain.usecase.FilterEventListArgs
+import com.soyvictorherrera.bdates.modules.eventList.domain.usecase.FilterEventListUseCaseContract
+import com.soyvictorherrera.bdates.modules.eventList.domain.usecase.GetDayEventListUseCaseContract
+import com.soyvictorherrera.bdates.modules.eventList.domain.usecase.GetNonDayEventListUseCaseContract
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.launch
-import timber.log.Timber
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
 import javax.inject.Inject
+import kotlinx.coroutines.launch
+import timber.log.Timber
 import kotlin.properties.Delegates
 
 @HiltViewModel

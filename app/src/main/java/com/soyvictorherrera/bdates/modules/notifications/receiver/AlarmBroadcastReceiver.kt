@@ -7,8 +7,8 @@ import com.soyvictorherrera.bdates.modules.notifications.NotificationAction
 import com.soyvictorherrera.bdates.modules.notifications.delegate.DayNotificationDelegateContract
 import com.soyvictorherrera.bdates.modules.notifications.delegate.UpcomingEventNotificationDelegateContract
 import dagger.hilt.android.AndroidEntryPoint
-import timber.log.Timber
 import javax.inject.Inject
+import timber.log.Timber
 
 @AndroidEntryPoint
 class AlarmBroadcastReceiver : BroadcastReceiver() {

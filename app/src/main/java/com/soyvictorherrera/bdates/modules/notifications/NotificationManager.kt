@@ -9,9 +9,9 @@ import androidx.core.app.NotificationCompat
 import com.soyvictorherrera.bdates.R
 import com.soyvictorherrera.bdates.core.HomeNavigationActivity
 import com.soyvictorherrera.bdates.modules.notifications.receiver.AlarmBroadcastReceiver
-import timber.log.Timber
-import java.util.*
+import java.util.Calendar
 import javax.inject.Inject
+import timber.log.Timber
 import android.app.NotificationChannel as AndroidNotificationChannel
 import android.app.NotificationManager as AndroidNotificationManager
 
