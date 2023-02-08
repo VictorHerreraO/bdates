@@ -2,10 +2,11 @@ package com.soyvictorherrera.bdates.modules.eventList.data.datasource
 
 import android.content.res.AssetManager
 import java.io.IOException
+import javax.inject.Inject
 
-class AssetFileManager(
+class AssetFileManager @Inject constructor(
     private val assets: AssetManager
-): AssetFileManagerContract {
+) : AssetFileManagerContract {
 
     @Throws(IOException::class)
     override fun openAsString(fileName: String): String {

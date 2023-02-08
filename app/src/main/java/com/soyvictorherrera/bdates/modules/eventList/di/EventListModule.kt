@@ -3,7 +3,6 @@ package com.soyvictorherrera.bdates.modules.eventList.di
 import android.app.Application
 import android.content.res.AssetManager
 import com.soyvictorherrera.bdates.core.arch.Mapper
-import com.soyvictorherrera.bdates.core.arch.UseCase
 import com.soyvictorherrera.bdates.modules.eventList.data.datasource.AssetFileManager
 import com.soyvictorherrera.bdates.modules.eventList.data.datasource.AssetFileManagerContract
 import com.soyvictorherrera.bdates.modules.eventList.data.datasource.EventDataSourceContract
@@ -12,67 +11,77 @@ import com.soyvictorherrera.bdates.modules.eventList.data.mapper.JsonToEventMapp
 import com.soyvictorherrera.bdates.modules.eventList.data.repository.EventRepository
 import com.soyvictorherrera.bdates.modules.eventList.data.repository.EventRepositoryContract
 import com.soyvictorherrera.bdates.modules.eventList.domain.model.Event
-import com.soyvictorherrera.bdates.modules.eventList.domain.usecase.FilterEventListArgs
 import com.soyvictorherrera.bdates.modules.eventList.domain.usecase.FilterEventListUseCase
+import com.soyvictorherrera.bdates.modules.eventList.domain.usecase.FilterEventListUseCaseContract
+import com.soyvictorherrera.bdates.modules.eventList.domain.usecase.GetDayEventListUseCase
+import com.soyvictorherrera.bdates.modules.eventList.domain.usecase.GetDayEventListUseCaseContract
 import com.soyvictorherrera.bdates.modules.eventList.domain.usecase.GetEventListUseCase
+import com.soyvictorherrera.bdates.modules.eventList.domain.usecase.GetEventListUseCaseContract
+import com.soyvictorherrera.bdates.modules.eventList.domain.usecase.GetNonDayEventListUseCase
+import com.soyvictorherrera.bdates.modules.eventList.domain.usecase.GetNonDayEventListUseCaseContract
+import com.soyvictorherrera.bdates.modules.eventList.domain.usecase.GetUpcomingEventListUseCase
+import com.soyvictorherrera.bdates.modules.eventList.domain.usecase.GetUpcomingEventListUseCaseContract
+import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import kotlinx.coroutines.flow.Flow
 import org.json.JSONObject
 
 @Module
 @InstallIn(SingletonComponent::class)
-object EventListModule {
+abstract class EventListModule {
 
-    @Provides
-    fun provideAssetManager(app: Application): AssetManager {
-        return app.assets
-    }
+    @Binds
+    abstract fun bindGetEventListUseCase(
+        getEventListUseCase: GetEventListUseCase
+    ): GetEventListUseCaseContract
 
-    @Provides
-    fun provideAssetFileManager(assetManager: AssetManager): AssetFileManagerContract {
-        return AssetFileManager(assetManager)
-    }
+    @Binds
+    abstract fun bindFilterEventListUseCase(
+        filterEventListUseCase: FilterEventListUseCase
+    ): FilterEventListUseCaseContract
 
-    @Provides
-    fun provideEventDataSourceContract(
-        assetFileManager: AssetFileManagerContract,
-        jsonToEventMapper: Mapper<JSONObject, Event>
-    ): EventDataSourceContract {
-        return EventDatasource(
-            assets = assetFileManager,
-            jsonToEventMapper = jsonToEventMapper
-        )
-    }
+    @Binds
+    abstract fun bindAssetFileManager(
+        assetFileManager: AssetFileManager
+    ): AssetFileManagerContract
 
-    @Provides
-    fun provideEventRepositoryContract(
-        dataSource: EventDataSourceContract
-    ): EventRepositoryContract {
-        return EventRepository(
-            dataSource = dataSource
-        )
-    }
+    @Binds
+    abstract fun bindEventDataSourceContract(
+        eventDatasource: EventDatasource
+    ): EventDataSourceContract
 
-    @Provides
-    fun provideGetEventListUseCase(
-        repository: EventRepositoryContract
-    ): UseCase<Unit, Flow<List<Event>>> {
-        return GetEventListUseCase(
-            repository = repository
-        )
-    }
+    @Binds
+    abstract fun bindEventRepositoryContract(
+        eventRepository: EventRepository
+    ): EventRepositoryContract
 
-    @Provides
-    fun provideFilterEventListUseCase(): UseCase<FilterEventListArgs, Result<List<Event>>> {
-        return FilterEventListUseCase()
-    }
+    @Binds
+    abstract fun bindGetDayEventListUseCaseContract(
+        getDayEventListUseCase: GetDayEventListUseCase
+    ): GetDayEventListUseCaseContract
 
-    @Provides
-    fun provideJsonToEventMapper(): Mapper<JSONObject, Event> {
-        return JsonToEventMapper
+    @Binds
+    abstract fun bindGetNonDayEventListUseCaseContract(
+        getNonDayEventListUseCase: GetNonDayEventListUseCase
+    ): GetNonDayEventListUseCaseContract
+
+    @Binds
+    abstract fun bindGetUpcomingEventListUseCaseContract(
+        getUpcomingEventListUseCase: GetUpcomingEventListUseCase
+    ): GetUpcomingEventListUseCaseContract
+
+    companion object {
+        @Provides
+        fun provideAssetManager(app: Application): AssetManager {
+            return app.assets
+        }
+
+        @Provides
+        fun bindJsonToEventMapper(): Mapper<JSONObject, Event> {
+            return JsonToEventMapper
+        }
     }
 
 }

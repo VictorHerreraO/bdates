@@ -8,4 +8,22 @@
     <string name="time_unit_days">días</string>
     <string name="event_birthday_title">Cumpleaños</string>
     <string name="event_birthday_description">• Cumple %d</string>
+
+    <!-- Notification channels -->
+    <string name="notification_channel_name_event_reminders">Recordatorios de eventos</string>
+    <string name="notification_channel_description_event_reminders">Recordatorios diarios sobre eventos</string>
+
+    <!-- Notifications -->
+    <string name="notification_title_single_day_event">🍰 ¡Hay un cumpleaños que celebrar el día de hoy!</string>
+    <string name="notification_title_multiple_day_event">🍰 ¡Hay %d cumpleaños que celebrar el día de hoy!</string>
+    <string name="notification_content_single_day_event">Hoy es cumpleaños de %s. Asegúrate de saludar 👋</string>
+    <string name="notification_content_multiple_day_event">Hoy es cumpleaños de %s y %d más. Asegúrate de saludar 👋</string>
+
+    <string name="notification_title_single_upcoming_event">1 evento está próximo</string>
+    <string name="notification_title_multiple_upcoming_event">Hay %d eventos próximos</string>
+    <string name="notification_content_single_upcoming_event">📆 Será cumpleaños de %s el %s.</string>
+    <string name="notification_content_multiple_upcoming_event">📆 Será cumpleaños de %s y otros %s el %s</string>
+
+    <!--Date Formats-->
+    <string name="date_format_day" translatable="false">EEEE d</string>
 </resources>

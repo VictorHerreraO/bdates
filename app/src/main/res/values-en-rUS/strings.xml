@@ -9,4 +9,19 @@
     <string name="time_unit_days">days</string>
     <string name="event_birthday_title">Birthday</string>
     <string name="event_birthday_description">• Turns %d</string>
+
+    <!-- Notification channels -->
+    <string name="notification_channel_name_event_reminders">Event reminders</string>
+    <string name="notification_channel_description_event_reminders">Daily event reminders</string>
+
+    <!-- Notifications -->
+    <string name="notification_title_single_day_event">🍰 There is 1 birthday happening today!</string>
+    <string name="notification_title_multiple_day_event">🍰 There are %d birthdays happening today!</string>
+    <string name="notification_content_single_day_event">Today is %s\'s birthday. Make sure to say hi 👋</string>
+    <string name="notification_content_multiple_day_event">Today is %s and %d others birthday. Make sure to say hi 👋</string>
+
+    <string name="notification_title_single_upcoming_event">1 upcoming event</string>
+    <string name="notification_title_multiple_upcoming_event">%d upcoming events</string>
+    <string name="notification_content_single_upcoming_event">" 📆 %s's birthday is happening on %s."</string>
+    <string name="notification_content_multiple_upcoming_event">📆 %s and %s others birthdays are happening on %s</string>
 </resources>

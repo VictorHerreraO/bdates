@@ -2,13 +2,14 @@ package com.soyvictorherrera.bdates.modules.eventList.data.datasource
 
 import com.soyvictorherrera.bdates.core.arch.Mapper
 import com.soyvictorherrera.bdates.modules.eventList.domain.model.Event
+import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 import org.json.JSONArray
 import org.json.JSONObject
 import timber.log.Timber
 
-class EventDatasource constructor(
+class EventDatasource @Inject constructor(
     private val assets: AssetFileManagerContract,
     private val jsonToEventMapper: Mapper<JSONObject, Event>
 ) : EventDataSourceContract {

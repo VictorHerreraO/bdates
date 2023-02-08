@@ -2,6 +2,7 @@ package com.soyvictorherrera.bdates.core.resource
 
 import androidx.test.platform.app.InstrumentationRegistry
 import com.google.common.truth.Truth.assertThat
+import com.soyvictorherrera.bdates.debug.test.R
 import org.junit.Before
 import org.junit.Test
 
@@ -61,4 +62,30 @@ class ResourceManagerTest {
         assertThat(string).isEmpty()
     }
 
+    @Test
+    fun get_string_resource_by_id() {
+        val string: String = resourceManager.getString(R.string.test_string_no_args)
+
+        assertThat(string).isNotNull()
+        assertThat(string).isNotEmpty()
+        assertThat(string).isEqualTo("test string")
+    }
+
+    @Test
+    fun get_string_resource_by_id_with_args() {
+        val arg0 = 1
+        val arg1 = "apple"
+        val arg2 = true
+        val string = resourceManager.getString(
+            R.string.test_string_with_args,
+            arg0,
+            arg1,
+            arg2
+        )
+
+        assertThat(string).isNotNull()
+        assertThat(string).isNotEmpty()
+        assertThat(string).isEqualTo("test string #$arg0 = $arg1 is $arg2")
+
+    }
 }
