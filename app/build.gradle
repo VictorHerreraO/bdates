@@ -8,7 +8,7 @@ plugins {
 android {
     namespace 'com.soyvictorherrera.bdates'
 
-    compileSdk 31
+    compileSdk 33
 
     defaultConfig {
         applicationId "com.soyvictorherrera.bdates"
