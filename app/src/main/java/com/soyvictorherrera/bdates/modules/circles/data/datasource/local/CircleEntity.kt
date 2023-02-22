@@ -1,7 +1,12 @@
 package com.soyvictorherrera.bdates.modules.circles.data.datasource.local
 
+import androidx.room.ColumnInfo
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+
+@Entity(tableName = "circles")
 data class CircleEntity(
-    val id: String?,
-    val name: String,
-    val description: String?,
+    @PrimaryKey val id: String?,
+    @ColumnInfo("name") val name: String,
+    @ColumnInfo("description") val description: String?,
 )

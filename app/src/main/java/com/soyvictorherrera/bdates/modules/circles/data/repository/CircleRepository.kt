@@ -12,18 +12,36 @@ class CircleRepository @Inject constructor(
 ) : CircleRepositoryContract {
 
     override suspend fun getCircles(): List<Circle> {
-        TODO("Not yet implemented")
+        return localDataSource
+            .getCircles()
+            .map(localMapper::map)
     }
 
     override suspend fun getCircle(id: String): Circle {
-        TODO("Not yet implemented")
+        return localDataSource
+            .getCircle(id)
+            .let(localMapper::map)
     }
 
     override suspend fun createCircle(circle: Circle) {
-        TODO("Not yet implemented")
+        if (!circle.id.isNullOrEmpty()) {
+            throw IllegalArgumentException("Can't create a circle with a provided ID")
+        }
+        localMapper
+            .reverseMap(circle)
+            .let {
+                localDataSource.createCircle(it)
+            }
     }
 
     override suspend fun updateCircle(circle: Circle) {
-        TODO("Not yet implemented")
+        if (circle.id.isNullOrEmpty()) {
+            throw IllegalArgumentException("Circle ID is missing")
+        }
+        localMapper
+            .reverseMap(circle)
+            .let {
+                localDataSource.updateCircle(it)
+            }
     }
 }

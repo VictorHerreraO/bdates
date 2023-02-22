@@ -5,7 +5,19 @@ import com.soyvictorherrera.bdates.modules.circles.data.datasource.local.CircleE
 import com.soyvictorherrera.bdates.modules.circles.domain.model.Circle
 
 object CircleEntityToModelMapper : Mapper<CircleEntity, Circle>() {
-    override fun map(value: CircleEntity): Circle {
-        TODO("Not yet implemented")
+    override fun map(value: CircleEntity): Circle = with(value) {
+        return Circle(
+            id = id,
+            name = name,
+            description = description,
+        )
+    }
+
+    override fun reverseMap(value: Circle): CircleEntity = with(value) {
+        return CircleEntity(
+            id = id,
+            name = name,
+            description = description,
+        )
     }
 }

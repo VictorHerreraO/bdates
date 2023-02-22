@@ -6,21 +6,21 @@ import javax.inject.Inject
 interface LocalCircleDataSourceContract : CircleDataSourceContract<CircleEntity>
 
 class LocalCircleDataSource @Inject constructor(
-
+    private val dao: CircleDao
 ) : LocalCircleDataSourceContract {
     override suspend fun getCircles(): List<CircleEntity> {
-        TODO("Not yet implemented")
+        return dao.getAll()
     }
 
     override suspend fun getCircle(id: String): CircleEntity {
-        TODO("Not yet implemented")
+        return dao.getById(id)
     }
 
     override suspend fun createCircle(circle: CircleEntity) {
-        TODO("Not yet implemented")
+        dao.upsertAll(circle)
     }
 
     override suspend fun updateCircle(circle: CircleEntity) {
-        TODO("Not yet implemented")
+        dao.upsertAll(circle)
     }
 }

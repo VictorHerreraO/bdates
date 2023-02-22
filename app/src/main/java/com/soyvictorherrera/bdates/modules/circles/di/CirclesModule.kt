@@ -1,6 +1,8 @@
 package com.soyvictorherrera.bdates.modules.circles.di
 
 import com.soyvictorherrera.bdates.core.arch.Mapper
+import com.soyvictorherrera.bdates.core.persistence.AppDatabase
+import com.soyvictorherrera.bdates.modules.circles.data.datasource.local.CircleDao
 import com.soyvictorherrera.bdates.modules.circles.data.datasource.local.CircleEntity
 import com.soyvictorherrera.bdates.modules.circles.data.datasource.local.LocalCircleDataSource
 import com.soyvictorherrera.bdates.modules.circles.data.datasource.local.LocalCircleDataSourceContract
@@ -32,6 +34,11 @@ abstract class CirclesModule {
         @Provides
         fun provideCircleEntityToModelMapper(): Mapper<CircleEntity, Circle> {
             return CircleEntityToModelMapper
+        }
+
+        @Provides
+        fun provideCircleDao(appDatabase: AppDatabase): CircleDao {
+            return appDatabase.circleDao()
         }
     }
 }
