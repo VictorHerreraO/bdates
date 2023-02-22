@@ -15,7 +15,7 @@ object CircleEntityToModelMapper : Mapper<CircleEntity, Circle>() {
 
     override fun reverseMap(value: Circle): CircleEntity = with(value) {
         return CircleEntity(
-            id = id,
+            id = id.orEmpty(),
             name = name,
             description = description,
         )
