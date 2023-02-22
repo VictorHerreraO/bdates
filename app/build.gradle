@@ -6,6 +6,8 @@ plugins {
 }
 
 android {
+    namespace 'com.soyvictorherrera.bdates'
+
     compileSdk 31
 
     defaultConfig {
