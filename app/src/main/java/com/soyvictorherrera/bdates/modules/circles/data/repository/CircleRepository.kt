@@ -23,14 +23,17 @@ class CircleRepository @Inject constructor(
             .let(localMapper::map)
     }
 
-    override suspend fun createCircle(circle: Circle) {
+    override suspend fun createCircle(circle: Circle, onCreated: ((String) -> Unit)?) {
         if (!circle.id.isNullOrEmpty()) {
             throw IllegalArgumentException("Can't create a circle with a provided ID")
         }
         localMapper
             .reverseMap(circle)
-            .let {
-                localDataSource.createCircle(it)
+            .let { entity ->
+                localDataSource.createCircle(entity)
+            }
+            .let { id ->
+                onCreated?.invoke(id)
             }
     }
 

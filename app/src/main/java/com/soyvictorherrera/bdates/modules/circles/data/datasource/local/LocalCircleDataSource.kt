@@ -17,12 +17,12 @@ class LocalCircleDataSource @Inject constructor(
         return dao.getById(id)
     }
 
-    override suspend fun createCircle(circle: CircleEntity) {
-        circle
+    override suspend fun createCircle(circle: CircleEntity): String {
+        return circle
             .copy(id = randomUUID())
-            .let {
+            .also {
                 dao.upsertAll(it)
-            }
+            }.id
     }
 
     override suspend fun updateCircle(circle: CircleEntity) {

@@ -16,7 +16,7 @@ interface CircleDataSourceContract<T> {
     /**
      * Create a new circle
      */
-    suspend fun createCircle(circle: T)
+    suspend fun createCircle(circle: T): String
 
     /**
      * Update a circle by it's [id]
