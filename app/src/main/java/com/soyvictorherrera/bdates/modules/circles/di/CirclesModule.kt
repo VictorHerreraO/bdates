@@ -7,6 +7,8 @@ import com.soyvictorherrera.bdates.modules.circles.data.datasource.local.CircleE
 import com.soyvictorherrera.bdates.modules.circles.data.datasource.local.LocalCircleDataSource
 import com.soyvictorherrera.bdates.modules.circles.data.datasource.local.LocalCircleDataSourceContract
 import com.soyvictorherrera.bdates.modules.circles.data.mapper.CircleEntityToModelMapper
+import com.soyvictorherrera.bdates.modules.circles.data.preferences.CirclePreferences
+import com.soyvictorherrera.bdates.modules.circles.data.preferences.CirclePreferencesContract
 import com.soyvictorherrera.bdates.modules.circles.data.repository.CircleRepository
 import com.soyvictorherrera.bdates.modules.circles.data.repository.CircleRepositoryContract
 import com.soyvictorherrera.bdates.modules.circles.domain.model.Circle
@@ -26,9 +28,14 @@ abstract class CirclesModule {
     ): LocalCircleDataSourceContract
 
     @Binds
-    abstract fun bind(
+    abstract fun bindCircleRepositoryContract(
         repository: CircleRepository
     ): CircleRepositoryContract
+
+    @Binds
+    abstract fun bindCirclePreferencesContract(
+        circlePreferences: CirclePreferences
+    ) : CirclePreferencesContract
 
     companion object {
         @Provides

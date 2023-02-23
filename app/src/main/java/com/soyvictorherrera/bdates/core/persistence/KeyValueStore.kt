@@ -13,7 +13,7 @@ fun stringKey(name: String): Key<String> = Key(name, String::class)
 fun booleanKey(name: String): Key<Boolean> = Key(name, Boolean::class)
 
 interface KeyValueStoreContract {
-    operator fun <T : Any> set(key: Key<T>, value: T)
+    operator fun <T : Any> set(key: Key<T>, value: T?)
     operator fun <T : Any> get(key: Key<T>): T?
 }
 
@@ -21,7 +21,7 @@ class KeyValueStore @Inject constructor(
     private val sharedPreferences: SharedPreferences
 ) : KeyValueStoreContract {
 
-    override fun <T : Any> set(key: Key<T>, value: T) {
+    override fun <T : Any> set(key: Key<T>, value: T?) {
         sharedPreferences.edit {
             when (key.type) {
                 String::class -> putString(key.name, value as String)
