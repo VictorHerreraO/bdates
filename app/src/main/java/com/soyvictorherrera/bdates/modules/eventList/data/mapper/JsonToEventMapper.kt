@@ -12,6 +12,7 @@ object JsonToEventMapper : Mapper<JSONObject, Event>() {
     override fun map(value: JSONObject): Event = with(value) {
         return Event(
             id = optString(KEY_ID),
+            circleId = "",
             name = optString(KEY_NAME),
             dayOfMonth = optString(KEY_BIRTH_DATE).split("/")[0].toInt(),
             monthOfYear = optString(KEY_BIRTH_DATE).split("/")[1].toInt(),
