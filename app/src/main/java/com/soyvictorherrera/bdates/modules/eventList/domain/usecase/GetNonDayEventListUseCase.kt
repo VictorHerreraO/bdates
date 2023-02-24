@@ -4,7 +4,6 @@ import com.soyvictorherrera.bdates.core.arch.UseCase
 import com.soyvictorherrera.bdates.core.date.DateProviderContract
 import com.soyvictorherrera.bdates.modules.eventList.domain.model.Event
 import javax.inject.Inject
-import kotlinx.coroutines.flow.first
 
 /**
  * Get the list of events which do not happen today
@@ -23,7 +22,6 @@ class GetNonDayEventListUseCase @Inject constructor(
 
     override suspend fun execute(): List<Event> {
         return getEventList.execute()
-            .first()
             .filter { event ->
                 event.currentYearOccurrence != today
             }

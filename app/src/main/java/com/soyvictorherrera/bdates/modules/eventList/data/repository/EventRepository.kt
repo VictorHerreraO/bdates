@@ -7,14 +7,13 @@ import com.soyvictorherrera.bdates.modules.eventList.data.datasource.local.Event
 import com.soyvictorherrera.bdates.modules.eventList.data.datasource.local.LocalEventDataSourceContract
 import com.soyvictorherrera.bdates.modules.eventList.domain.model.Event
 import javax.inject.Inject
-import kotlinx.coroutines.flow.Flow
 
 class EventRepository @Inject constructor(
     private val assetsDataSource: AssetEventDatasourceContract,
     private val localDataSource: LocalEventDataSourceContract,
     private val localMapper: Mapper<EventEntity, Event>
 ) : EventRepositoryContract {
-    override suspend fun getEventList(): Flow<List<Event>> {
+    override suspend fun getEventList(): List<Event> {
         return assetsDataSource.getEventList()
     }
 
