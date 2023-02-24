@@ -72,6 +72,7 @@ class EventListViewModelTest {
         val events = listOf(
             Event(
                 id = "1",
+                circleId = "circle-id",
                 name = "Test",
                 dayOfMonth = tomorrow.dayOfMonth,
                 monthOfYear = tomorrow.monthValue,
@@ -95,6 +96,7 @@ class EventListViewModelTest {
         val events = listOf(
             Event(
                 id = "1",
+                circleId = "circle-id",
                 name = "Test",
                 dayOfMonth = today.dayOfMonth,
                 monthOfYear = today.monthValue,

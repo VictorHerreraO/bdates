@@ -5,9 +5,6 @@ import com.soyvictorherrera.bdates.core.date.DateProviderContract
 import com.soyvictorherrera.bdates.modules.eventList.data.repository.EventRepositoryContract
 import com.soyvictorherrera.bdates.modules.eventList.domain.model.Event
 import java.time.LocalDate
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.runBlocking
 import org.junit.Before
 import org.junit.Test
@@ -44,6 +41,7 @@ class GetEventListUseCaseTest {
         val eventDate = today.plusMonths(1)
         val event = Event(
             id = "event-id",
+            circleId = "circle-id",
             name = "event name",
             dayOfMonth = eventDate.dayOfMonth,
             monthOfYear = eventDate.monthValue,
@@ -54,10 +52,9 @@ class GetEventListUseCaseTest {
             nextOccurrence = eventDate
         )
         val expectedList = listOf(event)
-        val expectedFlow = flowOf(expectedList)
-        whenever(mockEvents.getEventList()).thenReturn(expectedFlow)
+        whenever(mockEvents.getEventList()).thenReturn(expectedList)
 
-        val result = useCase.execute().first()
+        val result = useCase.execute()
 
         assertThat(result).isNotNull()
         assertThat(result).isNotEmpty()
@@ -71,6 +68,7 @@ class GetEventListUseCaseTest {
         val eventDate = today.minusMonths(1)
         val event = Event(
             id = "event-id",
+            circleId = "circle-id",
             name = "event name",
             dayOfMonth = eventDate.dayOfMonth,
             monthOfYear = eventDate.monthValue,
@@ -81,10 +79,9 @@ class GetEventListUseCaseTest {
             nextOccurrence = eventDate.plusYears(1)
         )
         val expectedList = listOf(event)
-        val expectedFlow = flowOf(expectedList)
-        whenever(mockEvents.getEventList()).thenReturn(expectedFlow)
+        whenever(mockEvents.getEventList()).thenReturn(expectedList)
 
-        val result = useCase.execute().first()
+        val result = useCase.execute()
 
         assertThat(result).isNotNull()
         assertThat(result).isNotEmpty()
@@ -94,9 +91,8 @@ class GetEventListUseCaseTest {
 
     @Test(expected = RuntimeException::class)
     fun get_event_list_error_propagates(): Unit = runBlocking {
-        val expectedFlow = flow<List<Event>> { throw RuntimeException() }
-        whenever(mockEvents.getEventList()).thenReturn(expectedFlow)
+        whenever(mockEvents.getEventList()).thenThrow(RuntimeException::class.java)
 
-        useCase.execute().first()
+        useCase.execute()
     }
 }

@@ -69,6 +69,7 @@ class FilterEventListUseCaseTest {
 
     private fun eventA() = Event(
         id = "event-a",
+        circleId = "circle-id",
         name = "event name a",
         dayOfMonth = 1,
         monthOfYear = 1,
@@ -78,6 +79,7 @@ class FilterEventListUseCaseTest {
 
     private fun eventB() = Event(
         id = "event-b",
+        circleId = "circle-id",
         name = "event name b",
         dayOfMonth = 2,
         monthOfYear = 2,

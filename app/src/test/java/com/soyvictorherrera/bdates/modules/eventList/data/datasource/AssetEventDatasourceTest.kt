@@ -2,10 +2,9 @@ package com.soyvictorherrera.bdates.modules.eventList.data.datasource
 
 import com.google.common.truth.Truth.assertThat
 import com.soyvictorherrera.bdates.core.arch.Mapper
-import com.soyvictorherrera.bdates.modules.eventList.data.datasource.assets.AssetFileManagerContract
 import com.soyvictorherrera.bdates.modules.eventList.data.datasource.assets.AssetEventDatasource
+import com.soyvictorherrera.bdates.modules.eventList.data.datasource.assets.AssetFileManagerContract
 import com.soyvictorherrera.bdates.modules.eventList.domain.model.Event
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 import org.json.JSONObject
 import org.junit.Before
@@ -30,6 +29,7 @@ class AssetEventDatasourceTest {
 
     private val expectedEvent = Event(
         id = "id-event",
+        circleId = "id-circle",
         name = "event-name",
         dayOfMonth = 1,
         monthOfYear = 1,
@@ -51,7 +51,7 @@ class AssetEventDatasourceTest {
         val arrayString = "[{}]"
         whenever(mockAssets.openAsString(anyString())).thenReturn(arrayString)
 
-        val events = datasource.getEventList().first()
+        val events = datasource.getEventList()
 
         assertThat(events).isNotEmpty()
         assertThat(events).hasSize(1)
@@ -63,7 +63,7 @@ class AssetEventDatasourceTest {
         val expectedException = RuntimeException("error reading file")
         whenever(mockAssets.openAsString(anyString())).thenThrow(expectedException)
 
-        val events = datasource.getEventList().first()
+        val events = datasource.getEventList()
 
         assertThat(events).isEmpty()
     }

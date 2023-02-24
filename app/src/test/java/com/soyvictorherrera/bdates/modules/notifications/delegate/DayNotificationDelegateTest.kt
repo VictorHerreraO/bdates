@@ -44,6 +44,7 @@ class DayNotificationDelegateTest {
         val eventDate = today
         val event = Event(
             id = "1",
+            circleId = "circle-id",
             name = "notification event",
             dayOfMonth = eventDate.dayOfMonth,
             monthOfYear = eventDate.monthValue,

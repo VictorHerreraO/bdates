@@ -4,7 +4,6 @@ import com.soyvictorherrera.bdates.core.date.DateProviderContract
 import com.soyvictorherrera.bdates.modules.eventList.domain.model.Event
 import java.time.LocalDate
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Test
@@ -43,6 +42,7 @@ internal class GetDayEventListUseCaseTest {
         val events = listOf(
             Event(
                 id = "1",
+                circleId = "circle-id",
                 name = "event",
                 dayOfMonth = eventDate.dayOfMonth,
                 monthOfYear = eventDate.monthValue,
@@ -51,8 +51,7 @@ internal class GetDayEventListUseCaseTest {
                 nextOccurrence = eventDate.plusYears(1),
             )
         )
-        val eventFlow = flowOf(events)
-        whenever(mockGetEventListUseCase.execute()).thenReturn(eventFlow)
+        whenever(mockGetEventListUseCase.execute()).thenReturn(events)
 
         val result: List<Event> = subjectUnderTest.execute()
 
@@ -66,6 +65,7 @@ internal class GetDayEventListUseCaseTest {
         val events = listOf(
             Event(
                 id = "1",
+                circleId = "circle-id",
                 name = "event",
                 dayOfMonth = eventDate.dayOfMonth,
                 monthOfYear = eventDate.monthValue,
@@ -74,8 +74,7 @@ internal class GetDayEventListUseCaseTest {
                 nextOccurrence = eventDate,
             )
         )
-        val eventFlow = flowOf(events)
-        whenever(mockGetEventListUseCase.execute()).thenReturn(eventFlow)
+        whenever(mockGetEventListUseCase.execute()).thenReturn(events)
 
         val result: List<Event> = subjectUnderTest.execute()
 

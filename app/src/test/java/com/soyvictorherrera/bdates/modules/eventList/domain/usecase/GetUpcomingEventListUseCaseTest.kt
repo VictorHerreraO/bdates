@@ -3,7 +3,6 @@ package com.soyvictorherrera.bdates.modules.eventList.domain.usecase
 import com.soyvictorherrera.bdates.core.date.DateProviderContract
 import com.soyvictorherrera.bdates.modules.eventList.domain.model.Event
 import java.time.LocalDate
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.*
 import org.junit.Before
@@ -40,6 +39,7 @@ class GetUpcomingEventListUseCaseTest {
         val tomorrowEvent = today.plusDays(1).run {
             Event(
                 id = toString(),
+                circleId = "circle-id",
                 name = "today event",
                 dayOfMonth = dayOfMonth,
                 monthOfYear = monthValue,
@@ -51,6 +51,7 @@ class GetUpcomingEventListUseCaseTest {
         val upcomingEvent = today.plusWeeks(1).run {
             Event(
                 id = toString(),
+                circleId = "circle-id",
                 name = "next week event",
                 dayOfMonth = dayOfMonth,
                 monthOfYear = monthValue,
@@ -60,9 +61,8 @@ class GetUpcomingEventListUseCaseTest {
             )
         }
         val eventList = listOf(tomorrowEvent, upcomingEvent)
-        val eventFlow = flowOf(eventList)
 
-        whenever(mockGetEventList.execute()).thenReturn(eventFlow)
+        whenever(mockGetEventList.execute()).thenReturn(eventList)
 
         val result = subjectUnderTest.execute()
 
@@ -75,6 +75,7 @@ class GetUpcomingEventListUseCaseTest {
         val tomorrowEvent = today.plusDays(1).run {
             Event(
                 id = toString(),
+                circleId = "circle-id",
                 name = "today event",
                 dayOfMonth = dayOfMonth,
                 monthOfYear = monthValue,
@@ -86,6 +87,7 @@ class GetUpcomingEventListUseCaseTest {
         val dayAfterTomorrowEvent = today.plusDays(2).run {
             Event(
                 id = toString(),
+                circleId = "circle-id",
                 name = "day after tomorrow event",
                 dayOfMonth = dayOfMonth,
                 monthOfYear = monthValue,
@@ -95,9 +97,8 @@ class GetUpcomingEventListUseCaseTest {
             )
         }
         val eventList = listOf(tomorrowEvent, dayAfterTomorrowEvent)
-        val eventFlow = flowOf(eventList)
 
-        whenever(mockGetEventList.execute()).thenReturn(eventFlow)
+        whenever(mockGetEventList.execute()).thenReturn(eventList)
 
         val result = subjectUnderTest.execute()
 
@@ -109,6 +110,7 @@ class GetUpcomingEventListUseCaseTest {
         val upcomingEvent1 = today.plusWeeks(1).run {
             Event(
                 id = toString(),
+                circleId = "circle-id",
                 name = "next week event 1",
                 dayOfMonth = dayOfMonth,
                 monthOfYear = monthValue,
@@ -120,6 +122,7 @@ class GetUpcomingEventListUseCaseTest {
         val upcomingEvent2 = today.plusWeeks(1).run {
             Event(
                 id = toString(),
+                circleId = "circle-id",
                 name = "next week event 2",
                 dayOfMonth = dayOfMonth,
                 monthOfYear = monthValue,
@@ -129,9 +132,8 @@ class GetUpcomingEventListUseCaseTest {
             )
         }
         val eventList = listOf(upcomingEvent1, upcomingEvent2)
-        val eventFlow = flowOf(eventList)
 
-        whenever(mockGetEventList.execute()).thenReturn(eventFlow)
+        whenever(mockGetEventList.execute()).thenReturn(eventList)
 
         val result = subjectUnderTest.execute()
 
