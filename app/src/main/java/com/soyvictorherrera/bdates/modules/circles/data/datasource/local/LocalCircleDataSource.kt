@@ -1,7 +1,7 @@
 package com.soyvictorherrera.bdates.modules.circles.data.datasource.local
 
+import com.soyvictorherrera.bdates.core.persistence.randomUUID
 import com.soyvictorherrera.bdates.modules.circles.data.datasource.CircleDataSourceContract
-import java.util.UUID
 import javax.inject.Inject
 
 interface LocalCircleDataSourceContract : CircleDataSourceContract<CircleEntity>
@@ -31,8 +31,4 @@ class LocalCircleDataSource @Inject constructor(
         }
         dao.upsertAll(circle)
     }
-
-    private fun randomUUID(): String = UUID
-        .randomUUID()
-        .toString()
 }

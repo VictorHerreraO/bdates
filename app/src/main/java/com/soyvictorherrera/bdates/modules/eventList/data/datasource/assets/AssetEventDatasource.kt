@@ -10,7 +10,7 @@ import org.json.JSONArray
 import org.json.JSONObject
 import timber.log.Timber
 
-interface AssetEventDatasourceContract: EventDataSourceContract<Event>
+interface AssetEventDatasourceContract : EventDataSourceContract<Event>
 
 class AssetEventDatasource @Inject constructor(
     private val assets: AssetFileManagerContract,
@@ -20,7 +20,7 @@ class AssetEventDatasource @Inject constructor(
         const val EVENTS_FILE = "events.json"
     }
 
-    override fun getEventList(): Flow<List<Event>> {
+    override suspend fun getEventList(): Flow<List<Event>> {
         return try {
             val jsonString = assets.openAsString(EVENTS_FILE)
             val array = JSONArray(jsonString)
@@ -39,4 +39,8 @@ class AssetEventDatasource @Inject constructor(
         }
 
     }
+
+    override suspend fun createEvent(event: Event): String = throw UnsupportedOperationException(
+        "Read-only data source"
+    )
 }

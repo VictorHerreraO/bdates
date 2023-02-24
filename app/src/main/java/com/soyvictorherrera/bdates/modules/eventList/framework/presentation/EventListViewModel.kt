@@ -77,7 +77,7 @@ class EventListViewModel @Inject constructor(
                     val remainingTime = ChronoUnit.DAYS
                         .between(today, nextOccurrence)
                     EventViewState(
-                        id = event.id,
+                        id = event.id!!,
                         remainingTimeValue = remainingTime.toString(),
                         remainingTimeUnit = remainingTime.let {
                             if (it == 1L) resourceManager.getString("time_unit_day")
@@ -109,7 +109,7 @@ class EventListViewModel @Inject constructor(
     private fun processDayEventList(events: List<Event>) {
         events.map { event ->
             TodayEventViewState(
-                id = event.id,
+                id = event.id!!,
                 friendAge = event.year?.let { birthYear ->
                     today.year.minus(birthYear).toString()
                 },

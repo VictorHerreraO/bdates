@@ -9,6 +9,10 @@ import com.soyvictorherrera.bdates.modules.eventList.data.datasource.assets.Asse
 import com.soyvictorherrera.bdates.modules.eventList.data.datasource.assets.AssetFileManager
 import com.soyvictorherrera.bdates.modules.eventList.data.datasource.assets.AssetFileManagerContract
 import com.soyvictorherrera.bdates.modules.eventList.data.datasource.local.EventDao
+import com.soyvictorherrera.bdates.modules.eventList.data.datasource.local.EventEntity
+import com.soyvictorherrera.bdates.modules.eventList.data.datasource.local.LocalEventDataSource
+import com.soyvictorherrera.bdates.modules.eventList.data.datasource.local.LocalEventDataSourceContract
+import com.soyvictorherrera.bdates.modules.eventList.data.mapper.EventEntityToModelMapper
 import com.soyvictorherrera.bdates.modules.eventList.data.mapper.JsonToEventMapper
 import com.soyvictorherrera.bdates.modules.eventList.data.repository.EventRepository
 import com.soyvictorherrera.bdates.modules.eventList.data.repository.EventRepositoryContract
@@ -74,6 +78,11 @@ abstract class EventListModule {
         getUpcomingEventListUseCase: GetUpcomingEventListUseCase
     ): GetUpcomingEventListUseCaseContract
 
+    @Binds
+    abstract fun bindLocalEventDataSourceContract(
+        localEventDataSource: LocalEventDataSource
+    ): LocalEventDataSourceContract
+
     companion object {
         @Provides
         fun provideAssetManager(app: Application): AssetManager {
@@ -81,13 +90,18 @@ abstract class EventListModule {
         }
 
         @Provides
-        fun bindJsonToEventMapper(): Mapper<JSONObject, Event> {
+        fun provideJsonToEventMapper(): Mapper<JSONObject, Event> {
             return JsonToEventMapper
         }
 
         @Provides
         fun provideEventDao(appDatabase: AppDatabase): EventDao {
             return appDatabase.eventDao()
+        }
+
+        @Provides
+        fun provideEventEntityToModelMapper(): Mapper<EventEntity, Event> {
+            return EventEntityToModelMapper
         }
     }
 

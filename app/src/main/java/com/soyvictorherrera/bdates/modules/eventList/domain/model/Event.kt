@@ -3,7 +3,7 @@ package com.soyvictorherrera.bdates.modules.eventList.domain.model
 import java.time.LocalDate
 
 data class Event(
-    val id: String,
+    val id: String?,
     val circleId: String,
     val name: String,
     val dayOfMonth: Int,
