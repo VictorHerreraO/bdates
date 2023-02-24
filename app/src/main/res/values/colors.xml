@@ -1,20 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
-
-    <color name="cyan_light">#4fb3bf</color>
-
+    <color name="Alabaster">#F8F8F8</color>
+    <color name="Bittersweet">#FF6961</color>
     <color name="Bossanova">#3C2A59</color>
+    <color name="Cod_Gray">#191919</color>
     <color name="Dolphin">#695C7E</color>
-
+    <color name="Gallery">#EEEEEE</color>
     <color name="Rajah">#F6AF65</color>
     <color name="Tradewind">#6EBEB1</color>
-
-    <color name="Alabaster">#F8F8F8</color>
-    <color name="Gallery">#EEEEEE</color>
-
-    <color name="Cod_Gray">#191919</color>
-
-    <color name="Bittersweet">#FF6961</color>
+    <color name="black">#FF000000</color>
+    <color name="cyan_light">#4fb3bf</color>
+    <color name="white">#FFFFFFFF</color>
 </resources>
