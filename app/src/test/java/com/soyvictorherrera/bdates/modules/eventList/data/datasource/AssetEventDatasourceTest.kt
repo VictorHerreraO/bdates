@@ -2,6 +2,8 @@ package com.soyvictorherrera.bdates.modules.eventList.data.datasource
 
 import com.google.common.truth.Truth.assertThat
 import com.soyvictorherrera.bdates.core.arch.Mapper
+import com.soyvictorherrera.bdates.modules.eventList.data.datasource.assets.AssetFileManagerContract
+import com.soyvictorherrera.bdates.modules.eventList.data.datasource.assets.AssetEventDatasource
 import com.soyvictorherrera.bdates.modules.eventList.domain.model.Event
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
@@ -16,7 +18,7 @@ import org.mockito.kotlin.any
 import org.mockito.kotlin.whenever
 
 @RunWith(MockitoJUnitRunner::class)
-class EventDatasourceTest {
+class AssetEventDatasourceTest {
 
     @Mock
     private lateinit var mockAssets: AssetFileManagerContract
@@ -24,7 +26,7 @@ class EventDatasourceTest {
     @Mock
     private lateinit var mockMapper: Mapper<JSONObject, Event>
 
-    private lateinit var datasource: EventDatasource
+    private lateinit var datasource: AssetEventDatasource
 
     private val expectedEvent = Event(
         id = "id-event",
@@ -38,7 +40,7 @@ class EventDatasourceTest {
     fun setup() {
         whenever(mockMapper.map(any())).thenReturn(expectedEvent)
 
-        datasource = EventDatasource(
+        datasource = AssetEventDatasource(
             assets = mockAssets,
             jsonToEventMapper = mockMapper
         )

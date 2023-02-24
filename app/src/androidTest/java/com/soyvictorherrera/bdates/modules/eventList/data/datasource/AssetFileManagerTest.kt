@@ -2,6 +2,7 @@ package com.soyvictorherrera.bdates.modules.eventList.data.datasource
 
 import androidx.test.platform.app.InstrumentationRegistry
 import com.google.common.truth.Truth.assertThat
+import com.soyvictorherrera.bdates.modules.eventList.data.datasource.assets.AssetFileManager
 import java.io.FileNotFoundException
 import org.junit.Before
 import org.junit.Test

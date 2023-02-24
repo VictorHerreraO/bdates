@@ -1,4 +1,4 @@
-package com.soyvictorherrera.bdates.modules.eventList.data.datasource
+package com.soyvictorherrera.bdates.modules.eventList.data.datasource.assets
 
 import android.content.res.AssetManager
 import java.io.IOException

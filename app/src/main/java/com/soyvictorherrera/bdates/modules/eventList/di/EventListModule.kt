@@ -3,10 +3,12 @@ package com.soyvictorherrera.bdates.modules.eventList.di
 import android.app.Application
 import android.content.res.AssetManager
 import com.soyvictorherrera.bdates.core.arch.Mapper
-import com.soyvictorherrera.bdates.modules.eventList.data.datasource.AssetFileManager
-import com.soyvictorherrera.bdates.modules.eventList.data.datasource.AssetFileManagerContract
+import com.soyvictorherrera.bdates.core.persistence.AppDatabase
+import com.soyvictorherrera.bdates.modules.eventList.data.datasource.assets.AssetFileManager
+import com.soyvictorherrera.bdates.modules.eventList.data.datasource.assets.AssetFileManagerContract
 import com.soyvictorherrera.bdates.modules.eventList.data.datasource.EventDataSourceContract
-import com.soyvictorherrera.bdates.modules.eventList.data.datasource.EventDatasource
+import com.soyvictorherrera.bdates.modules.eventList.data.datasource.assets.AssetEventDatasource
+import com.soyvictorherrera.bdates.modules.eventList.data.datasource.local.EventDao
 import com.soyvictorherrera.bdates.modules.eventList.data.mapper.JsonToEventMapper
 import com.soyvictorherrera.bdates.modules.eventList.data.repository.EventRepository
 import com.soyvictorherrera.bdates.modules.eventList.data.repository.EventRepositoryContract
@@ -49,7 +51,7 @@ abstract class EventListModule {
 
     @Binds
     abstract fun bindEventDataSourceContract(
-        eventDatasource: EventDatasource
+        assetEventDatasource: AssetEventDatasource
     ): EventDataSourceContract
 
     @Binds
