@@ -1,8 +1,8 @@
 package com.soyvictorherrera.bdates.modules.eventList.framework.presentation
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.soyvictorherrera.bdates.core.resource.ResourceManagerContract
 import com.soyvictorherrera.bdates.core.date.DateProviderContract
+import com.soyvictorherrera.bdates.core.resource.ResourceManagerContract
 import com.soyvictorherrera.bdates.modules.eventList.domain.model.Event
 import com.soyvictorherrera.bdates.modules.eventList.domain.usecase.FilterEventListUseCaseContract
 import com.soyvictorherrera.bdates.modules.eventList.domain.usecase.GetDayEventListUseCaseContract

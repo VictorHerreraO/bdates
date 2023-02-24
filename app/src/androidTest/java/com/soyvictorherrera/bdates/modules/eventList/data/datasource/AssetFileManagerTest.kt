@@ -2,9 +2,9 @@ package com.soyvictorherrera.bdates.modules.eventList.data.datasource
 
 import androidx.test.platform.app.InstrumentationRegistry
 import com.google.common.truth.Truth.assertThat
+import java.io.FileNotFoundException
 import org.junit.Before
 import org.junit.Test
-import java.io.FileNotFoundException
 
 class AssetFileManagerTest {
 
