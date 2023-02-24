@@ -31,6 +31,8 @@ class EventListFragment : Fragment() {
     private lateinit var adapter: EventListAdapter
     private lateinit var todayAdapter: TodayEventListAdapter
 
+    private var onScrollListener: RecyclerView.OnScrollListener? = null
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -48,14 +50,25 @@ class EventListFragment : Fragment() {
         setupListeners()
     }
 
+    override fun onDestroyView() {
+        _binding = null
+        onScrollListener = null
+        super.onDestroyView()
+    }
+
     private fun initRecyclerView() = with(binding) {
         val orientation = resources.configuration.orientation
+        // Setup all events recycler view
         LinearLayoutManager(requireActivity()).also {
             recyclerEvents.layoutManager = it
         }
         adapter = EventListAdapter().also {
             recyclerEvents.adapter = it
         }
+        onScrollListener = FabScrollBehavior(btnAddEvent).also {
+            recyclerEvents.addOnScrollListener(it)
+        }
+        // Setup today events recycler view
         LinearLayoutManager(
             requireContext(),
             if (orientation == Configuration.ORIENTATION_PORTRAIT) RecyclerView.HORIZONTAL

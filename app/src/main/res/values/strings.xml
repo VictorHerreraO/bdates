@@ -8,6 +8,7 @@
     <string name="time_unit_days">días</string>
     <string name="event_birthday_title">Cumpleaños</string>
     <string name="event_birthday_description">• Cumple %d</string>
+    <string name="add_event">Agregar evento</string>
 
     <!-- Notification channels -->
     <string name="notification_channel_name_event_reminders">Recordatorios de eventos</string>

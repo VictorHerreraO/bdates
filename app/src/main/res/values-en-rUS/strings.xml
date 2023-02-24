@@ -9,6 +9,7 @@
     <string name="time_unit_days">days</string>
     <string name="event_birthday_title">Birthday</string>
     <string name="event_birthday_description">• Turns %d</string>
+    <string name="add_event">Add Event</string>
 
     <!-- Notification channels -->
     <string name="notification_channel_name_event_reminders">Event reminders</string>
