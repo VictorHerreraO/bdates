@@ -84,6 +84,11 @@ abstract class EventListModule {
         fun bindJsonToEventMapper(): Mapper<JSONObject, Event> {
             return JsonToEventMapper
         }
+
+        @Provides
+        fun provideEventDao(appDatabase: AppDatabase): EventDao {
+            return appDatabase.eventDao()
+        }
     }
 
 }
