@@ -10,10 +10,12 @@ import org.json.JSONArray
 import org.json.JSONObject
 import timber.log.Timber
 
+interface AssetEventDatasourceContract: EventDataSourceContract<Event>
+
 class AssetEventDatasource @Inject constructor(
     private val assets: AssetFileManagerContract,
     private val jsonToEventMapper: Mapper<JSONObject, Event>
-) : EventDataSourceContract {
+) : AssetEventDatasourceContract {
     companion object {
         const val EVENTS_FILE = "events.json"
     }
