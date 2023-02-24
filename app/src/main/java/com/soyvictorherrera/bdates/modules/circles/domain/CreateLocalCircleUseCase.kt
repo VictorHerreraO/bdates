@@ -22,7 +22,8 @@ class CreateLocalCircleUseCase @Inject constructor(
         val LOCAL_CIRCLE = Circle(
             id = null,
             name = "Device local circle",
-            description = ""
+            description = "",
+            isLocalOnly = true
         )
     }
 

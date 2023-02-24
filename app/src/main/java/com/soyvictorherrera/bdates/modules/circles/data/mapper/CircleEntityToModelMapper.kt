@@ -10,6 +10,7 @@ object CircleEntityToModelMapper : Mapper<CircleEntity, Circle>() {
             id = id,
             name = name,
             description = description,
+            isLocalOnly = isLocalOnly,
         )
     }
 
@@ -18,6 +19,7 @@ object CircleEntityToModelMapper : Mapper<CircleEntity, Circle>() {
             id = id.orEmpty(),
             name = name,
             description = description,
+            isLocalOnly = isLocalOnly,
         )
     }
 }

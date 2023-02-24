@@ -9,4 +9,5 @@ data class CircleEntity(
     @PrimaryKey val id: String,
     @ColumnInfo("name") val name: String,
     @ColumnInfo("description") val description: String?,
+    @ColumnInfo("local_only") val isLocalOnly: Boolean,
 )
