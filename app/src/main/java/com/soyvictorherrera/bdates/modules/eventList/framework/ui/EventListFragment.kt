@@ -111,6 +111,9 @@ class EventListFragment : Fragment() {
                 else -> false
             }
         }
+        btnAddEvent.setOnClickListener {
+            AddEventBottomSheet().show(parentFragmentManager, "TAG")
+        }
     }
 
     private fun hideSoftKeyboard() {
