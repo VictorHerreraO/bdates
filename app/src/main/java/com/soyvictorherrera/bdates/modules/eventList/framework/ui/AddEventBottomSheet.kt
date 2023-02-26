@@ -11,6 +11,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.soyvictorherrera.bdates.core.compose.theme.setBdatesContent
 import com.soyvictorherrera.bdates.modules.eventList.framework.ui.compose.AddEventSheetContent
 
+
 class AddEventBottomSheet : BottomSheetDialogFragment() {
 
     override fun onCreateView(
@@ -18,6 +19,10 @@ class AddEventBottomSheet : BottomSheetDialogFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View = ComposeView(requireContext()).apply {
+        layoutParams = ViewGroup.LayoutParams(
+            ViewGroup.LayoutParams.MATCH_PARENT,
+            ViewGroup.LayoutParams.MATCH_PARENT
+        )
         setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
         setBdatesContent {
             Column {

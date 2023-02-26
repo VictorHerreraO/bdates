@@ -1,33 +1,50 @@
 package com.soyvictorherrera.bdates.modules.eventList.framework.ui.compose
 
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.OutlinedTextField
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import com.soyvictorherrera.bdates.core.compose.layout.BottomSheet
+import com.soyvictorherrera.bdates.core.compose.layout.SpacerM
+import com.soyvictorherrera.bdates.core.compose.layout.SpacerSm
 import com.soyvictorherrera.bdates.core.compose.theme.BdatesTheme
-import com.soyvictorherrera.bdates.core.compose.theme.LocalSizes
+import java.time.LocalDate
 
 @Composable
 fun AddEventSheetContent(
     modifier: Modifier = Modifier,
-) {
-    Column(
-        modifier = modifier.padding(LocalSizes.current.dimen_16)
-    ) {
+) = BottomSheet {
+    Column {
+        Text(text = "Event name:", style = MaterialTheme.typography.caption)
+
+        SpacerSm()
+
         val hi = remember { mutableStateOf("Hi!") }
         OutlinedTextField(
             modifier = Modifier.fillMaxWidth(),
             value = hi.value,
             onValueChange = { hi.value = it }
         )
-        Spacer(modifier = Modifier.height(LocalSizes.current.dimen_8))
+
+        SpacerM()
+
+        Text(text = "Event date:", style = MaterialTheme.typography.caption)
+
+        SpacerSm()
+
+        var selectedDate by remember { mutableStateOf(LocalDate.now()) }
+        DateSelector(
+            selectedDate = selectedDate,
+            onDateSelected = { selectedDate = it }
+        )
     }
 }
 
