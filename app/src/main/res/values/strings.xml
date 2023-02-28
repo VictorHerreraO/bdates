@@ -27,4 +27,14 @@
 
     <!--Date Formats-->
     <string name="date_format_day" translatable="false">EEEE d</string>
+
+    <!-- Add events -->
+    <string name="add_event_title_create">Nuevo cumpleaños 🎉</string>
+    <string name="add_event_title_edit">Editar celebración</string>
+    <string name="add_event_name">Nombre del cumpleañero</string>
+    <string name="add_event_date">Cumple el día</string>
+    <string name="add_event_year">Del año</string>
+    <string name="add_event_year_optional">No quiero agregar el año</string>
+    <string name="add_event_save_event">Crear evento</string>
+    <string name="add_event_save_changes">Guardar cambios</string>
 </resources>

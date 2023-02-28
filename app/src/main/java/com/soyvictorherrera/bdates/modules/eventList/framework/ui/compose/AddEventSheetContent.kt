@@ -25,8 +25,10 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.rememberNestedScrollInteropConnection
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.soyvictorherrera.bdates.R
 import com.soyvictorherrera.bdates.core.compose.layout.BottomSheet
 import com.soyvictorherrera.bdates.core.compose.layout.SpacerL
 import com.soyvictorherrera.bdates.core.compose.layout.SpacerSm
@@ -51,7 +53,12 @@ fun AddEventSheetContent(
     onBottomSheetDismiss: () -> Unit,
     modifier: Modifier = Modifier,
 ) = BottomSheet(
-    title = "Create event",
+    title = stringResource(
+        when (state.editMode) {
+            EditMode.CREATE -> R.string.add_event_title_create
+            EditMode.EDIT -> R.string.add_event_title_edit
+        }
+    ),
     onBottomSheetDismiss = onBottomSheetDismiss,
     actions = {
         Button(
@@ -64,10 +71,12 @@ fun AddEventSheetContent(
             )
         ) {
             Text(
-                text = when (state.editMode) {
-                    EditMode.CREATE -> "Create event"
-                    EditMode.EDIT -> "Save changes"
-                }
+                text = stringResource(
+                    when (state.editMode) {
+                        EditMode.CREATE -> R.string.add_event_save_event
+                        EditMode.EDIT -> R.string.add_event_save_changes
+                    }
+                )
             )
         }
     },
@@ -117,7 +126,7 @@ private fun EventNameSection(
 
         SpacerXs()
 
-        Text(text = "Event name", style = MaterialTheme.typography.body1)
+        Text(text = stringResource(R.string.add_event_name), style = MaterialTheme.typography.body1)
     }
 
     SpacerSm()
@@ -144,7 +153,7 @@ fun EventDateSection(
 
         SpacerXs()
 
-        Text(text = "Event date", style = MaterialTheme.typography.body1)
+        Text(text = stringResource(R.string.add_event_date), style = MaterialTheme.typography.body1)
     }
 
     SpacerSm()
@@ -171,7 +180,7 @@ fun EventYearSection(
 
         SpacerXs()
 
-        Text(text = "Event Year", style = MaterialTheme.typography.body1)
+        Text(text = stringResource(R.string.add_event_year), style = MaterialTheme.typography.body1)
     }
 
     SpacerSm()
@@ -206,7 +215,7 @@ fun EventYearSection(
         SpacerSm()
 
         Text(
-            text = "My event has no year",
+            stringResource(id = R.string.add_event_year_optional),
             style = MaterialTheme.typography.body2,
         )
     }
