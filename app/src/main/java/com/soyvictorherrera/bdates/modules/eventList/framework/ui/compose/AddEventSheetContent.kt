@@ -18,6 +18,8 @@ import com.soyvictorherrera.bdates.core.compose.layout.SpacerSm
 import com.soyvictorherrera.bdates.core.compose.theme.BdatesTheme
 import java.time.LocalDate
 
+internal const val ICON_ALPHA = 0.6F
+
 @Composable
 fun AddEventSheetContent(
     modifier: Modifier = Modifier,
