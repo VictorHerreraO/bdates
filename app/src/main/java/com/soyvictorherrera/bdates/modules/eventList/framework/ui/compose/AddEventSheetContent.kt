@@ -18,10 +18,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -34,7 +32,10 @@ import com.soyvictorherrera.bdates.core.compose.layout.SpacerL
 import com.soyvictorherrera.bdates.core.compose.layout.SpacerSm
 import com.soyvictorherrera.bdates.core.compose.layout.SpacerXs
 import com.soyvictorherrera.bdates.core.compose.theme.BdatesTheme
+import com.soyvictorherrera.bdates.modules.eventList.framework.presentation.AddEventViewState
+import com.soyvictorherrera.bdates.modules.eventList.framework.presentation.EditMode
 import java.time.LocalDate
+import kotlinx.coroutines.flow.distinctUntilChanged
 
 internal const val ICON_ALPHA = 0.6F
 internal const val ICON_DISABLED_ALPHA = 0.38F
@@ -42,6 +43,11 @@ internal const val ICON_DISABLED_ALPHA = 0.38F
 @Composable
 @OptIn(ExperimentalComposeUiApi::class)
 fun AddEventSheetContent(
+    state: AddEventViewState,
+    onEventNameChange: (String) -> Unit,
+    onDateSelected: (LocalDate) -> Unit,
+    onYearDisabled: (Boolean) -> Unit,
+    onActionClick: () -> Unit,
     onBottomSheetDismiss: () -> Unit,
     modifier: Modifier = Modifier,
 ) = BottomSheet(
@@ -49,7 +55,7 @@ fun AddEventSheetContent(
     onBottomSheetDismiss = onBottomSheetDismiss,
     actions = {
         Button(
-            onClick = { /*TODO*/ },
+            onClick = onActionClick,
             modifier = Modifier
                 .fillMaxWidth()
                 .heightIn(min = 48.dp),
@@ -57,7 +63,12 @@ fun AddEventSheetContent(
                 backgroundColor = MaterialTheme.colors.secondary
             )
         ) {
-            Text(text = "Create event")
+            Text(
+                text = when (state.editMode) {
+                    EditMode.CREATE -> "Create event"
+                    EditMode.EDIT -> "Save changes"
+                }
+            )
         }
     },
     modifier = modifier
@@ -65,30 +76,39 @@ fun AddEventSheetContent(
         .verticalScroll(state = rememberScrollState()),
 ) {
     Column {
-        var selectedDate: LocalDate by remember { mutableStateOf(LocalDate.now()) }
-        val onDateSelected: (LocalDate) -> Unit = remember { { selectedDate = it } }
-
-        EventNameSection()
+        EventNameSection(
+            eventName = state.eventName,
+            onEventNameChange = onEventNameChange
+        )
 
         SpacerL()
 
         EventDateSection(
-            selectedDate = selectedDate,
+            selectedDate = state.selectedDate,
             onDateSelected = onDateSelected
         )
 
         SpacerL()
 
         EventYearSection(
-            selectedDate = selectedDate,
-            onDateSelected = onDateSelected
+            selectedDate = state.selectedDate,
+            isYearDisabled = state.isYearDisabled,
+            onDateSelected = onDateSelected,
+            onYearDisabled = onYearDisabled,
         )
     }
 }
 
 @Composable
-private fun EventNameSection() {
-    Row(verticalAlignment = Alignment.CenterVertically) {
+private fun EventNameSection(
+    eventName: String,
+    onEventNameChange: (String) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = modifier
+    ) {
         Icon(
             imageVector = Icons.Default.Edit,
             contentDescription = null,
@@ -102,11 +122,10 @@ private fun EventNameSection() {
 
     SpacerSm()
 
-    val hi = remember { mutableStateOf("Hi!") }
     TextField(
         modifier = Modifier.fillMaxWidth(),
-        value = hi.value,
-        onValueChange = { hi.value = it },
+        value = eventName,
+        onValueChange = onEventNameChange,
         singleLine = true,
     )
 }
@@ -139,7 +158,9 @@ fun EventDateSection(
 @Composable
 fun EventYearSection(
     selectedDate: LocalDate,
+    isYearDisabled: Boolean,
     onDateSelected: (LocalDate) -> Unit,
+    onYearDisabled: (Boolean) -> Unit,
 ) {
     Row(verticalAlignment = Alignment.CenterVertically) {
         Icon(
@@ -155,11 +176,18 @@ fun EventYearSection(
 
     SpacerSm()
 
-    var yearDisabled by remember { mutableStateOf(false) }
+    LaunchedEffect(isYearDisabled) {
+        snapshotFlow { isYearDisabled }
+            .distinctUntilChanged()
+            .collect {
+                onYearDisabled(it)
+            }
+    }
+
     YearSelector(
         selectedDate = selectedDate,
         onDateSelected = onDateSelected,
-        enabled = yearDisabled.not(),
+        enabled = isYearDisabled.not(),
     )
 
     Row(
@@ -167,12 +195,12 @@ fun EventYearSection(
         modifier = Modifier
             .fillMaxWidth()
             .clickable {
-                yearDisabled = yearDisabled.not()
+                onYearDisabled(isYearDisabled.not())
             },
     ) {
         Checkbox(
-            checked = yearDisabled,
-            onCheckedChange = { yearDisabled = it }
+            checked = isYearDisabled,
+            onCheckedChange = onYearDisabled
         )
 
         SpacerSm()
@@ -189,8 +217,18 @@ fun EventYearSection(
 fun AddEventContentPreview() {
     BdatesTheme {
         AddEventSheetContent(
+            state = AddEventViewState(
+                eventName = "John Appleseed",
+                selectedDate = LocalDate.now(),
+                editMode = EditMode.CREATE,
+                isYearDisabled = false,
+            ),
+            onEventNameChange = {},
+            onDateSelected = {},
+            onYearDisabled = {},
+            onActionClick = {},
             onBottomSheetDismiss = {},
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
         )
     }
 }
