@@ -10,6 +10,7 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.IconToggleButton
@@ -33,6 +34,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
 import com.soyvictorherrera.bdates.core.compose.layout.SpacerM
 import com.soyvictorherrera.bdates.core.compose.layout.SpacerSm
 import com.soyvictorherrera.bdates.core.compose.modifier.conditional
@@ -55,11 +58,13 @@ fun DateSelector(
     selectedDate: LocalDate,
     onDateSelected: (LocalDate) -> Unit,
     modifier: Modifier = Modifier,
-    border: BorderStroke? = null
+    border: BorderStroke? = null,
+    elevation: Dp = 0.dp,
 ) = Surface(
     modifier = modifier,
     shape = Shapes.medium,
     border = border,
+    elevation = elevation,
 ) {
     Column(
         modifier = Modifier.fillMaxWidth(1f)
@@ -93,8 +98,13 @@ private fun MonthSelector(
     modifier: Modifier = Modifier,
 ) = Surface(
     modifier = modifier.fillMaxWidth(),
-    shape = Shapes.medium,
-    color = MaterialTheme.colors.onSurface.copy(alpha = TextFieldDefaults.BackgroundOpacity)
+    shape = LocalSizes.current.run {
+        RoundedCornerShape(
+            topStart = dimen_4,
+            topEnd = dimen_4,
+        )
+    },
+    color = MaterialTheme.colors.onSurface.copy(alpha = TextFieldDefaults.BackgroundOpacity),
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
