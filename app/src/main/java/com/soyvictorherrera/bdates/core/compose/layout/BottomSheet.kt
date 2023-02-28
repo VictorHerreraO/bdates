@@ -19,8 +19,9 @@ import androidx.compose.material.icons.filled.Close
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.soyvictorherrera.bdates.core.compose.theme.BdatesTheme
 import com.soyvictorherrera.bdates.core.compose.theme.BottomSheetContentShape
@@ -35,28 +36,29 @@ fun BottomSheet(
     actions: (@Composable RowScope.() -> Unit)? = null,
     content: @Composable () -> Unit,
 ) = Surface(
-    modifier = modifier,
     shape = BottomSheetDialogShape,
     color = MaterialTheme.colors.background,
 ) {
     Column(
         modifier = Modifier.fillMaxWidth()
     ) {
-        Surface(
-            elevation = LocalSizes.current.dimen_4,
-            shape = if (actions != null) {
-                BottomSheetContentShape
-            } else {
-                BottomSheetDialogShape
-            },
-            color = MaterialTheme.colors.surface,
-        ) {
-            Column {
-                BottomSheetTopBar(
-                    title = title,
-                    onDismissClick = onBottomSheetDismiss
-                )
+        val elevation = LocalSizes.current.dimen_2
 
+        BottomSheetTopBar(
+            title = title,
+            onDismissClick = onBottomSheetDismiss,
+            elevation = elevation
+        )
+
+        Column(modifier = modifier) {
+            Surface(
+                elevation = elevation,
+                shape = if (actions != null) {
+                    BottomSheetContentShape
+                } else {
+                    RectangleShape
+                }
+            ) {
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -65,15 +67,16 @@ fun BottomSheet(
                     content()
                 }
             }
-        }
-        actions?.let {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(LocalSizes.current.dimen_32),
-                content = it
-            )
+
+            actions?.let {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(LocalSizes.current.dimen_32),
+                    content = it
+                )
+            }
         }
     }
 }
@@ -83,10 +86,11 @@ private fun BottomSheetTopBar(
     title: String,
     onDismissClick: () -> Unit,
     modifier: Modifier = Modifier,
+    elevation: Dp = 0.dp,
 ) = TopAppBar(
     title = { Text(text = title) },
-    elevation = 0.dp,
-    backgroundColor = Color.Unspecified,
+    elevation = elevation,
+    backgroundColor = MaterialTheme.colors.surface,
     navigationIcon = {
         IconButton(onClick = onDismissClick) {
             Icon(
