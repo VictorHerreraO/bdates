@@ -1,7 +1,10 @@
 package com.soyvictorherrera.bdates.modules.eventList.framework.ui.compose
 
+import androidx.compose.foundation.gestures.Orientation
+import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
@@ -26,8 +29,13 @@ fun AddEventSheetContent(
 ) = BottomSheet(
     modifier = modifier
 ) {
-    Column {
-        Text(text = "Event name:", style = MaterialTheme.typography.caption)
+    Column(
+        modifier = Modifier.scrollable(
+            state = rememberScrollState(),
+            orientation = Orientation.Vertical
+        )
+    ) {
+        Text(text = "Event name", style = MaterialTheme.typography.body1)
 
         SpacerSm()
 
@@ -40,7 +48,7 @@ fun AddEventSheetContent(
 
         SpacerM()
 
-        Text(text = "Event date:", style = MaterialTheme.typography.caption)
+        Text(text = "Event date", style = MaterialTheme.typography.body1)
 
         SpacerSm()
 
@@ -48,6 +56,17 @@ fun AddEventSheetContent(
         DateSelector(
             selectedDate = selectedDate,
             onDateSelected = { selectedDate = it },
+        )
+
+        SpacerM()
+
+        Text(text = "Event Year", style = MaterialTheme.typography.body1)
+
+        SpacerSm()
+
+        YearSelector(
+            selectedDate = selectedDate,
+            onDateSelected = { selectedDate = it }
         )
     }
 }

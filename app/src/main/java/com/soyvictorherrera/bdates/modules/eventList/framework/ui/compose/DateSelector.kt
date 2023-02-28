@@ -19,8 +19,8 @@ import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.ArrowBack
-import androidx.compose.material.icons.rounded.ArrowForward
+import androidx.compose.material.icons.filled.KeyboardArrowLeft
+import androidx.compose.material.icons.filled.KeyboardArrowRight
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -111,8 +111,7 @@ private fun MonthSelector(
         modifier = modifier
             .fillMaxWidth()
             .padding(
-                horizontal = LocalSizes.current.dimen_16,
-                vertical = LocalSizes.current.dimen_4
+                vertical = LocalSizes.current.dimen_4,
             ),
     ) {
         IconButton(
@@ -120,8 +119,9 @@ private fun MonthSelector(
             onClick = { onSelectedMonthChange(selectedMonth.minus(1)) },
         ) {
             Icon(
-                imageVector = Icons.Rounded.ArrowBack,
-                contentDescription = "Prev"
+                imageVector = Icons.Default.KeyboardArrowLeft,
+                contentDescription = "Prev",
+                tint = MaterialTheme.colors.onSurface.copy(alpha = ICON_ALPHA),
             )
         }
 
@@ -129,7 +129,6 @@ private fun MonthSelector(
             text = selectedMonth.getDisplayName(TextStyle.FULL, Locale.getDefault()),
             modifier = Modifier.weight(1f),
             textAlign = TextAlign.Center,
-            fontWeight = FontWeight.Bold,
         )
 
         IconButton(
@@ -137,8 +136,9 @@ private fun MonthSelector(
             onClick = { onSelectedMonthChange(selectedMonth.plus(1)) },
         ) {
             Icon(
-                imageVector = Icons.Rounded.ArrowForward,
+                imageVector = Icons.Default.KeyboardArrowRight,
                 contentDescription = "Next",
+                tint = MaterialTheme.colors.onSurface.copy(alpha = ICON_ALPHA),
             )
         }
     }

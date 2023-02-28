@@ -18,11 +18,7 @@ fun BottomSheet(
     modifier: Modifier = Modifier,
     content: @Composable () -> Unit,
 ) = Surface(
-    modifier = modifier
-        .scrollable(
-            state = rememberScrollState(),
-            orientation = Orientation.Vertical
-        ),
+    modifier = modifier,
     shape = BottomSheetDialogShape,
 ) {
     Box(
