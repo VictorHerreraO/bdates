@@ -1,5 +1,6 @@
 package com.soyvictorherrera.bdates.modules.eventList.framework.ui.compose
 
+import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -23,6 +24,7 @@ import androidx.compose.material.icons.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.filled.KeyboardArrowRight
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -69,11 +71,14 @@ fun DateSelector(
     Column(
         modifier = Modifier.fillMaxWidth(1f)
     ) {
-        var visibleDate: LocalDate by remember { mutableStateOf(selectedDate) }
+        var backingDate: LocalDate by remember { mutableStateOf(selectedDate) }
+        val visibleDate: LocalDate by remember(selectedDate) {
+            derivedStateOf { backingDate.withYear(selectedDate.year) }
+        }
 
         MonthSelector(
             selectedMonth = visibleDate.month,
-            onSelectedMonthChange = { visibleDate = visibleDate.withMonth(it.value) }
+            onSelectedMonthChange = { backingDate = visibleDate.withMonth(it.value) }
         )
 
         SpacerM()
@@ -84,7 +89,7 @@ fun DateSelector(
 
         CalendarGrid(
             visibleDate = visibleDate,
-            onVisibleDateChange = { visibleDate = it },
+            onVisibleDateChange = { backingDate = it },
             selectedDate = selectedDate,
             onSelectedDateChange = onDateSelected,
         )
@@ -200,12 +205,14 @@ private fun CalendarGrid(
         state = listState,
         userScrollEnabled = false,
     ) {
-        items(MONTHS_IN_YEAR) {
+        items(count = MONTHS_IN_YEAR, key = { it }) {
             CalendarItem(
                 visibleDate = visibleDate,
                 selectedDate = selectedDate,
                 onSelectedDateChange = onSelectedDateChange,
-                modifier = Modifier.fillParentMaxWidth(1f),
+                modifier = Modifier
+                    .fillParentMaxWidth(1f)
+                    .animateContentSize()
             )
         }
     }
