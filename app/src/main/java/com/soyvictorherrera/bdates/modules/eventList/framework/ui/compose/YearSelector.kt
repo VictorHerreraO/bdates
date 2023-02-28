@@ -10,6 +10,7 @@ import androidx.compose.material.LocalTextStyle
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.TextField
+import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.rounded.KeyboardArrowRight
@@ -65,6 +66,10 @@ fun YearSelector(
             textStyle = LocalTextStyle.current.copy(textAlign = TextAlign.Center),
             enabled = enabled,
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+            colors = TextFieldDefaults.textFieldColors(
+                cursorColor = MaterialTheme.colors.secondary,
+                focusedIndicatorColor = MaterialTheme.colors.secondary
+            ),
             leadingIcon = {
                 val prevYearEnabled = enabled && selectedDate.year.dec() in VALID_RANGE
                 IconButton(

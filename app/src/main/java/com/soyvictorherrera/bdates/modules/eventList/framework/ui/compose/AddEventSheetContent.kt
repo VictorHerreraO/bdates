@@ -14,6 +14,8 @@ import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
+import androidx.compose.material.TextFieldColors
+import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Edit
@@ -136,6 +138,10 @@ private fun EventNameSection(
         value = eventName,
         onValueChange = onEventNameChange,
         singleLine = true,
+        colors = TextFieldDefaults.textFieldColors(
+            cursorColor = MaterialTheme.colors.secondary,
+            focusedIndicatorColor = MaterialTheme.colors.secondary
+        ),
     )
 }
 
