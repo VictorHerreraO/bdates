@@ -30,7 +30,7 @@ import com.soyvictorherrera.bdates.core.compose.theme.Shapes
 import java.time.LocalDate
 
 private val VALIDATION_REGEX = Regex("\\d+")
-private val VALID_RANGE = (2 until 2100)
+private val VALID_RANGE = (1900 until 2100)
 
 @Composable
 fun YearSelector(
@@ -53,9 +53,9 @@ fun YearSelector(
         TextField(
             value = "${selectedDate.year}",
             onValueChange = { text ->
-                text.takeIf { it.matches(VALIDATION_REGEX) }
+                text.ifEmpty { "0" }
+                    .takeIf { it.matches(VALIDATION_REGEX) }
                     ?.toIntOrNull()
-                    ?.takeIf { it in VALID_RANGE }
                     ?.let {
                         onDateSelected(selectedDate.withYear(it))
                     }
@@ -66,26 +66,40 @@ fun YearSelector(
             enabled = enabled,
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
             leadingIcon = {
+                val prevYearEnabled = selectedDate.year.dec() in VALID_RANGE
                 IconButton(
-                    enabled = selectedDate.year in VALID_RANGE,
+                    enabled = prevYearEnabled,
                     onClick = { onDateSelected(selectedDate.minusYears(1)) }
                 ) {
                     Icon(
                         imageVector = Icons.Default.KeyboardArrowLeft,
                         contentDescription = "Add",
-                        tint = MaterialTheme.colors.onSurface.copy(alpha = ICON_ALPHA),
+                        tint = MaterialTheme.colors.onSurface.copy(
+                            alpha = if (prevYearEnabled) {
+                                ICON_ALPHA
+                            } else {
+                                ICON_DISABLED_ALPHA
+                            }
+                        ),
                     )
                 }
             },
             trailingIcon = {
+                val nextYearEnabled = selectedDate.year.inc() in VALID_RANGE
                 IconButton(
-                    enabled = selectedDate.year in VALID_RANGE,
+                    enabled = nextYearEnabled,
                     onClick = { onDateSelected(selectedDate.plusYears(1)) }
                 ) {
                     Icon(
                         imageVector = Icons.Rounded.KeyboardArrowRight,
                         contentDescription = "Add",
-                        tint = MaterialTheme.colors.onSurface.copy(alpha = ICON_ALPHA),
+                        tint = MaterialTheme.colors.onSurface.copy(
+                            alpha = if (nextYearEnabled) {
+                                ICON_ALPHA
+                            } else {
+                                ICON_DISABLED_ALPHA
+                            }
+                        ),
                     )
                 }
             },

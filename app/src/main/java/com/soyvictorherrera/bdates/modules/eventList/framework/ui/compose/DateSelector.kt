@@ -119,14 +119,23 @@ private fun MonthSelector(
                 vertical = LocalSizes.current.dimen_4,
             ),
     ) {
+        val prevMonthEnabled = selectedMonth > Month.JANUARY
+        val nextMonthEnabled = selectedMonth < Month.DECEMBER
+
         IconButton(
-            enabled = (selectedMonth > Month.JANUARY),
+            enabled = prevMonthEnabled,
             onClick = { onSelectedMonthChange(selectedMonth.minus(1)) },
         ) {
             Icon(
                 imageVector = Icons.Default.KeyboardArrowLeft,
                 contentDescription = "Prev",
-                tint = MaterialTheme.colors.onSurface.copy(alpha = ICON_ALPHA),
+                tint = MaterialTheme.colors.onSurface.copy(
+                    alpha = if (prevMonthEnabled) {
+                        ICON_ALPHA
+                    } else {
+                        ICON_DISABLED_ALPHA
+                    }
+                ),
             )
         }
 
@@ -137,13 +146,19 @@ private fun MonthSelector(
         )
 
         IconButton(
-            enabled = (selectedMonth < Month.DECEMBER),
+            enabled = nextMonthEnabled,
             onClick = { onSelectedMonthChange(selectedMonth.plus(1)) },
         ) {
             Icon(
                 imageVector = Icons.Default.KeyboardArrowRight,
                 contentDescription = "Next",
-                tint = MaterialTheme.colors.onSurface.copy(alpha = ICON_ALPHA),
+                tint = MaterialTheme.colors.onSurface.copy(
+                    alpha = if (nextMonthEnabled) {
+                        ICON_ALPHA
+                    } else {
+                        ICON_DISABLED_ALPHA
+                    }
+                ),
             )
         }
     }
