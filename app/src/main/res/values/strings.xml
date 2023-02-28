@@ -31,7 +31,7 @@
     <!-- Add events -->
     <string name="add_event_title_create">Nuevo cumpleaños 🎉</string>
     <string name="add_event_title_edit">Editar celebración</string>
-    <string name="add_event_name">Nombre del cumpleañero</string>
+    <string name="add_event_name">¿Quién cumple años?</string>
     <string name="add_event_date">Cumple el día</string>
     <string name="add_event_year">Del año</string>
     <string name="add_event_year_optional">No quiero agregar el año</string>
