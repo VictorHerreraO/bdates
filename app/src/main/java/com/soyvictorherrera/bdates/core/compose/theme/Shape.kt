@@ -16,3 +16,6 @@ val BottomSheetDialogShape: RoundedCornerShape
         topStart = LocalSizes.current.dimen_16,
         topEnd = LocalSizes.current.dimen_16
     )
+
+val BottomSheetContentShape: RoundedCornerShape
+    @Composable get() = RoundedCornerShape(size = LocalSizes.current.dimen_16)

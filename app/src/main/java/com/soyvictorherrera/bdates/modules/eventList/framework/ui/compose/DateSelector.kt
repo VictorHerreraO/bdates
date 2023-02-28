@@ -6,6 +6,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -54,6 +55,9 @@ import kotlinx.coroutines.launch
 
 private const val DAYS_IN_WEEK = 7
 private const val MONTHS_IN_YEAR = 12
+private const val MIN_TOUCH_TARGET_SIZE = 48
+private const val MAX_WEEK_ROWS_IN_MONTH = 6
+private const val MAX_CALENDAR_ITEM_HEIGHT = MIN_TOUCH_TARGET_SIZE * MAX_WEEK_ROWS_IN_MONTH
 
 @Composable
 fun DateSelector(
@@ -218,7 +222,6 @@ private fun CalendarGrid(
     LazyRow(
         modifier = modifier,
         state = listState,
-        userScrollEnabled = false,
     ) {
         items(count = MONTHS_IN_YEAR, key = { it }) {
             CalendarItem(
@@ -228,6 +231,7 @@ private fun CalendarGrid(
                 modifier = Modifier
                     .fillParentMaxWidth(1f)
                     .animateContentSize()
+                    .heightIn(max = MAX_CALENDAR_ITEM_HEIGHT.dp)
             )
         }
     }

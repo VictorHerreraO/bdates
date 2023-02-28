@@ -25,7 +25,9 @@ class AddEventBottomSheet : BottomSheetDialogFragment() {
         setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
         setBdatesContent {
             Column {
-                AddEventSheetContent()
+                AddEventSheetContent(
+                    onBottomSheetDismiss = { dismiss() }
+                )
             }
         }
     }

@@ -1,13 +1,14 @@
 package com.soyvictorherrera.bdates.modules.eventList.framework.ui.compose
 
-import androidx.compose.foundation.gestures.Orientation
-import androidx.compose.foundation.gestures.scrollable
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Button
+import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Checkbox
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
@@ -22,12 +23,14 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.platform.rememberNestedScrollInteropConnection
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.soyvictorherrera.bdates.core.compose.layout.BottomSheet
 import com.soyvictorherrera.bdates.core.compose.layout.SpacerL
-import com.soyvictorherrera.bdates.core.compose.layout.SpacerM
 import com.soyvictorherrera.bdates.core.compose.layout.SpacerSm
 import com.soyvictorherrera.bdates.core.compose.layout.SpacerXs
 import com.soyvictorherrera.bdates.core.compose.theme.BdatesTheme
@@ -37,46 +40,49 @@ internal const val ICON_ALPHA = 0.6F
 internal const val ICON_DISABLED_ALPHA = 0.38F
 
 @Composable
+@OptIn(ExperimentalComposeUiApi::class)
 fun AddEventSheetContent(
+    onBottomSheetDismiss: () -> Unit,
     modifier: Modifier = Modifier,
 ) = BottomSheet(
+    title = "Create event",
+    onBottomSheetDismiss = onBottomSheetDismiss,
+    actions = {
+        Button(
+            onClick = { /*TODO*/ },
+            modifier = Modifier
+                .fillMaxWidth()
+                .heightIn(min = 48.dp),
+            colors = ButtonDefaults.buttonColors(
+                backgroundColor = MaterialTheme.colors.secondary
+            )
+        ) {
+            Text(text = "Create event")
+        }
+    },
     modifier = modifier
+        .nestedScroll(rememberNestedScrollInteropConnection())
+        .verticalScroll(state = rememberScrollState()),
 ) {
-    Column(
-        modifier = Modifier.scrollable(
-            state = rememberScrollState(),
-            orientation = Orientation.Vertical
-        )
-    ) {
+    Column {
         var selectedDate: LocalDate by remember { mutableStateOf(LocalDate.now()) }
         val onDateSelected: (LocalDate) -> Unit = remember { { selectedDate = it } }
 
         EventNameSection()
 
-        SpacerM()
+        SpacerL()
 
         EventDateSection(
             selectedDate = selectedDate,
             onDateSelected = onDateSelected
         )
 
-        SpacerM()
+        SpacerL()
 
         EventYearSection(
             selectedDate = selectedDate,
             onDateSelected = onDateSelected
         )
-
-        SpacerL()
-
-        Button(
-            onClick = { /*TODO*/ },
-            modifier = Modifier
-                .fillMaxWidth()
-                .heightIn(min = 48.dp)
-        ) {
-            Text(text = "Create event")
-        }
     }
 }
 
@@ -101,6 +107,7 @@ private fun EventNameSection() {
         modifier = Modifier.fillMaxWidth(),
         value = hi.value,
         onValueChange = { hi.value = it },
+        singleLine = true,
     )
 }
 
@@ -157,7 +164,11 @@ fun EventYearSection(
 
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable {
+                yearDisabled = yearDisabled.not()
+            },
     ) {
         Checkbox(
             checked = yearDisabled,
@@ -168,7 +179,7 @@ fun EventYearSection(
 
         Text(
             text = "My event has no year",
-            style = MaterialTheme.typography.body2
+            style = MaterialTheme.typography.body2,
         )
     }
 }
@@ -178,6 +189,7 @@ fun EventYearSection(
 fun AddEventContentPreview() {
     BdatesTheme {
         AddEventSheetContent(
+            onBottomSheetDismiss = {},
             modifier = Modifier.fillMaxWidth()
         )
     }
