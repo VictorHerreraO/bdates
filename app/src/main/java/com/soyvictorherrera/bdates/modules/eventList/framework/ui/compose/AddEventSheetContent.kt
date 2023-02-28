@@ -34,7 +34,7 @@ fun AddEventSheetContent(
         SpacerSm()
 
         val hi = remember { mutableStateOf("Hi!") }
-        OutlinedTextField(
+        TextField(
             modifier = Modifier.fillMaxWidth(),
             value = hi.value,
             onValueChange = { hi.value = it }
