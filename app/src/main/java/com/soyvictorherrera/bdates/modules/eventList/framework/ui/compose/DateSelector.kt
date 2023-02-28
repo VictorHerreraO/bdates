@@ -2,7 +2,6 @@ package com.soyvictorherrera.bdates.modules.eventList.framework.ui.compose
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -38,7 +37,6 @@ import com.soyvictorherrera.bdates.core.compose.layout.SpacerM
 import com.soyvictorherrera.bdates.core.compose.layout.SpacerSm
 import com.soyvictorherrera.bdates.core.compose.modifier.conditional
 import com.soyvictorherrera.bdates.core.compose.theme.BdatesTheme
-import com.soyvictorherrera.bdates.core.compose.theme.Gallery
 import com.soyvictorherrera.bdates.core.compose.theme.LocalSizes
 import com.soyvictorherrera.bdates.core.compose.theme.Shapes
 import java.time.DayOfWeek
