@@ -66,7 +66,7 @@ fun YearSelector(
             enabled = enabled,
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
             leadingIcon = {
-                val prevYearEnabled = selectedDate.year.dec() in VALID_RANGE
+                val prevYearEnabled = enabled && selectedDate.year.dec() in VALID_RANGE
                 IconButton(
                     enabled = prevYearEnabled,
                     onClick = { onDateSelected(selectedDate.minusYears(1)) }
@@ -85,7 +85,7 @@ fun YearSelector(
                 }
             },
             trailingIcon = {
-                val nextYearEnabled = selectedDate.year.inc() in VALID_RANGE
+                val nextYearEnabled = enabled && selectedDate.year.inc() in VALID_RANGE
                 IconButton(
                     enabled = nextYearEnabled,
                     onClick = { onDateSelected(selectedDate.plusYears(1)) }
