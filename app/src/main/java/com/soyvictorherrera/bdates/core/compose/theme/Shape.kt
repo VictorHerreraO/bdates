@@ -2,6 +2,7 @@ package com.soyvictorherrera.bdates.core.compose.theme
 
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Shapes
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.unit.dp
 
 val Shapes = Shapes(
@@ -10,4 +11,8 @@ val Shapes = Shapes(
     large = RoundedCornerShape(0.dp)
 )
 
-val BottomSheetDialogShape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp)
+val BottomSheetDialogShape: RoundedCornerShape
+    @Composable get() = RoundedCornerShape(
+        topStart = LocalSizes.current.dimen_16,
+        topEnd = LocalSizes.current.dimen_16
+    )

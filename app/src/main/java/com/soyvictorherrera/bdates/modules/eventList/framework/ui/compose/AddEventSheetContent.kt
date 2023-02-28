@@ -1,10 +1,13 @@
 package com.soyvictorherrera.bdates.modules.eventList.framework.ui.compose
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.material.ContentAlpha
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
+import androidx.compose.material.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -12,6 +15,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import com.soyvictorherrera.bdates.core.compose.layout.BottomSheet
 import com.soyvictorherrera.bdates.core.compose.layout.SpacerM
 import com.soyvictorherrera.bdates.core.compose.layout.SpacerSm
@@ -21,7 +25,9 @@ import java.time.LocalDate
 @Composable
 fun AddEventSheetContent(
     modifier: Modifier = Modifier,
-) = BottomSheet {
+) = BottomSheet(
+    modifier = modifier
+) {
     Column {
         Text(text = "Event name:", style = MaterialTheme.typography.caption)
 
@@ -43,7 +49,7 @@ fun AddEventSheetContent(
         var selectedDate by remember { mutableStateOf(LocalDate.now()) }
         DateSelector(
             selectedDate = selectedDate,
-            onDateSelected = { selectedDate = it }
+            onDateSelected = { selectedDate = it },
         )
     }
 }

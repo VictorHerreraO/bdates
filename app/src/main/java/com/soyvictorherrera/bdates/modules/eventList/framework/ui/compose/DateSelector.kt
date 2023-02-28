@@ -1,6 +1,8 @@
 package com.soyvictorherrera.bdates.modules.eventList.framework.ui.compose
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -13,7 +15,9 @@ import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.IconToggleButton
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Surface
 import androidx.compose.material.Text
+import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ArrowBack
 import androidx.compose.material.icons.rounded.ArrowForward
@@ -27,16 +31,14 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
-import com.soyvictorherrera.bdates.R
 import com.soyvictorherrera.bdates.core.compose.layout.SpacerM
 import com.soyvictorherrera.bdates.core.compose.layout.SpacerSm
 import com.soyvictorherrera.bdates.core.compose.modifier.conditional
 import com.soyvictorherrera.bdates.core.compose.theme.BdatesTheme
+import com.soyvictorherrera.bdates.core.compose.theme.Gallery
 import com.soyvictorherrera.bdates.core.compose.theme.LocalSizes
 import com.soyvictorherrera.bdates.core.compose.theme.Shapes
 import java.time.DayOfWeek
@@ -55,28 +57,35 @@ fun DateSelector(
     selectedDate: LocalDate,
     onDateSelected: (LocalDate) -> Unit,
     modifier: Modifier = Modifier,
-) = Column(
-    modifier = modifier.background(color = MaterialTheme.colors.surface, shape = Shapes.medium)
+    border: BorderStroke? = null
+) = Surface(
+    modifier = modifier,
+    shape = Shapes.medium,
+    border = border,
 ) {
-    var visibleDate: LocalDate by remember { mutableStateOf(selectedDate) }
+    Column(
+        modifier = Modifier.fillMaxWidth(1f)
+    ) {
+        var visibleDate: LocalDate by remember { mutableStateOf(selectedDate) }
 
-    MonthSelector(
-        selectedMonth = visibleDate.month,
-        onSelectedMonthChange = { visibleDate = visibleDate.withMonth(it.value) }
-    )
+        MonthSelector(
+            selectedMonth = visibleDate.month,
+            onSelectedMonthChange = { visibleDate = visibleDate.withMonth(it.value) }
+        )
 
-    SpacerM()
+        SpacerM()
 
-    DayNamesHeader()
+        DayNamesHeader()
 
-    SpacerSm()
+        SpacerSm()
 
-    CalendarGrid(
-        visibleDate = visibleDate,
-        onVisibleDateChange = { visibleDate = it },
-        selectedDate = selectedDate,
-        onSelectedDateChange = onDateSelected,
-    )
+        CalendarGrid(
+            visibleDate = visibleDate,
+            onVisibleDateChange = { visibleDate = it },
+            selectedDate = selectedDate,
+            onSelectedDateChange = onDateSelected,
+        )
+    }
 }
 
 @Composable
@@ -84,46 +93,46 @@ private fun MonthSelector(
     selectedMonth: Month,
     onSelectedMonthChange: (Month) -> Unit,
     modifier: Modifier = Modifier,
-) = Row(
-    verticalAlignment = Alignment.CenterVertically,
-    modifier = modifier
-        .fillMaxWidth()
-        .background(
-            color = colorResource(id = R.color.Gallery),
-            shape = Shapes.medium
-        )
-        .padding(
-            horizontal = LocalSizes.current.dimen_16,
-            vertical = LocalSizes.current.dimen_8
-        )
+) = Surface(
+    modifier = modifier.fillMaxWidth(),
+    shape = Shapes.medium,
+    color = MaterialTheme.colors.onSurface.copy(alpha = TextFieldDefaults.BackgroundOpacity)
 ) {
-    IconButton(
-        enabled = (selectedMonth > Month.JANUARY),
-        onClick = { onSelectedMonthChange(selectedMonth.minus(1)) },
-        modifier = Modifier.background(color = Color.White, shape = Shapes.small)
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(
+                horizontal = LocalSizes.current.dimen_16,
+                vertical = LocalSizes.current.dimen_4
+            ),
     ) {
-        Icon(
-            imageVector = Icons.Rounded.ArrowBack,
-            contentDescription = "Prev"
-        )
-    }
+        IconButton(
+            enabled = (selectedMonth > Month.JANUARY),
+            onClick = { onSelectedMonthChange(selectedMonth.minus(1)) },
+        ) {
+            Icon(
+                imageVector = Icons.Rounded.ArrowBack,
+                contentDescription = "Prev"
+            )
+        }
 
-    Text(
-        text = selectedMonth.getDisplayName(TextStyle.FULL, Locale.getDefault()),
-        modifier = Modifier.weight(1f),
-        textAlign = TextAlign.Center,
-        fontWeight = FontWeight.Bold,
-    )
-
-    IconButton(
-        enabled = (selectedMonth < Month.DECEMBER),
-        onClick = { onSelectedMonthChange(selectedMonth.plus(1)) },
-        modifier = Modifier.background(color = Color.White, shape = Shapes.small)
-    ) {
-        Icon(
-            imageVector = Icons.Rounded.ArrowForward,
-            contentDescription = "Next"
+        Text(
+            text = selectedMonth.getDisplayName(TextStyle.FULL, Locale.getDefault()),
+            modifier = Modifier.weight(1f),
+            textAlign = TextAlign.Center,
+            fontWeight = FontWeight.Bold,
         )
+
+        IconButton(
+            enabled = (selectedMonth < Month.DECEMBER),
+            onClick = { onSelectedMonthChange(selectedMonth.plus(1)) },
+        ) {
+            Icon(
+                imageVector = Icons.Rounded.ArrowForward,
+                contentDescription = "Next",
+            )
+        }
     }
 }
 
@@ -274,8 +283,22 @@ private fun DayValue(
 @Preview(
     showBackground = true,
 )
-private fun DateSelectorPreview() {
-    BdatesTheme {
+private fun DateSelectorPreviewLight() {
+    BdatesTheme(darkTheme = false) {
+        var selectedDate by remember { mutableStateOf(LocalDate.now()) }
+        DateSelector(
+            selectedDate = selectedDate,
+            onDateSelected = { selectedDate = it }
+        )
+    }
+}
+
+@Composable
+@Preview(
+    showBackground = true,
+)
+private fun DateSelectorPreviewDark() {
+    BdatesTheme(darkTheme = true) {
         var selectedDate by remember { mutableStateOf(LocalDate.now()) }
         DateSelector(
             selectedDate = selectedDate,
