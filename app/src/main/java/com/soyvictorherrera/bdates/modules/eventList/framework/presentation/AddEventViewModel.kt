@@ -70,9 +70,14 @@ class AddEventViewModel @Inject constructor(
                 year = selectedDate.year.takeIf { isYearDisabled.not() }
             )
         }
+
+        _state.update {
+            it.copy(isSaveEnabled = false)
+        }
+
         viewModelScope.launch {
             eventRepository.createEvent(event) {
-                _navigation.value = NavigationEvent.NavigateBack
+                _navigation.value = NavigationEvent.NavigateBack()
             }
         }
     }

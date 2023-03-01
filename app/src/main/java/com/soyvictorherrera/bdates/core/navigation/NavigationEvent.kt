@@ -1,7 +1,7 @@
 package com.soyvictorherrera.bdates.core.navigation
 
 sealed class NavigationEvent {
-    object NavigateBack : NavigationEvent()
+    class NavigateBack : NavigationEvent()
 
     var consumed: Boolean = false
         get() {

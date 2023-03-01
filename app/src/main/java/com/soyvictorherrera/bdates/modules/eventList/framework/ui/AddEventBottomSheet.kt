@@ -54,7 +54,7 @@ class AddEventBottomSheet : BottomSheetDialogFragment() {
             viewModel.navigation.collect {
                 it.consume { event ->
                     when (event) {
-                        NavigationEvent.NavigateBack -> {
+                        is NavigationEvent.NavigateBack -> {
                             notifyEventCreated()
                             dismiss()
                         }
