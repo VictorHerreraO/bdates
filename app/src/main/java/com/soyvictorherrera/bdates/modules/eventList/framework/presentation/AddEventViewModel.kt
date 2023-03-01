@@ -64,7 +64,7 @@ class AddEventViewModel @Inject constructor(
             Event(
                 id = null,
                 circleId = localCircleId,
-                name = eventName,
+                name = eventName.trim(),
                 dayOfMonth = selectedDate.dayOfMonth,
                 monthOfYear = selectedDate.monthValue,
                 year = selectedDate.year.takeIf { isYearDisabled.not() }
