@@ -36,7 +36,6 @@ class AddEventViewModel @Inject constructor(
     )
     val state: StateFlow<AddEventViewState> = _state
 
-
     fun onEventNameChange(eventName: String) {
         _state.update {
             it.copy(

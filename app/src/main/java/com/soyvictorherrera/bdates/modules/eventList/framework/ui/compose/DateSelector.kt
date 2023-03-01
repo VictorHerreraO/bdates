@@ -222,6 +222,7 @@ private fun CalendarGrid(
     LazyRow(
         modifier = modifier,
         state = listState,
+        userScrollEnabled = false
     ) {
         items(count = MONTHS_IN_YEAR, key = { it }) {
             CalendarItem(
