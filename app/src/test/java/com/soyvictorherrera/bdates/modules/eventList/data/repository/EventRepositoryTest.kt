@@ -12,6 +12,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mock
 import org.mockito.junit.MockitoJUnitRunner
+import org.mockito.kotlin.any
 import org.mockito.kotlin.whenever
 
 @RunWith(MockitoJUnitRunner::class)
@@ -39,23 +40,38 @@ class EventRepositoryTest {
 
     @Test
     fun get_event_list() = runBlocking {
-        val expectedEvent = Event(
+        val expectedAssetEvent = Event(
             id = "event-id",
             circleId = "circle-id",
-            name = "event name",
+            name = "asset event name",
             dayOfMonth = 31,
             monthOfYear = 12,
             year = null
         )
-        val expectedList = listOf(expectedEvent)
-        whenever(assetsDataSource.getEventList()).thenReturn(expectedList)
+        val localEvent = EventEntity(
+            id = "event-id-2",
+            circleId = "circle-id",
+            name = "local event name",
+            dayOfMonth = 31,
+            monthOfYear = 12,
+            year = null,
+        )
+        val expectedEvent = with(localEvent) {
+            Event(id, circleId, name, dayOfMonth, monthOfYear, year)
+        }
+        val expectedList = listOf(expectedAssetEvent, expectedEvent)
+
+        whenever(assetsDataSource.getEventList()).thenReturn(listOf(expectedAssetEvent))
+        whenever(localDataSource.getEventList()).thenReturn(listOf(localEvent))
+        whenever(localMapper.map(any())).thenReturn(expectedEvent)
 
         val result = events.getEventList()
 
         assertThat(result).isNotNull()
         assertThat(result).isNotEmpty()
         assertThat(result).hasSize(expectedList.size)
-        assertThat(result.first()).isEqualTo(expectedEvent)
+        assertThat(result).contains(expectedAssetEvent)
+        assertThat(result).contains(expectedEvent)
     }
 
     @Test(expected = RuntimeException::class)
