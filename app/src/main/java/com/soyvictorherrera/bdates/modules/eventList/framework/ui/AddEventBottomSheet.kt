@@ -12,6 +12,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
+import androidx.fragment.app.setFragmentResult
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
@@ -53,7 +54,10 @@ class AddEventBottomSheet : BottomSheetDialogFragment() {
             viewModel.navigation.collect {
                 it.consume { event ->
                     when (event) {
-                        NavigationEvent.NavigateBack -> dismiss()
+                        NavigationEvent.NavigateBack -> {
+                            notifyEventCreated()
+                            dismiss()
+                        }
                     }
                 }
             }
@@ -67,5 +71,11 @@ class AddEventBottomSheet : BottomSheetDialogFragment() {
                     ColorDrawable(Color.TRANSPARENT)
             }
         }
+    }
+
+    private fun notifyEventCreated() {
+        setFragmentResult(REQUEST_KEY_ADD_EVENT, Bundle().apply {
+            putBoolean(RESULT_KEY_ADD_EVENT, true)
+        })
     }
 }

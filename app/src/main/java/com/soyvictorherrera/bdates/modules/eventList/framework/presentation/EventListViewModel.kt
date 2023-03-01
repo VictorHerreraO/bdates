@@ -49,6 +49,10 @@ class EventListViewModel @Inject constructor(
     private var query = ""
 
     init {
+        getData()
+    }
+
+    private fun getData() {
         viewModelScope.launch {
             this@EventListViewModel.dayEvents = getDayEventList.execute()
             this@EventListViewModel.allEvents = getNonDayEventList.execute()
@@ -120,5 +124,7 @@ class EventListViewModel @Inject constructor(
             _todayEvents.value = it
         }
     }
+
+    fun refresh() = getData()
 
 }
