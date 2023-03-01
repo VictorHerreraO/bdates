@@ -72,7 +72,8 @@ fun AddEventSheetContent(
                 .heightIn(min = 48.dp),
             colors = ButtonDefaults.buttonColors(
                 backgroundColor = MaterialTheme.colors.secondary
-            )
+            ),
+            enabled = state.isSaveEnabled,
         ) {
             Text(
                 text = stringResource(
@@ -240,6 +241,7 @@ fun AddEventContentPreview() {
                 selectedDate = LocalDate.now(),
                 editMode = EditMode.CREATE,
                 isYearDisabled = false,
+                isSaveEnabled = true,
             ),
             onEventNameChange = {},
             onDateSelected = {},

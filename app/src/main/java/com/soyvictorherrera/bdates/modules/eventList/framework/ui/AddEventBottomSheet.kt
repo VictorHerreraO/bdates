@@ -13,11 +13,15 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.soyvictorherrera.bdates.core.compose.theme.setBdatesContent
+import com.soyvictorherrera.bdates.core.navigation.NavigationEvent
+import com.soyvictorherrera.bdates.core.navigation.consume
 import com.soyvictorherrera.bdates.modules.eventList.framework.presentation.AddEventViewModel
 import com.soyvictorherrera.bdates.modules.eventList.framework.ui.compose.AddEventSheetContent
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class AddEventBottomSheet : BottomSheetDialogFragment() {
@@ -44,6 +48,17 @@ class AddEventBottomSheet : BottomSheetDialogFragment() {
         }
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.navigation.collect {
+                it.consume { event ->
+                    when (event) {
+                        NavigationEvent.NavigateBack -> dismiss()
+                    }
+                }
+            }
+        }
+    }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return super.onCreateDialog(savedInstanceState).apply {

@@ -7,6 +7,7 @@ data class AddEventViewState(
     val selectedDate: LocalDate,
     val editMode: EditMode,
     val isYearDisabled: Boolean,
+    val isSaveEnabled: Boolean,
 )
 
 enum class EditMode {
