@@ -1,6 +1,7 @@
 package com.soyvictorherrera.bdates.modules.circles.data.datasource.local
 
 import com.google.common.truth.Truth.assertThat
+import com.soyvictorherrera.bdates.modules.circles.data.circleEntity
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.just
@@ -82,11 +83,4 @@ class LocalCircleDataSourceTest {
 
         subjectUnderTest.updateCircle(entity)
     }
-
-    private fun circleEntity() = CircleEntity(
-        id = "circle-id",
-        name = "circle name",
-        description = "circle description",
-        isLocalOnly = true
-    )
 }
