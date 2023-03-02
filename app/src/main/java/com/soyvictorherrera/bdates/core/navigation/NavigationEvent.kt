@@ -15,6 +15,6 @@ sealed class NavigationEvent {
         private set
 }
 
-inline fun NavigationEvent?.consume(consumer: (NavigationEvent) -> Unit) {
+inline fun <T : NavigationEvent> T?.consume(consumer: (T) -> Unit) {
     this?.takeIf { consumed.not() }?.let(consumer)
 }
