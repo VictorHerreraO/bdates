@@ -4,19 +4,21 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import javax.inject.Singleton
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.SupervisorJob
 
 @Module
 @InstallIn(SingletonComponent::class)
-class CoroutinesModule {
+object CoroutinesModule {
 
     @Provides
+    @Singleton
     @MainCoroutineScope
     fun provideMainCoroutineScope(): CoroutineScope {
-        return MainScope()
+        return CoroutineScope(SupervisorJob() + Dispatchers.Default)
     }
 
     @Provides
