@@ -13,7 +13,7 @@ interface CirclePreferencesContract {
 class CirclePreferences @Inject constructor(
     private val store: KeyValueStoreContract
 ) : CirclePreferencesContract {
-    companion object {
+    private companion object {
         val IS_LOCAL_CIRCLE_CREATED_KEY = booleanKey("is_local_circle_created")
         val LOCAL_CIRCLE_ID_KEY = stringKey("local_circle_id")
     }
