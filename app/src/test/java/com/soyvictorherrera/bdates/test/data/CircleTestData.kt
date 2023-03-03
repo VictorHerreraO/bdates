@@ -1,4 +1,4 @@
-package com.soyvictorherrera.bdates.modules.circles.data
+package com.soyvictorherrera.bdates.test.data
 
 import com.soyvictorherrera.bdates.modules.circles.data.datasource.local.CircleEntity
 import com.soyvictorherrera.bdates.modules.circles.domain.model.Circle

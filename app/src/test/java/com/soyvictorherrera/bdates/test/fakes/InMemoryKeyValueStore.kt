@@ -1,4 +1,7 @@
-package com.soyvictorherrera.bdates.core.persistence
+package com.soyvictorherrera.bdates.test.fakes
+
+import com.soyvictorherrera.bdates.core.persistence.Key
+import com.soyvictorherrera.bdates.core.persistence.KeyValueStoreContract
 
 @Suppress("UNCHECKED_CAST")
 class InMemoryKeyValueStore : KeyValueStoreContract {

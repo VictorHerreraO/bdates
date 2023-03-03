@@ -1,7 +1,7 @@
 package com.soyvictorherrera.bdates.modules.circles.data.preferences
 
 import com.google.common.truth.Truth.assertThat
-import com.soyvictorherrera.bdates.core.persistence.InMemoryKeyValueStore
+import com.soyvictorherrera.bdates.test.fakes.InMemoryKeyValueStore
 import com.soyvictorherrera.bdates.core.persistence.KeyValueStoreContract
 import org.junit.Before
 import org.junit.Test

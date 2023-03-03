@@ -1,7 +1,7 @@
 package com.soyvictorherrera.bdates.modules.circles.data.datasource.local
 
 import com.google.common.truth.Truth.assertThat
-import com.soyvictorherrera.bdates.modules.circles.data.circleEntity
+import com.soyvictorherrera.bdates.test.data.circleEntity
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.just

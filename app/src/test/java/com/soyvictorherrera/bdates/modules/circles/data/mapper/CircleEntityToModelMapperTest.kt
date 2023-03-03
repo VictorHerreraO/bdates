@@ -1,8 +1,8 @@
 package com.soyvictorherrera.bdates.modules.circles.data.mapper
 
 import com.google.common.truth.Truth.assertThat
-import com.soyvictorherrera.bdates.modules.circles.data.circleEntity
-import com.soyvictorherrera.bdates.modules.circles.data.circleModel
+import com.soyvictorherrera.bdates.test.data.circleEntity
+import com.soyvictorherrera.bdates.test.data.circleModel
 import org.junit.Test
 
 class CircleEntityToModelMapperTest {

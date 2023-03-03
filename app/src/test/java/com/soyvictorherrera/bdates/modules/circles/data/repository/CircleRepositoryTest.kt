@@ -2,8 +2,8 @@ package com.soyvictorherrera.bdates.modules.circles.data.repository
 
 import com.google.common.truth.Truth.assertThat
 import com.soyvictorherrera.bdates.core.arch.Mapper
-import com.soyvictorherrera.bdates.modules.circles.data.circleEntity
-import com.soyvictorherrera.bdates.modules.circles.data.circleModel
+import com.soyvictorherrera.bdates.test.data.circleEntity
+import com.soyvictorherrera.bdates.test.data.circleModel
 import com.soyvictorherrera.bdates.modules.circles.data.datasource.local.CircleEntity
 import com.soyvictorherrera.bdates.modules.circles.data.datasource.local.LocalCircleDataSourceContract
 import com.soyvictorherrera.bdates.modules.circles.domain.model.Circle
