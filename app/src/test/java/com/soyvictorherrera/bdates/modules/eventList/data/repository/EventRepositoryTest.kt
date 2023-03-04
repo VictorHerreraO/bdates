@@ -6,35 +6,35 @@ import com.soyvictorherrera.bdates.modules.eventList.data.datasource.assets.Asse
 import com.soyvictorherrera.bdates.modules.eventList.data.datasource.local.EventEntity
 import com.soyvictorherrera.bdates.modules.eventList.data.datasource.local.LocalEventDataSourceContract
 import com.soyvictorherrera.bdates.modules.eventList.domain.model.Event
+import com.soyvictorherrera.bdates.test.data.event
+import com.soyvictorherrera.bdates.test.data.eventEntity
 import com.soyvictorherrera.bdates.test.data.eventEntityBar
 import com.soyvictorherrera.bdates.test.data.eventModelBar
 import com.soyvictorherrera.bdates.test.data.eventModelFoo
+import io.mockk.coEvery
+import io.mockk.coVerify
+import io.mockk.every
+import io.mockk.mockk
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Test
-import org.junit.runner.RunWith
-import org.mockito.Mock
-import org.mockito.junit.MockitoJUnitRunner
-import org.mockito.kotlin.any
-import org.mockito.kotlin.whenever
 
-@RunWith(MockitoJUnitRunner::class)
+@OptIn(ExperimentalCoroutinesApi::class)
 class EventRepositoryTest {
 
-    @Mock
-    private lateinit var assetsDataSource: AssetEventDatasourceContract
+    private val assetsDataSource = mockk<AssetEventDatasourceContract>()
 
-    @Mock
-    private lateinit var localDataSource: LocalEventDataSourceContract
+    private val localDataSource = mockk<LocalEventDataSourceContract>()
 
-    @Mock
-    private lateinit var localMapper: Mapper<EventEntity, Event>
+    private val localMapper = mockk<Mapper<EventEntity, Event>>()
 
-    private lateinit var events: EventRepository
+    private lateinit var subjectUnderTest: EventRepository
 
     @Before
     fun setup() {
-        events = EventRepository(
+        subjectUnderTest = EventRepository(
             assetsDataSource = assetsDataSource,
             localDataSource = localDataSource,
             localMapper = localMapper
@@ -48,11 +48,11 @@ class EventRepositoryTest {
         val expectedEvent = eventModelBar()
         val expectedList = listOf(expectedAssetEvent, expectedEvent)
 
-        whenever(assetsDataSource.getEventList()).thenReturn(listOf(expectedAssetEvent))
-        whenever(localDataSource.getEventList()).thenReturn(listOf(localEvent))
-        whenever(localMapper.map(any())).thenReturn(expectedEvent)
+        coEvery { assetsDataSource.getEventList() } returns listOf(expectedAssetEvent)
+        coEvery { localDataSource.getEventList() } returns listOf(localEvent)
+        every { localMapper.map(any()) } returns expectedEvent
 
-        val result = events.getEventList()
+        val result = subjectUnderTest.getEventList()
 
         assertThat(result).isNotNull()
         assertThat(result).isNotEmpty()
@@ -63,9 +63,33 @@ class EventRepositoryTest {
 
     @Test(expected = RuntimeException::class)
     fun get_event_list_error_propagates(): Unit = runBlocking {
-        whenever(assetsDataSource.getEventList()).thenThrow(RuntimeException::class.java)
+        coEvery { assetsDataSource.getEventList() } throws RuntimeException()
 
-        events.getEventList()
+        subjectUnderTest.getEventList()
     }
 
+    @Test
+    fun `verify create event`() = runTest {
+        val expectedId = "expected-id"
+        val event = event().copy(id = "")
+
+        every { localMapper.reverseMap(any()) } returns eventEntity()
+        coEvery { localDataSource.createEvent(any()) } returns expectedId
+
+        var result: String? = null
+
+        subjectUnderTest.createEvent(event) {
+            result = it
+        }
+
+        assertThat(result).isEqualTo(expectedId)
+        coVerify(exactly = 1) { localDataSource.createEvent(any()) }
+    }
+
+    @Test(expected = IllegalArgumentException::class)
+    fun `expect IllegalArgumentException when create event with id`() = runTest {
+        val event = event()
+
+        subjectUnderTest.createEvent(event)
+    }
 }
