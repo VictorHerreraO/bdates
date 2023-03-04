@@ -6,6 +6,9 @@ import com.soyvictorherrera.bdates.modules.eventList.data.datasource.assets.Asse
 import com.soyvictorherrera.bdates.modules.eventList.data.datasource.local.EventEntity
 import com.soyvictorherrera.bdates.modules.eventList.data.datasource.local.LocalEventDataSourceContract
 import com.soyvictorherrera.bdates.modules.eventList.domain.model.Event
+import com.soyvictorherrera.bdates.test.data.eventEntityBar
+import com.soyvictorherrera.bdates.test.data.eventModelBar
+import com.soyvictorherrera.bdates.test.data.eventModelFoo
 import kotlinx.coroutines.runBlocking
 import org.junit.Before
 import org.junit.Test
@@ -40,25 +43,9 @@ class EventRepositoryTest {
 
     @Test
     fun get_event_list() = runBlocking {
-        val expectedAssetEvent = Event(
-            id = "event-id",
-            circleId = "circle-id",
-            name = "asset event name",
-            dayOfMonth = 31,
-            monthOfYear = 12,
-            year = null
-        )
-        val localEvent = EventEntity(
-            id = "event-id-2",
-            circleId = "circle-id",
-            name = "local event name",
-            dayOfMonth = 31,
-            monthOfYear = 12,
-            year = null,
-        )
-        val expectedEvent = with(localEvent) {
-            Event(id, circleId, name, dayOfMonth, monthOfYear, year)
-        }
+        val expectedAssetEvent = eventModelFoo()
+        val localEvent = eventEntityBar()
+        val expectedEvent = eventModelBar()
         val expectedList = listOf(expectedAssetEvent, expectedEvent)
 
         whenever(assetsDataSource.getEventList()).thenReturn(listOf(expectedAssetEvent))

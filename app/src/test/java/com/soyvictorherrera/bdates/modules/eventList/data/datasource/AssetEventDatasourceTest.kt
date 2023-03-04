@@ -5,6 +5,7 @@ import com.soyvictorherrera.bdates.core.arch.Mapper
 import com.soyvictorherrera.bdates.modules.eventList.data.datasource.assets.AssetEventDatasource
 import com.soyvictorherrera.bdates.modules.eventList.data.datasource.assets.AssetFileManagerContract
 import com.soyvictorherrera.bdates.modules.eventList.domain.model.Event
+import com.soyvictorherrera.bdates.test.data.event
 import kotlinx.coroutines.runBlocking
 import org.json.JSONObject
 import org.junit.Before
@@ -27,18 +28,8 @@ class AssetEventDatasourceTest {
 
     private lateinit var datasource: AssetEventDatasource
 
-    private val expectedEvent = Event(
-        id = "id-event",
-        circleId = "id-circle",
-        name = "event-name",
-        dayOfMonth = 1,
-        monthOfYear = 1,
-        year = 1970
-    )
-
     @Before
     fun setup() {
-        whenever(mockMapper.map(any())).thenReturn(expectedEvent)
 
         datasource = AssetEventDatasource(
             assets = mockAssets,
@@ -48,7 +39,10 @@ class AssetEventDatasourceTest {
 
     @Test
     fun get_event_list() = runBlocking {
+        val expectedEvent = event()
         val arrayString = "[{}]"
+
+        whenever(mockMapper.map(any())).thenReturn(expectedEvent)
         whenever(mockAssets.openAsString(anyString())).thenReturn(arrayString)
 
         val events = datasource.getEventList()

@@ -4,6 +4,7 @@ import com.soyvictorherrera.bdates.core.date.DateProviderContract
 import com.soyvictorherrera.bdates.modules.eventList.domain.model.Event
 import com.soyvictorherrera.bdates.modules.eventList.domain.usecase.GetUpcomingEventListUseCaseContract
 import com.soyvictorherrera.bdates.modules.notifications.NotificationManagerContract
+import com.soyvictorherrera.bdates.test.data.event
 import java.time.LocalDate
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.*
@@ -52,13 +53,7 @@ class UpcomingEventNotificationDelegateTest {
 
     ) = runBlocking {
         val eventDate = upcomingEventDate
-        val event = Event(
-            id = "1",
-            circleId = "circle-id",
-            name = "notification event",
-            dayOfMonth = eventDate.dayOfMonth,
-            monthOfYear = eventDate.monthValue,
-            year = eventDate.year,
+        val event = event(withDate = eventDate).copy(
             currentYearOccurrence = eventDate,
             nextOccurrence = eventDate
         )

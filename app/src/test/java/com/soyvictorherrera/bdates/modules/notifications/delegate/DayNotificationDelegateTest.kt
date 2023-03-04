@@ -3,6 +3,7 @@ package com.soyvictorherrera.bdates.modules.notifications.delegate
 import com.soyvictorherrera.bdates.modules.eventList.domain.model.Event
 import com.soyvictorherrera.bdates.modules.eventList.domain.usecase.GetDayEventListUseCaseContract
 import com.soyvictorherrera.bdates.modules.notifications.NotificationManagerContract
+import com.soyvictorherrera.bdates.test.data.event
 import java.time.LocalDate
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.*
@@ -42,13 +43,7 @@ class DayNotificationDelegateTest {
     @Test
     fun `verify show events reminder is called when event list is not empty`() = runBlocking {
         val eventDate = today
-        val event = Event(
-            id = "1",
-            circleId = "circle-id",
-            name = "notification event",
-            dayOfMonth = eventDate.dayOfMonth,
-            monthOfYear = eventDate.monthValue,
-            year = eventDate.year,
+        val event = event(withDate = eventDate).copy(
             currentYearOccurrence = eventDate,
             nextOccurrence = eventDate.plusYears(1)
         )

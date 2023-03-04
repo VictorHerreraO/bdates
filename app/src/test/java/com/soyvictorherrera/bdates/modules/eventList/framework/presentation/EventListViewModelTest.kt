@@ -3,10 +3,10 @@ package com.soyvictorherrera.bdates.modules.eventList.framework.presentation
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.soyvictorherrera.bdates.core.date.DateProviderContract
 import com.soyvictorherrera.bdates.core.resource.ResourceManagerContract
-import com.soyvictorherrera.bdates.modules.eventList.domain.model.Event
 import com.soyvictorherrera.bdates.modules.eventList.domain.usecase.FilterEventListUseCaseContract
 import com.soyvictorherrera.bdates.modules.eventList.domain.usecase.GetDayEventListUseCaseContract
 import com.soyvictorherrera.bdates.modules.eventList.domain.usecase.GetNonDayEventListUseCaseContract
+import com.soyvictorherrera.bdates.test.data.event
 import com.soyvictorherrera.bdates.util.MainCoroutineRule
 import com.soyvictorherrera.bdates.util.getOrAwaitValue
 import java.time.LocalDate
@@ -70,13 +70,7 @@ class EventListViewModelTest {
     fun `assert that events get loaded on init`() = runTest {
         val tomorrow = today.plusDays(1)
         val events = listOf(
-            Event(
-                id = "1",
-                circleId = "circle-id",
-                name = "Test",
-                dayOfMonth = tomorrow.dayOfMonth,
-                monthOfYear = tomorrow.monthValue,
-                year = tomorrow.year,
+            event(withDate = tomorrow).copy(
                 nextOccurrence = tomorrow
             )
         )
@@ -94,13 +88,7 @@ class EventListViewModelTest {
     @Test
     fun `assert that day events get loaded on init`() = runTest {
         val events = listOf(
-            Event(
-                id = "1",
-                circleId = "circle-id",
-                name = "Test",
-                dayOfMonth = today.dayOfMonth,
-                monthOfYear = today.monthValue,
-                year = today.year,
+            event(withDate = today).copy(
                 currentYearOccurrence = today,
                 nextOccurrence = today
             )

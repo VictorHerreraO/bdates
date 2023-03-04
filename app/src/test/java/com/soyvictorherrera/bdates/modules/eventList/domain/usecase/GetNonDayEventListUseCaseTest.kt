@@ -2,6 +2,7 @@ package com.soyvictorherrera.bdates.modules.eventList.domain.usecase
 
 import com.soyvictorherrera.bdates.core.date.DateProviderContract
 import com.soyvictorherrera.bdates.modules.eventList.domain.model.Event
+import com.soyvictorherrera.bdates.test.data.event
 import java.time.LocalDate
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
@@ -39,13 +40,7 @@ internal class GetNonDayEventListUseCaseTest {
     fun `assert day event list is empty`() = runTest {
         val eventDate = today
         val events = listOf(
-            Event(
-                id = "1",
-                circleId = "circle-id",
-                name = "event",
-                dayOfMonth = eventDate.dayOfMonth,
-                monthOfYear = eventDate.monthValue,
-                year = eventDate.year,
+            event(withDate = eventDate).copy(
                 currentYearOccurrence = eventDate,
                 nextOccurrence = eventDate.plusYears(1),
             )
@@ -61,13 +56,7 @@ internal class GetNonDayEventListUseCaseTest {
     fun `assert day event list is not empty`() = runTest {
         val eventDate = today.plusDays(1)
         val events = listOf(
-            Event(
-                id = "1",
-                circleId = "circle-id",
-                name = "event",
-                dayOfMonth = eventDate.dayOfMonth,
-                monthOfYear = eventDate.monthValue,
-                year = eventDate.year,
+            event(withDate = eventDate).copy(
                 currentYearOccurrence = eventDate,
                 nextOccurrence = eventDate,
             )
