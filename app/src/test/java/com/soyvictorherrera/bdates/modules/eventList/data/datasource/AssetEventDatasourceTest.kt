@@ -6,7 +6,9 @@ import com.soyvictorherrera.bdates.modules.eventList.data.datasource.assets.Asse
 import com.soyvictorherrera.bdates.modules.eventList.data.datasource.assets.AssetFileManagerContract
 import com.soyvictorherrera.bdates.modules.eventList.domain.model.Event
 import com.soyvictorherrera.bdates.test.data.event
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
 import org.json.JSONObject
 import org.junit.Before
 import org.junit.Test
@@ -17,6 +19,7 @@ import org.mockito.junit.MockitoJUnitRunner
 import org.mockito.kotlin.any
 import org.mockito.kotlin.whenever
 
+@OptIn(ExperimentalCoroutinesApi::class)
 @RunWith(MockitoJUnitRunner::class)
 class AssetEventDatasourceTest {
 
@@ -26,12 +29,12 @@ class AssetEventDatasourceTest {
     @Mock
     private lateinit var mockMapper: Mapper<JSONObject, Event>
 
-    private lateinit var datasource: AssetEventDatasource
+    private lateinit var subjectUnderTest: AssetEventDatasource
 
     @Before
     fun setup() {
 
-        datasource = AssetEventDatasource(
+        subjectUnderTest = AssetEventDatasource(
             assets = mockAssets,
             jsonToEventMapper = mockMapper
         )
@@ -45,7 +48,7 @@ class AssetEventDatasourceTest {
         whenever(mockMapper.map(any())).thenReturn(expectedEvent)
         whenever(mockAssets.openAsString(anyString())).thenReturn(arrayString)
 
-        val events = datasource.getEventList()
+        val events = subjectUnderTest.getEventList()
 
         assertThat(events).isNotEmpty()
         assertThat(events).hasSize(1)
@@ -57,9 +60,16 @@ class AssetEventDatasourceTest {
         val expectedException = RuntimeException("error reading file")
         whenever(mockAssets.openAsString(anyString())).thenThrow(expectedException)
 
-        val events = datasource.getEventList()
+        val events = subjectUnderTest.getEventList()
 
         assertThat(events).isEmpty()
+    }
+
+    @Test(expected = UnsupportedOperationException::class)
+    fun `expect UnsupportedOperationException when calling create event`() = runTest {
+        val event = event()
+
+        subjectUnderTest.createEvent(event)
     }
 
 }
