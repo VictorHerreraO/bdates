@@ -8,7 +8,7 @@ import javax.inject.Inject
 
 class CircleRepository @Inject constructor(
     private val localDataSource: LocalCircleDataSourceContract,
-    private val localMapper: Mapper<CircleEntity, Circle>
+    private val localMapper: Mapper<CircleEntity, Circle>,
 ) : CircleRepositoryContract {
 
     override suspend fun getCircles(): List<Circle> {

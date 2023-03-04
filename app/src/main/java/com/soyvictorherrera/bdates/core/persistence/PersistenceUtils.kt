@@ -23,7 +23,7 @@ fun randomUUID(): String = UUID.randomUUID().toString()
  */
 suspend fun <T, R> MutableList<R>.addSource(
     source: T,
-    fetch: suspend T.() -> Collection<R>
+    fetch: suspend T.() -> Collection<R>,
 ): MutableList<R> {
     addAll(source.fetch())
     return this

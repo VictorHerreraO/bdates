@@ -19,7 +19,7 @@ private const val DEFAULT_HOUR_OF_DAY = 8
 private const val DEFAULT_MINUTE_OF_HOUR = 0
 
 class NotificationManager @Inject constructor(
-    private val context: Context
+    private val context: Context,
 ) : NotificationManagerContract {
 
     private val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
@@ -86,7 +86,7 @@ class NotificationManager @Inject constructor(
     override fun showUpcomingEventsReminder(
         eventCount: Int,
         eventName: String,
-        eventDateString: String
+        eventDateString: String,
     ) {
         if (eventCount <= 0) {
             Timber.v("event count is 0")
@@ -159,7 +159,7 @@ class NotificationManager @Inject constructor(
         channelId: String,
         channelName: String,
         channelDescription: String? = null,
-        channelImportance: Int = AndroidNotificationManager.IMPORTANCE_DEFAULT
+        channelImportance: Int = AndroidNotificationManager.IMPORTANCE_DEFAULT,
     ) {
         val channel = AndroidNotificationChannel(
             channelId,

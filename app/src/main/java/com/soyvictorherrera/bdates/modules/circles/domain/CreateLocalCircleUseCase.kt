@@ -15,7 +15,7 @@ interface CreateLocalCircleUseCaseContract : UseCase<Unit, Unit> {
 
 class CreateLocalCircleUseCase @Inject constructor(
     private val circlePreferences: CirclePreferencesContract,
-    private val circleRepository: CircleRepositoryContract
+    private val circleRepository: CircleRepositoryContract,
 ) : CreateLocalCircleUseCaseContract {
 
     private companion object {

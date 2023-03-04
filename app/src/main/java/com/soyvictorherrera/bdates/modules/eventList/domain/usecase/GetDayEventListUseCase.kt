@@ -16,7 +16,7 @@ interface GetDayEventListUseCaseContract : UseCase<Unit, List<Event>> {
 
 class GetDayEventListUseCase @Inject constructor(
     dateProvider: DateProviderContract,
-    private val getEventListUseCase: GetEventListUseCaseContract
+    private val getEventListUseCase: GetEventListUseCaseContract,
 ) : GetDayEventListUseCaseContract {
     private val today = dateProvider.currentLocalDate
 

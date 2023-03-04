@@ -19,24 +19,24 @@ abstract class NotificationsModule {
     @Binds
     @Singleton
     abstract fun bindContext(
-        application: Application
+        application: Application,
     ): Context
 
     @Binds
     @Singleton
     abstract fun bindNotificationManagerContract(
-        notificationManager: NotificationManager
+        notificationManager: NotificationManager,
     ): NotificationManagerContract
 
     @Binds
     @Singleton
     abstract fun bindDayNotificationDelegateContract(
-        dayNotificationDelegate: DayNotificationDelegate
+        dayNotificationDelegate: DayNotificationDelegate,
     ): DayNotificationDelegateContract
 
     @Binds
     @Singleton
     abstract fun bindUpcomingEventNotificationDelegateContract(
-        upcomingEventNotificationDelegate: UpcomingEventNotificationDelegate
+        upcomingEventNotificationDelegate: UpcomingEventNotificationDelegate,
     ): UpcomingEventNotificationDelegateContract
 }

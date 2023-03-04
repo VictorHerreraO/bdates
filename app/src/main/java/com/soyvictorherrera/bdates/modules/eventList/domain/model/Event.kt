@@ -10,5 +10,5 @@ data class Event(
     val monthOfYear: Int,
     val year: Int?,
     val currentYearOccurrence: LocalDate? = null,
-    val nextOccurrence: LocalDate? = null
+    val nextOccurrence: LocalDate? = null,
 )

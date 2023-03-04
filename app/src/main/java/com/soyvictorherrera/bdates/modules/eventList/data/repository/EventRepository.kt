@@ -13,7 +13,7 @@ import timber.log.Timber
 class EventRepository @Inject constructor(
     private val assetsDataSource: AssetEventDatasourceContract,
     private val localDataSource: LocalEventDataSourceContract,
-    private val localMapper: Mapper<EventEntity, Event>
+    private val localMapper: Mapper<EventEntity, Event>,
 ) : EventRepositoryContract {
     override suspend fun getEventList(): List<Event> {
         return mutableListOf<Event>()

@@ -40,47 +40,47 @@ abstract class EventListModule {
 
     @Binds
     abstract fun bindGetEventListUseCase(
-        getEventListUseCase: GetEventListUseCase
+        getEventListUseCase: GetEventListUseCase,
     ): GetEventListUseCaseContract
 
     @Binds
     abstract fun bindFilterEventListUseCase(
-        filterEventListUseCase: FilterEventListUseCase
+        filterEventListUseCase: FilterEventListUseCase,
     ): FilterEventListUseCaseContract
 
     @Binds
     abstract fun bindAssetFileManager(
-        assetFileManager: AssetFileManager
+        assetFileManager: AssetFileManager,
     ): AssetFileManagerContract
 
     @Binds
     abstract fun bindAssetEventDatasourceContract(
-        assetEventDatasource: AssetEventDatasource
+        assetEventDatasource: AssetEventDatasource,
     ): AssetEventDatasourceContract
 
     @Binds
     abstract fun bindEventRepositoryContract(
-        eventRepository: EventRepository
+        eventRepository: EventRepository,
     ): EventRepositoryContract
 
     @Binds
     abstract fun bindGetDayEventListUseCaseContract(
-        getDayEventListUseCase: GetDayEventListUseCase
+        getDayEventListUseCase: GetDayEventListUseCase,
     ): GetDayEventListUseCaseContract
 
     @Binds
     abstract fun bindGetNonDayEventListUseCaseContract(
-        getNonDayEventListUseCase: GetNonDayEventListUseCase
+        getNonDayEventListUseCase: GetNonDayEventListUseCase,
     ): GetNonDayEventListUseCaseContract
 
     @Binds
     abstract fun bindGetUpcomingEventListUseCaseContract(
-        getUpcomingEventListUseCase: GetUpcomingEventListUseCase
+        getUpcomingEventListUseCase: GetUpcomingEventListUseCase,
     ): GetUpcomingEventListUseCaseContract
 
     @Binds
     abstract fun bindLocalEventDataSourceContract(
-        localEventDataSource: LocalEventDataSource
+        localEventDataSource: LocalEventDataSource,
     ): LocalEventDataSourceContract
 
     companion object {

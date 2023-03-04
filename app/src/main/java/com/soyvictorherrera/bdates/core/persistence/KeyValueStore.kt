@@ -45,7 +45,7 @@ interface KeyValueStoreContract {
 }
 
 class KeyValueStore @Inject constructor(
-    private val sharedPreferences: SharedPreferences
+    private val sharedPreferences: SharedPreferences,
 ) : KeyValueStoreContract {
 
     override fun <T : Any> set(key: Key<T>, value: T?) {

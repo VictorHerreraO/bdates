@@ -11,7 +11,7 @@ interface CirclePreferencesContract {
 }
 
 class CirclePreferences @Inject constructor(
-    private val store: KeyValueStoreContract
+    private val store: KeyValueStoreContract,
 ) : CirclePreferencesContract {
     private companion object {
         val IS_LOCAL_CIRCLE_CREATED_KEY = booleanKey("is_local_circle_created")

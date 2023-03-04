@@ -4,7 +4,7 @@ import android.content.Context
 import androidx.annotation.StringRes
 
 class ResourceManager(
-    context: Context
+    context: Context,
 ) : ResourceManagerContract {
 
     private val resources = context.resources

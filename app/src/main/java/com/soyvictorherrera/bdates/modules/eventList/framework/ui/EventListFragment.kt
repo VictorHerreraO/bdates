@@ -38,7 +38,7 @@ class EventListFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
         _binding = FragmentEventListBinding.inflate(inflater, container, false)
         return binding.root
@@ -46,7 +46,7 @@ class EventListFragment : Fragment() {
 
     override fun onViewCreated(
         view: View,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ) {
         initRecyclerView()
         setupListeners()

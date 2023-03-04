@@ -11,7 +11,7 @@ abstract class CoreDelegatesModule {
 
     @Binds
     abstract fun bindApplicationCreatedCallbackDelegateContract(
-        applicationCreatedCallbackDelegate: ApplicationCreatedCallbackDelegate
+        applicationCreatedCallbackDelegate: ApplicationCreatedCallbackDelegate,
     ): ApplicationCreatedCallbackDelegateContract
 
 }

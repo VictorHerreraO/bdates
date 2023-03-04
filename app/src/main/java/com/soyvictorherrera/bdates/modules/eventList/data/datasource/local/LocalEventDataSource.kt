@@ -7,7 +7,7 @@ import javax.inject.Inject
 interface LocalEventDataSourceContract : EventDataSourceContract<EventEntity>
 
 class LocalEventDataSource @Inject constructor(
-    private val dao: EventDao
+    private val dao: EventDao,
 ) : LocalEventDataSourceContract {
 
     override suspend fun getEventList(): List<EventEntity> {

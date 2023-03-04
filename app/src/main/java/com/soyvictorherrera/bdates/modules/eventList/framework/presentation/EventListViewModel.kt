@@ -26,7 +26,7 @@ class EventListViewModel @Inject constructor(
     private val resourceManager: ResourceManagerContract,
     private val getDayEventList: GetDayEventListUseCaseContract,
     private val getNonDayEventList: GetNonDayEventListUseCaseContract,
-    private val filterEventListUseCase: FilterEventListUseCaseContract
+    private val filterEventListUseCase: FilterEventListUseCaseContract,
 ) : ViewModel() {
 
     private val _events = MutableLiveData<List<EventViewState>>()

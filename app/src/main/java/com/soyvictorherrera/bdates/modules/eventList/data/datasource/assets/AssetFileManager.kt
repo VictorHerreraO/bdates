@@ -5,7 +5,7 @@ import java.io.IOException
 import javax.inject.Inject
 
 class AssetFileManager @Inject constructor(
-    private val assets: AssetManager
+    private val assets: AssetManager,
 ) : AssetFileManagerContract {
 
     @Throws(IOException::class)

@@ -3,9 +3,9 @@ package com.soyvictorherrera.bdates.core.delegate
 import com.soyvictorherrera.bdates.modules.circles.domain.CreateLocalCircleUseCaseContract
 import com.soyvictorherrera.bdates.modules.notifications.NotificationManagerContract
 import io.mockk.coEvery
-import io.mockk.just
 import io.mockk.coVerify
 import io.mockk.every
+import io.mockk.just
 import io.mockk.mockk
 import io.mockk.runs
 import io.mockk.verify

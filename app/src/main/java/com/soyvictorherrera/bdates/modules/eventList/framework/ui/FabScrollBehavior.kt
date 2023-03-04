@@ -7,7 +7,7 @@ private const val SCROLL_UP_THRESHOLD = -1
 private const val SCROLL_DOWN_THRESHOLD = 15
 
 class FabScrollBehavior(
-    private val fab: ExtendedFloatingActionButton
+    private val fab: ExtendedFloatingActionButton,
 ) : RecyclerView.OnScrollListener() {
     override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) = Unit
 

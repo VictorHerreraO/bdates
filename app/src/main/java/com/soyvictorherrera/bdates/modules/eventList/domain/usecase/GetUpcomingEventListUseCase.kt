@@ -15,7 +15,7 @@ interface GetUpcomingEventListUseCaseContract : UseCase<Unit, List<Event>> {
 
 class GetUpcomingEventListUseCase @Inject constructor(
     private val dateProvider: DateProviderContract,
-    private val getEventListUse: GetEventListUseCaseContract
+    private val getEventListUse: GetEventListUseCaseContract,
 ) : GetUpcomingEventListUseCaseContract {
     override suspend fun execute(): List<Event> {
         val today = dateProvider.currentLocalDate

@@ -12,7 +12,7 @@ interface AssetEventDatasourceContract : EventDataSourceContract<Event>
 
 class AssetEventDatasource @Inject constructor(
     private val assets: AssetFileManagerContract,
-    private val jsonToEventMapper: Mapper<JSONObject, Event>
+    private val jsonToEventMapper: Mapper<JSONObject, Event>,
 ) : AssetEventDatasourceContract {
     companion object {
         const val EVENTS_FILE = "events.json"

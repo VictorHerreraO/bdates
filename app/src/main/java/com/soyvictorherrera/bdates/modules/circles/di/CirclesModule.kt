@@ -26,23 +26,23 @@ abstract class CirclesModule {
 
     @Binds
     abstract fun bindLocalCircleDataSourceContract(
-        dataSource: LocalCircleDataSource
+        dataSource: LocalCircleDataSource,
     ): LocalCircleDataSourceContract
 
     @Binds
     abstract fun bindCircleRepositoryContract(
-        repository: CircleRepository
+        repository: CircleRepository,
     ): CircleRepositoryContract
 
     @Binds
     abstract fun bindCirclePreferencesContract(
-        circlePreferences: CirclePreferences
+        circlePreferences: CirclePreferences,
     ): CirclePreferencesContract
 
     //region Use cases
     @Binds
     abstract fun bindCreateLocalCircleUseCaseContract(
-        createLocalCircleUseCase: CreateLocalCircleUseCase
+        createLocalCircleUseCase: CreateLocalCircleUseCase,
     ): CreateLocalCircleUseCaseContract
     //endregion
 

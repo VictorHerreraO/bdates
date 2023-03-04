@@ -10,7 +10,7 @@ interface DateFormattersContract {
 }
 
 class DateFormatters @Inject constructor(
-    resourceManager: ResourceManagerContract
+    resourceManager: ResourceManagerContract,
 ) : DateFormattersContract {
 
     override val dayFormatter: DateTimeFormatter = resourceManager.run {

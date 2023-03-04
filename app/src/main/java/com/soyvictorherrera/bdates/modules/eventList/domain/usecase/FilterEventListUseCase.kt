@@ -6,7 +6,7 @@ import javax.inject.Inject
 
 data class FilterEventListArgs(
     val eventList: List<Event>,
-    val query: String
+    val query: String,
 )
 
 interface FilterEventListUseCaseContract : UseCase<FilterEventListArgs, Result<List<Event>>>

@@ -7,7 +7,7 @@ import javax.inject.Inject
 interface LocalCircleDataSourceContract : CircleDataSourceContract<CircleEntity>
 
 class LocalCircleDataSource @Inject constructor(
-    private val dao: CircleDao
+    private val dao: CircleDao,
 ) : LocalCircleDataSourceContract {
     override suspend fun getCircles(): List<CircleEntity> {
         return dao.getAll()
