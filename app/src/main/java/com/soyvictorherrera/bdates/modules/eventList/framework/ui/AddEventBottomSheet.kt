@@ -7,7 +7,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.compose.foundation.layout.Column
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.ComposeView
@@ -36,16 +35,14 @@ class AddEventBottomSheet : BottomSheetDialogFragment() {
         setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
         setBdatesContent {
             val state by viewModel.state.collectAsState()
-            Column {
-                AddEventSheetContent(
-                    state = state,
-                    onEventNameChange = viewModel::onEventNameChange,
-                    onDateSelected = viewModel::onDateSelected,
-                    onYearDisabled = viewModel::onYearDisabled,
-                    onActionClick = viewModel::onActionClick,
-                    onBottomSheetDismiss = { dismiss() }
-                )
-            }
+            AddEventSheetContent(
+                state = state,
+                onEventNameChange = viewModel::onEventNameChange,
+                onDateSelected = viewModel::onDateSelected,
+                onYearDisabled = viewModel::onYearDisabled,
+                onActionClick = viewModel::onActionClick,
+                onBottomSheetDismiss = { dismiss() }
+            )
         }
     }
 

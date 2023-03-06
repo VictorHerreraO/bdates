@@ -36,6 +36,7 @@ import com.soyvictorherrera.bdates.core.compose.layout.BottomSheet
 import com.soyvictorherrera.bdates.core.compose.layout.SpacerL
 import com.soyvictorherrera.bdates.core.compose.layout.SpacerSm
 import com.soyvictorherrera.bdates.core.compose.layout.SpacerXs
+import com.soyvictorherrera.bdates.core.compose.modifier.clearFocusOnTap
 import com.soyvictorherrera.bdates.core.compose.theme.BdatesTheme
 import com.soyvictorherrera.bdates.modules.eventList.framework.presentation.AddEventViewState
 import com.soyvictorherrera.bdates.modules.eventList.framework.presentation.EditMode
@@ -86,7 +87,8 @@ fun AddEventSheetContent(
     },
     modifier = modifier
         .nestedScroll(rememberNestedScrollInteropConnection())
-        .verticalScroll(state = rememberScrollState()),
+        .verticalScroll(state = rememberScrollState())
+        .clearFocusOnTap(),
 ) {
     Column {
         EventNameSection(
