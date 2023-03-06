@@ -52,6 +52,8 @@ fun AddEventSheetContent(
     state: AddEventViewState,
     onEventNameChange: (String) -> Unit,
     onDateSelected: (LocalDate) -> Unit,
+    onYearSelected: (Int) -> Unit,
+    onYearCleared: () -> Unit,
     onYearDisabled: (Boolean) -> Unit,
     onActionClick: () -> Unit,
     onBottomSheetDismiss: () -> Unit,
@@ -106,10 +108,12 @@ fun AddEventSheetContent(
         SpacerL()
 
         EventYearSection(
-            selectedDate = state.selectedDate,
+            selectedYear = state.selectedYear,
             isYearDisabled = state.isYearDisabled,
-            onDateSelected = onDateSelected,
+            onYearSelected = onYearSelected,
+            onYearCleared = onYearCleared,
             onYearDisabled = onYearDisabled,
+            validYearRange = state.validYearRange,
         )
     }
 }
@@ -177,10 +181,12 @@ fun EventDateSection(
 
 @Composable
 fun EventYearSection(
-    selectedDate: LocalDate,
+    selectedYear: Int?,
     isYearDisabled: Boolean,
-    onDateSelected: (LocalDate) -> Unit,
+    onYearSelected: (Int) -> Unit,
+    onYearCleared: () -> Unit,
     onYearDisabled: (Boolean) -> Unit,
+    validYearRange: IntRange,
 ) {
     Row(verticalAlignment = Alignment.CenterVertically) {
         Icon(
@@ -205,9 +211,11 @@ fun EventYearSection(
     }
 
     YearSelector(
-        selectedDate = selectedDate,
-        onDateSelected = onDateSelected,
+        selectedYear = selectedYear,
+        onYearSelected = onYearSelected,
+        onYearCleared = onYearCleared,
         enabled = isYearDisabled.not(),
+        validYearRange = validYearRange,
     )
 
     Row(
@@ -240,12 +248,16 @@ fun AddEventContentPreview() {
             state = AddEventViewState(
                 eventName = "John Appleseed",
                 selectedDate = LocalDate.now(),
+                selectedYear = LocalDate.now().year,
                 editMode = EditMode.CREATE,
                 isYearDisabled = false,
                 isSaveEnabled = true,
+                validYearRange = 1900..2100,
             ),
             onEventNameChange = {},
             onDateSelected = {},
+            onYearSelected = {},
+            onYearCleared = {},
             onYearDisabled = {},
             onActionClick = {},
             onBottomSheetDismiss = {},

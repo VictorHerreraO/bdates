@@ -31,12 +31,13 @@ import com.soyvictorherrera.bdates.core.compose.theme.Shapes
 import java.time.LocalDate
 
 private val VALIDATION_REGEX = Regex("\\d+")
-private val VALID_RANGE = (1900 until 2100)
 
 @Composable
 fun YearSelector(
-    selectedDate: LocalDate,
-    onDateSelected: (LocalDate) -> Unit,
+    selectedYear: Int?,
+    onYearSelected: (Int) -> Unit,
+    onYearCleared: () -> Unit,
+    validYearRange: IntRange,
     modifier: Modifier = Modifier,
     border: BorderStroke? = null,
     elevation: Dp = 0.dp,
@@ -52,14 +53,13 @@ fun YearSelector(
         verticalAlignment = Alignment.CenterVertically,
     ) {
         TextField(
-            value = "${selectedDate.year}",
+            value = selectedYear?.toString().orEmpty(),
             onValueChange = { text ->
-                text.ifEmpty { "0" }
-                    .takeIf { it.matches(VALIDATION_REGEX) }
+                text.takeIf { it.matches(VALIDATION_REGEX) }
                     ?.toIntOrNull()
                     ?.let {
-                        onDateSelected(selectedDate.withYear(it))
-                    }
+                        onYearSelected(it)
+                    } ?: onYearCleared()
             },
             modifier = Modifier.weight(1f),
             singleLine = true,
@@ -71,10 +71,10 @@ fun YearSelector(
                 focusedIndicatorColor = MaterialTheme.colors.secondary
             ),
             leadingIcon = {
-                val prevYearEnabled = enabled && selectedDate.year.dec() in VALID_RANGE
+                val prevYearEnabled = enabled && selectedYear in validYearRange
                 IconButton(
                     enabled = prevYearEnabled,
-                    onClick = { onDateSelected(selectedDate.minusYears(1)) }
+                    onClick = { selectedYear?.dec()?.let(onYearSelected) }
                 ) {
                     Icon(
                         imageVector = Icons.Default.KeyboardArrowLeft,
@@ -90,10 +90,10 @@ fun YearSelector(
                 }
             },
             trailingIcon = {
-                val nextYearEnabled = enabled && selectedDate.year.inc() in VALID_RANGE
+                val nextYearEnabled = enabled && selectedYear?.inc() in validYearRange
                 IconButton(
                     enabled = nextYearEnabled,
-                    onClick = { onDateSelected(selectedDate.plusYears(1)) }
+                    onClick = { selectedYear?.inc()?.let(onYearSelected) }
                 ) {
                     Icon(
                         imageVector = Icons.Rounded.KeyboardArrowRight,
@@ -116,10 +116,12 @@ fun YearSelector(
 @Preview(showBackground = true)
 fun YearSelectorPreviewLight() {
     BdatesTheme(darkTheme = false) {
-        var selectedDate by remember { mutableStateOf(LocalDate.now()) }
+        var selectedDate: Int? by remember { mutableStateOf(LocalDate.now().year) }
         YearSelector(
-            selectedDate = selectedDate,
-            onDateSelected = { selectedDate = it }
+            selectedYear = selectedDate,
+            onYearSelected = { selectedDate = it },
+            onYearCleared = { selectedDate = null },
+            validYearRange = 1900..2100,
         )
     }
 }
@@ -128,9 +130,12 @@ fun YearSelectorPreviewLight() {
 @Preview(showBackground = true)
 fun YearSelectorPreviewDark() {
     BdatesTheme(darkTheme = true) {
-        var selectedDate by remember { mutableStateOf(LocalDate.now()) }
+        var selectedDate: Int? by remember { mutableStateOf(LocalDate.now().year) }
         YearSelector(
-            selectedDate = selectedDate,
-            onDateSelected = { selectedDate = it })
+            selectedYear = selectedDate,
+            onYearSelected = { selectedDate = it },
+            onYearCleared = { selectedDate = null },
+            validYearRange = 1900..2100,
+        )
     }
 }

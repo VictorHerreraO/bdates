@@ -39,9 +39,11 @@ class AddEventBottomSheet : BottomSheetDialogFragment() {
                 state = state,
                 onEventNameChange = viewModel::onEventNameChange,
                 onDateSelected = viewModel::onDateSelected,
+                onYearSelected = viewModel::onYearSelected,
+                onYearCleared = viewModel::onYearCleared,
                 onYearDisabled = viewModel::onYearDisabled,
                 onActionClick = viewModel::onActionClick,
-                onBottomSheetDismiss = { dismiss() }
+                onBottomSheetDismiss = { dismiss() },
             )
         }
     }
