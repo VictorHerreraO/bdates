@@ -35,4 +35,5 @@
     <string name="add_event_year_optional">Don\'t add a year</string>
     <string name="add_event_save_event">Create event</string>
     <string name="add_event_save_changes">Save changes</string>
+    <string name="add_event_delete_event">Delete event</string>
 </resources>

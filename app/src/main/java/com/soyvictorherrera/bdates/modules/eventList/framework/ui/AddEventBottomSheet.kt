@@ -43,6 +43,7 @@ class AddEventBottomSheet : BottomSheetDialogFragment() {
                 onYearCleared = viewModel::onYearCleared,
                 onYearDisabled = viewModel::onYearDisabled,
                 onActionClick = viewModel::onActionClick,
+                onDeleteClick = viewModel::onDeleteClick,
                 onBottomSheetDismiss = { dismiss() },
             )
         }

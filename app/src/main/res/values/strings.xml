@@ -33,8 +33,9 @@
     <string name="add_event_title_edit">Editar celebración</string>
     <string name="add_event_name">¿Quién cumple años?</string>
     <string name="add_event_date">Cumple el día</string>
-    <string name="add_event_year">Del año</string>
+    <string name="add_event_year">Año de nacimiento</string>
     <string name="add_event_year_optional">No quiero agregar el año</string>
     <string name="add_event_save_event">Crear evento</string>
     <string name="add_event_save_changes">Guardar cambios</string>
+    <string name="add_event_delete_event">Eliminar evento</string>
 </resources>

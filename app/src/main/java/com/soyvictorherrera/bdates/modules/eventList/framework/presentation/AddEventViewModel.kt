@@ -102,4 +102,8 @@ class AddEventViewModel @Inject constructor(
         }
     }
 
+    fun onDeleteClick() {
+        TODO()
+    }
+
 }
