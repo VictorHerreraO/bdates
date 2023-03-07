@@ -44,7 +44,7 @@ import java.time.LocalDate
 import kotlinx.coroutines.flow.distinctUntilChanged
 
 internal const val ICON_ALPHA = 0.6F
-internal const val ICON_DISABLED_ALPHA = 0.38F
+internal const val ICON_DISABLED_ALPHA = 0.2F
 
 @Composable
 @OptIn(ExperimentalComposeUiApi::class)
