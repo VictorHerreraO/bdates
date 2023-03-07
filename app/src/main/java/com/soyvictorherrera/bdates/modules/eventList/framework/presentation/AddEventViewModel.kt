@@ -15,7 +15,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-private const val INITIAL_YEAR_RANGE = 1990
+private const val INITIAL_YEAR_RANGE = 1901
 
 @HiltViewModel
 class AddEventViewModel @Inject constructor(
@@ -34,7 +34,7 @@ class AddEventViewModel @Inject constructor(
             selectedYear = dateProvider.currentLocalDate.year,
             editMode = EditMode.CREATE,
             isYearDisabled = false,
-            isSaveEnabled = false,
+            isLoading = false,
             validYearRange = INITIAL_YEAR_RANGE..dateProvider.currentLocalDate.year
         )
     )
@@ -44,7 +44,6 @@ class AddEventViewModel @Inject constructor(
         _state.update {
             it.copy(
                 eventName = eventName,
-                isSaveEnabled = eventName.trim().isNotBlank()
             )
         }
     }
@@ -54,7 +53,6 @@ class AddEventViewModel @Inject constructor(
             it.copy(
                 selectedDate = selectedDate,
                 selectedYear = selectedDate.year,
-                isSaveEnabled = selectedDate.year in it.validYearRange,
             )
         }
     }
@@ -70,7 +68,6 @@ class AddEventViewModel @Inject constructor(
             it.copy(
                 selectedDate = it.selectedDate.withYear(dateProvider.currentLocalDate.year),
                 selectedYear = null,
-                isSaveEnabled = false,
             )
         }
     }
@@ -95,7 +92,7 @@ class AddEventViewModel @Inject constructor(
         }
 
         _state.update {
-            it.copy(isSaveEnabled = false)
+            it.copy(isLoading = true)
         }
 
         viewModelScope.launch {

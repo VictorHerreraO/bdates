@@ -8,9 +8,17 @@ data class AddEventViewState(
     val selectedYear: Int?,
     val editMode: EditMode,
     val isYearDisabled: Boolean,
-    val isSaveEnabled: Boolean,
     val validYearRange: IntRange,
-)
+    val isLoading: Boolean,
+) {
+    val isSaveEnabled: Boolean
+        get() {
+            val isYearSelectionValid = (isYearDisabled || selectedYear in validYearRange)
+            return eventName.isNotBlank() &&
+                    isYearSelectionValid &&
+                    !isLoading
+        }
+}
 
 enum class EditMode {
     CREATE, EDIT

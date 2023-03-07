@@ -251,7 +251,7 @@ fun AddEventContentPreview() {
                 selectedYear = LocalDate.now().year,
                 editMode = EditMode.CREATE,
                 isYearDisabled = false,
-                isSaveEnabled = true,
+                isLoading = false,
                 validYearRange = 1900..2100,
             ),
             onEventNameChange = {},
