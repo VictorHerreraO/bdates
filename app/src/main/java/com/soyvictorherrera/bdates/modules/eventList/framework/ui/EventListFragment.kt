@@ -17,7 +17,10 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.soyvictorherrera.bdates.NavGraphDirections
 import com.soyvictorherrera.bdates.R
+import com.soyvictorherrera.bdates.core.navigation.NavigationEvent
+import com.soyvictorherrera.bdates.core.navigation.consume
 import com.soyvictorherrera.bdates.databinding.FragmentEventListBinding
 import com.soyvictorherrera.bdates.modules.eventList.framework.presentation.EventListViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -65,7 +68,9 @@ class EventListFragment : Fragment() {
         LinearLayoutManager(requireActivity()).also {
             recyclerEvents.layoutManager = it
         }
-        adapter = EventListAdapter().also {
+        adapter = EventListAdapter(onItemClick = {
+            viewModel.onEventClick(it)
+        }).also {
             recyclerEvents.adapter = it
         }
         onScrollListener = FabScrollBehavior(btnAddEvent).also {
@@ -96,6 +101,22 @@ class EventListFragment : Fragment() {
     }
 
     private fun setupListeners() = with(binding) {
+        viewModel.navigation.observe(viewLifecycleOwner) { event ->
+            event.consume {
+                when (it) {
+                    is NavigationEvent.EventBottomSheet -> {
+                        NavGraphDirections.actionCreateEventBottomSheet(
+                            eventId = it.eventId
+                        ).let {
+                            findNavController().navigate(it)
+                        }
+                    }
+                    is NavigationEvent.NavigateBack -> {
+                        /* no-op */
+                    }
+                }
+            }
+        }
         viewModel.events.observe(viewLifecycleOwner, adapter::submitList)
         viewModel.todayEvents.observe(viewLifecycleOwner) {
             todayAdapter.submitList(it)
@@ -115,7 +136,7 @@ class EventListFragment : Fragment() {
             }
         }
         btnAddEvent.setOnClickListener {
-            findNavController().navigate(R.id.addEventBottomSheet)
+            viewModel.onAddEventClick()
         }
     }
 

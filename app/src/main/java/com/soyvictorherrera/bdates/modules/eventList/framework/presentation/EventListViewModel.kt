@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.soyvictorherrera.bdates.core.date.DateProviderContract
+import com.soyvictorherrera.bdates.core.navigation.NavigationEvent
 import com.soyvictorherrera.bdates.core.resource.ResourceManagerContract
 import com.soyvictorherrera.bdates.modules.eventList.domain.model.Event
 import com.soyvictorherrera.bdates.modules.eventList.domain.usecase.FilterEventListArgs
@@ -28,6 +29,10 @@ class EventListViewModel @Inject constructor(
     private val getNonDayEventList: GetNonDayEventListUseCaseContract,
     private val filterEventListUseCase: FilterEventListUseCaseContract,
 ) : ViewModel() {
+
+    private val _navigation = MutableLiveData<NavigationEvent>()
+    val navigation: LiveData<NavigationEvent>
+        get() = _navigation
 
     private val _events = MutableLiveData<List<EventViewState>>()
     val events: LiveData<List<EventViewState>>
@@ -62,6 +67,14 @@ class EventListViewModel @Inject constructor(
     fun onQueryTextChanged(query: String) {
         this.query = query
         processEventList(allEvents)
+    }
+
+    fun onEventClick(eventId: String) {
+        _navigation.value = NavigationEvent.EventBottomSheet(eventId = eventId)
+    }
+
+    fun onAddEventClick() {
+        _navigation.value = NavigationEvent.EventBottomSheet()
     }
 
     private fun processEventList(events: List<Event>) = viewModelScope.launch {

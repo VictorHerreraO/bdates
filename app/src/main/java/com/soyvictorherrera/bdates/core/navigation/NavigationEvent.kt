@@ -2,6 +2,7 @@ package com.soyvictorherrera.bdates.core.navigation
 
 sealed class NavigationEvent {
     class NavigateBack : NavigationEvent()
+    class EventBottomSheet(val eventId: String? = null) : NavigationEvent()
 
     var consumed: Boolean = false
         get() {

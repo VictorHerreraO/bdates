@@ -14,5 +14,15 @@
     <dialog
         android:id="@+id/addEventBottomSheet"
         android:name="com.soyvictorherrera.bdates.modules.eventList.framework.ui.AddEventBottomSheet"
-        android:label="AddEventBottomSheet" />
+        android:label="AddEventBottomSheet">
+        <argument
+            android:name="eventId"
+            android:defaultValue="@null"
+            app:argType="string"
+            app:nullable="true" />
+    </dialog>
+
+    <action
+        android:id="@+id/actionCreateEventBottomSheet"
+        app:destination="@+id/addEventBottomSheet" />
 </navigation>
