@@ -64,12 +64,4 @@ class AssetEventDatasourceTest {
 
         assertThat(events).isEmpty()
     }
-
-    @Test(expected = UnsupportedOperationException::class)
-    fun `expect UnsupportedOperationException when calling create event`() = runTest {
-        val event = event()
-
-        subjectUnderTest.createEvent(event)
-    }
-
 }

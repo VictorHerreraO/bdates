@@ -17,6 +17,7 @@ import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Test
@@ -30,6 +31,8 @@ class EventRepositoryTest {
 
     private val localMapper = mockk<Mapper<EventEntity, Event>>()
 
+    private val testDispatcher = UnconfinedTestDispatcher()
+
     private lateinit var subjectUnderTest: EventRepository
 
     @Before
@@ -37,7 +40,8 @@ class EventRepositoryTest {
         subjectUnderTest = EventRepository(
             assetsDataSource = assetsDataSource,
             localDataSource = localDataSource,
-            localMapper = localMapper
+            localMapper = localMapper,
+            ioDispatcher = testDispatcher
         )
     }
 
@@ -76,9 +80,7 @@ class EventRepositoryTest {
         every { localMapper.reverseMap(any()) } returns eventEntity()
         coEvery { localDataSource.createEvent(any()) } returns expectedId
 
-        var result: String? = null
-
-        subjectUnderTest.createEvent(event)
+        val result: String = subjectUnderTest.createEvent(event)
 
         assertThat(result).isEqualTo(expectedId)
         coVerify(exactly = 1) { localDataSource.createEvent(any()) }
