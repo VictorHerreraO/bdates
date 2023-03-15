@@ -9,5 +9,7 @@ interface EventRepositoryContract {
 
     suspend fun createEvent(event: Event): String
 
+    suspend fun updateEvent(event: Event)
+
     suspend fun deleteEvent(eventId: String)
 }

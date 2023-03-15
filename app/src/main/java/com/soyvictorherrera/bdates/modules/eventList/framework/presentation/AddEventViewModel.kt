@@ -112,7 +112,11 @@ class AddEventViewModel @Inject constructor(
 
         viewModelScope.launch {
             eventRepository.runCatching {
-                createEvent(event)
+                if (event.id.isNullOrEmpty()) {
+                    createEvent(event)
+                } else {
+                    updateEvent(event)
+                }
             }.onSuccess {
                 _navigation.value = NavigationEvent.NavigateBack()
             }.onFailure {

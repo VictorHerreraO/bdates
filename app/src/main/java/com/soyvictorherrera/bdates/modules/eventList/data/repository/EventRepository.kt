@@ -46,6 +46,17 @@ class EventRepository @Inject constructor(
             }
     }
 
+    override suspend fun updateEvent(event: Event) {
+        if (event.id.isNullOrEmpty()) {
+            throw IllegalArgumentException("Can't update an event  without an ID")
+        }
+        localMapper
+            .reverseMap(event)
+            .let {
+                localDataSource.updateEvent(it)
+            }
+    }
+
     override suspend fun deleteEvent(eventId: String) = withContext(ioDispatcher) {
         return@withContext localDataSource.deleteEvent(eventId)
     }

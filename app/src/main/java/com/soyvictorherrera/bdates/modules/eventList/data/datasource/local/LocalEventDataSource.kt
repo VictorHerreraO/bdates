@@ -7,6 +7,7 @@ import javax.inject.Inject
 interface LocalEventDataSourceContract : EventDataSourceContract<EventEntity> {
     suspend fun getEvent(eventId: String): EventEntity?
     suspend fun createEvent(event: EventEntity): String
+    suspend fun updateEvent(event: EventEntity)
     suspend fun deleteEvent(eventId: String)
 }
 
@@ -28,6 +29,11 @@ class LocalEventDataSource @Inject constructor(
             .also {
                 dao.upsertAll(it)
             }.id
+    }
+
+    override suspend fun updateEvent(event: EventEntity) {
+        if (event.id.isEmpty()) return
+        dao.upsertAll(event)
     }
 
     override suspend fun deleteEvent(eventId: String) {
