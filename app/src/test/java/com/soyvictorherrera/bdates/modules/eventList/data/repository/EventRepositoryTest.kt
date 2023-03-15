@@ -14,7 +14,9 @@ import com.soyvictorherrera.bdates.test.data.eventModelFoo
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
+import io.mockk.just
 import io.mockk.mockk
+import io.mockk.runs
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
@@ -73,6 +75,28 @@ class EventRepositoryTest {
     }
 
     @Test
+    fun `assert get event`() = runTest {
+        val eventEntity = eventEntity()
+        val expectedEvent = event()
+        val expectedId = expectedEvent.id!!
+
+        coEvery { localDataSource.getEvent(any()) } returns eventEntity
+        every { localMapper.map(any()) } returns expectedEvent
+
+        val result = subjectUnderTest.getEvent(expectedId)
+
+        assertThat(result).isEqualTo(expectedEvent)
+    }
+
+    @Test(expected = IllegalArgumentException::class)
+    fun `expect illegal argument exception when no event found`() = runTest {
+        val expectedId = "event-id"
+        coEvery { localDataSource.getEvent(any()) } returns null
+
+        subjectUnderTest.getEvent(expectedId)
+    }
+
+    @Test
     fun `verify create event`() = runTest {
         val expectedId = "expected-id"
         val event = event().copy(id = "")
@@ -91,5 +115,36 @@ class EventRepositoryTest {
         val event = event()
 
         subjectUnderTest.createEvent(event)
+    }
+
+    @Test
+    fun `verify update event`() = runTest {
+        val event = event()
+        val expectedEntity = eventEntity()
+
+        every { localMapper.reverseMap(any()) } returns expectedEntity
+        coEvery { localDataSource.updateEvent(any()) } just runs
+
+        subjectUnderTest.updateEvent(event)
+
+        coVerify(exactly = 1) { localDataSource.updateEvent(expectedEntity) }
+    }
+
+    @Test(expected = IllegalArgumentException::class)
+    fun `expect illegal argument exception when update event without id`() = runTest {
+        val event = event().copy(id = null)
+
+        subjectUnderTest.updateEvent(event)
+    }
+
+    @Test
+    fun `verify delete event`() = runTest {
+        val eventId = "event-id"
+
+        coEvery { localDataSource.deleteEvent(any()) } just runs
+
+        subjectUnderTest.deleteEvent(eventId)
+
+        coVerify(exactly = 1) { localDataSource.deleteEvent(eventId) }
     }
 }
