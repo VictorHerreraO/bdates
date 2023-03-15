@@ -32,7 +32,9 @@ class LocalEventDataSource @Inject constructor(
     }
 
     override suspend fun updateEvent(event: EventEntity) {
-        if (event.id.isEmpty()) return
+        if (event.id.isEmpty()) {
+            return
+        }
         dao.upsertAll(event)
     }
 
