@@ -1,6 +1,7 @@
 package com.soyvictorherrera.bdates.modules.eventList.data.repository
 
 import com.soyvictorherrera.bdates.core.arch.Mapper
+import com.soyvictorherrera.bdates.core.coroutines.IODispatcher
 import com.soyvictorherrera.bdates.core.persistence.OnCreated
 import com.soyvictorherrera.bdates.core.persistence.addSource
 import com.soyvictorherrera.bdates.modules.eventList.data.datasource.assets.AssetEventDatasourceContract
@@ -8,9 +9,12 @@ import com.soyvictorherrera.bdates.modules.eventList.data.datasource.local.Event
 import com.soyvictorherrera.bdates.modules.eventList.data.datasource.local.LocalEventDataSourceContract
 import com.soyvictorherrera.bdates.modules.eventList.domain.model.Event
 import javax.inject.Inject
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.withContext
 import timber.log.Timber
 
 class EventRepository @Inject constructor(
+    @IODispatcher private val ioDispatcher: CoroutineDispatcher,
     private val assetsDataSource: AssetEventDatasourceContract,
     private val localDataSource: LocalEventDataSourceContract,
     private val localMapper: Mapper<EventEntity, Event>,
@@ -25,6 +29,13 @@ class EventRepository @Inject constructor(
             }
     }
 
+    override suspend fun getEvent(eventId: String): Event = withContext(ioDispatcher) {
+        return@withContext localDataSource
+            .getEvent(eventId)
+            ?.let { localMapper.map(it) }
+            ?: throw RuntimeException("no event with id $eventId")
+    }
+
     override suspend fun createEvent(event: Event, onCreated: OnCreated?) {
         if (!event.id.isNullOrEmpty()) {
             throw IllegalArgumentException("Can't create an event with a provided ID")
@@ -37,5 +48,9 @@ class EventRepository @Inject constructor(
             .let { id ->
                 onCreated?.invoke(id)
             }
+    }
+
+    override suspend fun deleteEvent(eventId: String) = withContext(ioDispatcher) {
+        return@withContext localDataSource.deleteEvent(eventId)
     }
 }

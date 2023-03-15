@@ -37,8 +37,4 @@ class AssetEventDatasource @Inject constructor(
         }
 
     }
-
-    override suspend fun createEvent(event: Event): String = throw UnsupportedOperationException(
-        "Read-only data source"
-    )
 }
