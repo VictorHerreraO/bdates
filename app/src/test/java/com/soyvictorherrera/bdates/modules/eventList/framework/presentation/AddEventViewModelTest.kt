@@ -97,7 +97,7 @@ class AddEventViewModelTest {
         val initialNavigationEvent = subjectUnderTest.navigation.value
 
         every { circlePreferences.localCircleId } returns localCircleId
-        coEvery { eventRepository.createEvent(any(), any()) } answers {
+        coEvery { eventRepository.createEvent(any()) } answers {
             secondArg<OnCreated?>()?.invoke(expectedId)
         }
 
@@ -108,7 +108,7 @@ class AddEventViewModelTest {
         assertThat(loadingState.isSaveEnabled).isFalse()
 
         val finalNavigationEvent = subjectUnderTest.navigation.value
-        coVerify(exactly = 1) { eventRepository.createEvent(any(), any()) }
+        coVerify(exactly = 1) { eventRepository.createEvent(any()) }
         assertThat(finalNavigationEvent).isNotEqualTo(initialNavigationEvent)
         assertThat(finalNavigationEvent?.consumed).isFalse()
         assertThat(finalNavigationEvent).isInstanceOf(NavigationEvent.NavigateBack::class.java)

@@ -78,9 +78,7 @@ class EventRepositoryTest {
 
         var result: String? = null
 
-        subjectUnderTest.createEvent(event) {
-            result = it
-        }
+        subjectUnderTest.createEvent(event)
 
         assertThat(result).isEqualTo(expectedId)
         coVerify(exactly = 1) { localDataSource.createEvent(any()) }

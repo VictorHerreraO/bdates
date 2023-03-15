@@ -2,7 +2,6 @@ package com.soyvictorherrera.bdates.modules.eventList.data.repository
 
 import com.soyvictorherrera.bdates.core.arch.Mapper
 import com.soyvictorherrera.bdates.core.coroutines.IODispatcher
-import com.soyvictorherrera.bdates.core.persistence.OnCreated
 import com.soyvictorherrera.bdates.core.persistence.addSource
 import com.soyvictorherrera.bdates.modules.eventList.data.datasource.assets.AssetEventDatasourceContract
 import com.soyvictorherrera.bdates.modules.eventList.data.datasource.local.EventEntity
@@ -33,20 +32,17 @@ class EventRepository @Inject constructor(
         return@withContext localDataSource
             .getEvent(eventId)
             ?.let { localMapper.map(it) }
-            ?: throw RuntimeException("no event with id $eventId")
+            ?: throw IllegalArgumentException("no event with id $eventId")
     }
 
-    override suspend fun createEvent(event: Event, onCreated: OnCreated?) {
+    override suspend fun createEvent(event: Event): String {
         if (!event.id.isNullOrEmpty()) {
             throw IllegalArgumentException("Can't create an event with a provided ID")
         }
-        localMapper
+        return localMapper
             .reverseMap(event)
             .let {
                 localDataSource.createEvent(it)
-            }
-            .let { id ->
-                onCreated?.invoke(id)
             }
     }
 

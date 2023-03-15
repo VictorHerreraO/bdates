@@ -32,6 +32,7 @@ class AddEventViewModel @Inject constructor(
     val navigation: StateFlow<NavigationEvent?> = _navigation
 
     private val eventId = AddEventBottomSheetArgs.fromSavedStateHandle(stateHandle).eventId
+    private var currentEvent: Event? = null
 
     private val _state = MutableStateFlow(
         AddEventViewState(
@@ -96,8 +97,8 @@ class AddEventViewModel @Inject constructor(
         val localCircleId = circlePreferences.localCircleId ?: return
         val event = _state.value.run {
             Event(
-                id = null,
-                circleId = localCircleId,
+                id = eventId,
+                circleId = currentEvent?.circleId ?: localCircleId,
                 name = eventName.trim(),
                 dayOfMonth = selectedDate.dayOfMonth,
                 monthOfYear = selectedDate.monthValue,
@@ -110,8 +111,12 @@ class AddEventViewModel @Inject constructor(
         }
 
         viewModelScope.launch {
-            eventRepository.createEvent(event) {
+            eventRepository.runCatching {
+                createEvent(event)
+            }.onSuccess {
                 _navigation.value = NavigationEvent.NavigateBack()
+            }.onFailure {
+                Timber.e(it, "Unable to save event")
             }
         }
     }
@@ -134,6 +139,7 @@ class AddEventViewModel @Inject constructor(
             eventRepository.runCatching {
                 getEvent(eventId)
             }.onSuccess { event ->
+                currentEvent = event
                 _state.update {
                     it.copy(
                         eventName = event.name,
