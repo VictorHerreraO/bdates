@@ -17,7 +17,7 @@ interface CircleRepositoryContract {
     /**
      * Create a new [circle]
      */
-    suspend fun createCircle(circle: Circle, onCreated: ((String) -> Unit)? = null)
+    suspend fun createCircle(circle: Circle): String
 
     /**
      * Update the given [circle]

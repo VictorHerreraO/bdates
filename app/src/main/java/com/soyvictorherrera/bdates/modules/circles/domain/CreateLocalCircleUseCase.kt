@@ -33,7 +33,9 @@ class CreateLocalCircleUseCase @Inject constructor(
             return
         }
 
-        circleRepository.createCircle(LOCAL_CIRCLE) { localCircleId ->
+        circleRepository.runCatching {
+            createCircle(LOCAL_CIRCLE)
+        }.onSuccess { localCircleId ->
             circlePreferences.isLocalCircleCreated = true
             circlePreferences.localCircleId = localCircleId
             Timber.d("Local circle created with id $localCircleId")

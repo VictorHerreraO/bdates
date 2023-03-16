@@ -61,14 +61,11 @@ class CircleRepositoryTest {
     fun `verify create circle`(): Unit = runTest {
         val expectedId = "expected-id"
         val circle = circleModel().copy(id = "")
-        var result = ""
 
         every { localMapper.reverseMap(any()) } returns circleEntity().copy(id = circle.id!!)
         coEvery { localDataSource.createCircle(any()) } returns expectedId
 
-        subjectUnderTest.createCircle(circle) { circleId ->
-            result = circleId
-        }
+        val result = subjectUnderTest.createCircle(circle)
 
         assertThat(result).isEqualTo(expectedId)
         coVerify(exactly = 1) { localDataSource.createCircle(any()) }

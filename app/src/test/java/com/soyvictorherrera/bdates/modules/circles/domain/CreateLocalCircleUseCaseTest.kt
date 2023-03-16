@@ -34,13 +34,11 @@ class CreateLocalCircleUseCaseTest {
         val expectedId = "expected-id"
 
         every { circlePreferences.isLocalCircleCreated } returns false
-        coEvery { circleRepository.createCircle(any(), any()) } answers {
-            secondArg<(String) -> Unit>().invoke(expectedId)
-        }
+        coEvery { circleRepository.createCircle(any()) } returns expectedId
 
         subjectUnderTest.execute()
 
-        coVerify(exactly = 1) { circleRepository.createCircle(any(), any()) }
+        coVerify(exactly = 1) { circleRepository.createCircle(any()) }
         verify(exactly = 1) { circlePreferences.isLocalCircleCreated = true }
         verify(exactly = 1) { circlePreferences.localCircleId = any() }
     }
@@ -51,6 +49,6 @@ class CreateLocalCircleUseCaseTest {
 
         subjectUnderTest.execute()
 
-        coVerify(exactly = 0) { circleRepository.createCircle(any(), any()) }
+        coVerify(exactly = 0) { circleRepository.createCircle(any()) }
     }
 }
