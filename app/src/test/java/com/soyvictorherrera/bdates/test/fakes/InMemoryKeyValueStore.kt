@@ -14,4 +14,6 @@ class InMemoryKeyValueStore : KeyValueStoreContract {
     override fun <T : Any> get(key: Key<T>): T? {
         return values[key.name] as? T
     }
+
+    fun clear() = values.clear()
 }

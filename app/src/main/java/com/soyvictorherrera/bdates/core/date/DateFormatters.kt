@@ -7,6 +7,7 @@ import javax.inject.Inject
 
 interface DateFormattersContract {
     val dayFormatter: DateTimeFormatter
+    val ddMMYYYYFormatter: DateTimeFormatter
 }
 
 class DateFormatters @Inject constructor(
@@ -17,4 +18,5 @@ class DateFormatters @Inject constructor(
         DateTimeFormatter.ofPattern(getString(R.string.date_format_day))
     }
 
+    override val ddMMYYYYFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
 }

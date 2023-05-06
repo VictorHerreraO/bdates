@@ -2,6 +2,8 @@ package com.soyvictorherrera.bdates.modules.notifications
 
 import android.app.Application
 import android.content.Context
+import com.soyvictorherrera.bdates.modules.notifications.data.preferences.NotificationPreferences
+import com.soyvictorherrera.bdates.modules.notifications.data.preferences.NotificationPreferencesContract
 import com.soyvictorherrera.bdates.modules.notifications.delegate.DayNotificationDelegate
 import com.soyvictorherrera.bdates.modules.notifications.delegate.DayNotificationDelegateContract
 import com.soyvictorherrera.bdates.modules.notifications.delegate.UpcomingEventNotificationDelegate
@@ -39,4 +41,10 @@ abstract class NotificationsModule {
     abstract fun bindUpcomingEventNotificationDelegateContract(
         upcomingEventNotificationDelegate: UpcomingEventNotificationDelegate,
     ): UpcomingEventNotificationDelegateContract
+
+    @Binds
+    @Singleton
+    abstract fun bindNotificationPreferencesContract(
+        notificationPreferences: NotificationPreferences,
+    ): NotificationPreferencesContract
 }

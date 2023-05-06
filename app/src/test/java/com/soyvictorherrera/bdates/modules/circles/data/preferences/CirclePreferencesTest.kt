@@ -1,22 +1,25 @@
 package com.soyvictorherrera.bdates.modules.circles.data.preferences
 
 import com.google.common.truth.Truth.assertThat
-import com.soyvictorherrera.bdates.core.persistence.KeyValueStoreContract
 import com.soyvictorherrera.bdates.test.fakes.InMemoryKeyValueStore
+import org.junit.After
 import org.junit.Before
 import org.junit.Test
 
 class CirclePreferencesTest {
 
-    private lateinit var keyValueStore: KeyValueStoreContract
+    private var keyValueStore = InMemoryKeyValueStore()
 
     private lateinit var subjectUnderTest: CirclePreferences
 
     @Before
     fun setup() {
-        keyValueStore = InMemoryKeyValueStore()
-
         subjectUnderTest = CirclePreferences(keyValueStore)
+    }
+
+    @After
+    fun cleanup() {
+        keyValueStore.clear()
     }
 
     @Test

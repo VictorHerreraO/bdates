@@ -8,8 +8,9 @@ import androidx.annotation.DrawableRes
 import androidx.core.app.NotificationCompat
 import com.soyvictorherrera.bdates.R
 import com.soyvictorherrera.bdates.core.HomeNavigationActivity
+import com.soyvictorherrera.bdates.core.date.DateProviderContract
+import com.soyvictorherrera.bdates.core.date.toEpochMilli
 import com.soyvictorherrera.bdates.modules.notifications.receiver.AlarmBroadcastReceiver
-import java.util.Calendar
 import javax.inject.Inject
 import timber.log.Timber
 import android.app.NotificationChannel as AndroidNotificationChannel
@@ -20,6 +21,7 @@ private const val DEFAULT_MINUTE_OF_HOUR = 0
 
 class NotificationManager @Inject constructor(
     private val context: Context,
+    private val dateProvider: DateProviderContract,
 ) : NotificationManagerContract {
 
     private val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
@@ -41,14 +43,12 @@ class NotificationManager @Inject constructor(
             intent,
             PendingIntent.FLAG_IMMUTABLE
         )
-        val alarmTime = Calendar.getInstance().apply {
-            timeInMillis = System.currentTimeMillis()
-            set(Calendar.HOUR_OF_DAY, DEFAULT_HOUR_OF_DAY)
-            set(Calendar.MINUTE, DEFAULT_MINUTE_OF_HOUR)
-        }
+        val alarmTime = dateProvider.currentLocalDateTime
+            .withHour(DEFAULT_HOUR_OF_DAY)
+            .withMinute(DEFAULT_MINUTE_OF_HOUR)
         alarmManager.setInexactRepeating(
             AlarmManager.RTC_WAKEUP,
-            alarmTime.timeInMillis,
+            alarmTime.toEpochMilli(),
             AlarmManager.INTERVAL_DAY,
             pendingIntent
         )
