@@ -7,13 +7,18 @@
  * See a full list of supported triggers at https://firebase.google.com/docs/functions
  */
 
-import {onRequest} from "firebase-functions/v2/https";
+import * as functions from "firebase-functions";
 import * as logger from "firebase-functions/logger";
 
 // Start writing functions
 // https://firebase.google.com/docs/functions/typescript
 
-// export const helloWorld = onRequest((request, response) => {
-//   logger.info("Hello logs!", {structuredData: true});
-//   response.send("Hello from Firebase!");
-// });
+const DEFAULT_REGION = "us-west2"
+const DEFAULT_MAX_INSTANCES = 10
+
+const https = functions.region(DEFAULT_REGION).runWith({maxInstances: DEFAULT_MAX_INSTANCES}).https;
+
+export const helloWorld = https.onRequest((request, response) => {
+  logger.info("Hello logs!", {structuredData: true});
+  response.send("Hello from Firebase!");
+});
