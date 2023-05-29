@@ -1,12 +1,13 @@
 /* eslint-disable max-len */
 /* eslint-disable require-jsdoc */
 import { Reference } from "firebase-admin/database";
-import { AuthRepositoryImpl } from "../data/AuthRepositoryImpl";
-import { SnapshotToAuthCredentialsModelMapper } from "../data/mapping/SnapshotToAuthCredentialsModelMapper";
-import { references } from "../../firebase/References";
-import { AuthService } from "../service/AuthService";
-import { AuthRepository } from "../data/AuthRepository";
-import { AuthServiceImpl } from "../service/AuthServiceImpl";
+import { AuthRepositoryImpl } from "../auth/data/AuthRepositoryImpl";
+import { SnapshotToAuthCredentialsModelMapper } from "../auth/data/mapping/SnapshotToAuthCredentialsModelMapper";
+import { references } from "../firebase/References";
+import { AuthService } from "../auth/service/AuthService";
+import { AuthRepository } from "../auth/data/AuthRepository";
+import { AuthServiceImpl } from "../auth/service/AuthServiceImpl";
+import { usersServiceLocator } from "./UsersServiceLocator";
 
 /**
  * Dependencies for the auth module
@@ -34,6 +35,7 @@ export class AuthServiceLocator {
   getAuthService(): AuthService {
     return this._authService ??= new AuthServiceImpl(
       this.getAuthRepository(),
+      usersServiceLocator.getUsersRepository()
     );
   }
 }

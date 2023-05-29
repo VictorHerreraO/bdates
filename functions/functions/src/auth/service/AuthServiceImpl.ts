@@ -1,51 +1,65 @@
-import { Logger } from "../../core/logging/Logger";
 import { AuthCredentialsModel, UserTokenPairModel } from "../api/AuthApi";
 import { AuthRepository } from "../data/AuthRepository";
 import { AuthService } from "./AuthService";
+import { Logger } from "../../core/logging/Logger";
+import { UsersRepository } from "../../users/data/UsersRepository";
 import { Validations } from "./Validations";
-import crypto = require("crypto");
 import bcrypt = require("bcrypt");
+import crypto = require("crypto");
 
 const HASH_MD5 = "md5";
 const DIGEST_HEX = "hex";
 const SALT_ROUNDS = 10;
-
 
 /**
  * Auth Service Implementation
  */
 export class AuthServiceImpl implements AuthService {
   private authRepo: AuthRepository;
+  private usersRepo: UsersRepository;
 
   /**
    * Creates a new instance
    * @param {AuthRepository} authRepo
+   * @param {UsersRepository} usersRepo
    */
-  constructor(authRepo: AuthRepository) {
+  constructor(
+    authRepo: AuthRepository,
+    usersRepo: UsersRepository
+  ) {
     this.authRepo = authRepo;
+    this.usersRepo = usersRepo;
   }
 
   /**
-   * Registers the the given email and password combination as a new user.
-   * Checks for existing auth credentials and creates new ones if there are
-   * none found. Creates the user entry and returns a pair of JWT tokens
-   * for auth
+   * Registers the the given username, email and password combination as
+   * a new user. Checks for existing auth credentials and creates new ones
+   * if there are none found.
+   *
+   * Creates the user entry and returns a pair of JWT tokens for auth
+   * @param {string} userName user name
    * @param {string} email user email
    * @param {string} password user password
    * @return {Promise<UserTokenPairModel>} JWT token pair for auth
    */
   public async registerUser(
+    userName: string,
     email: string,
     password: string,
   ): Promise<UserTokenPairModel> {
-    const safeEmail = this.trimAndLowerCaseString(email);
-    if (Validations.isInvalidEmail(safeEmail)) {
-      throw new Error(`${safeEmail} is not a valid email`);
+    const safeName = (userName || "").trim();
+    if (!safeName) {
+      throw new Error(`"${safeName}" is not a valid user name`);
     }
 
-    const safePwd = password.trim();
+    const safeEmail = this.trimAndLowerCaseString(email || "");
+    if (Validations.isInvalidEmail(safeEmail)) {
+      throw new Error(`"${safeEmail}" is not a valid email`);
+    }
+
+    const safePwd = (password || "").trim();
     if (Validations.isInvalidPassword(safePwd)) {
-      throw new Error(`${safePwd} is not a valid password`);
+      throw new Error(`"${safePwd}" is not a valid password`);
     }
 
     const emailHash = this.md5HashString(safeEmail);
@@ -62,7 +76,13 @@ export class AuthServiceImpl implements AuthService {
       throw new Error(`${safeEmail} is already registered`);
     }
 
-    // save new user and update credentials with user id
+    Logger.debug(`creating new user for ${safeName}`);
+    const newUser = await this.usersRepo.saveUserModel({
+      id: "",
+      authId: emailHash,
+      name: safeName,
+      circles: [],
+    });
 
     const pwdHash = this.bcryptHashString(safePwd);
     Logger.debug(`pwd hash is: ${pwdHash}`);
@@ -71,7 +91,7 @@ export class AuthServiceImpl implements AuthService {
       id: emailHash,
       email: safeEmail,
       pwdHash: pwdHash,
-      userId: "",
+      userId: newUser.id,
     };
     Logger.debug("registering new auth credentials...");
     await this.authRepo.updateAuthCredentialsModel(credentials);

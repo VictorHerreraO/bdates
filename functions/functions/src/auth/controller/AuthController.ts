@@ -2,7 +2,7 @@ import { Request, Response, Router as expressRouter } from "express";
 import {
   ServiceErrorResponse,
 } from "../../core/api/ResponseApi";
-import { authServiceLocator } from "../dependencies/AuthServiceLocator";
+import { authServiceLocator } from "../../dependencies/AuthServiceLocator";
 
 export const authController = expressRouter();
 
@@ -13,6 +13,7 @@ authController.post(
     const authService = authServiceLocator.getAuthService();
     try {
       const result = await authService.registerUser(
+        params.userName,
         params.email,
         params.password
       );

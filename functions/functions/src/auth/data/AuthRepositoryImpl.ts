@@ -43,7 +43,6 @@ export class AuthRepositoryImpl implements AuthRepository {
 
   /**
    * @param {AuthCredentialsModel} model model to be updated
-   * @return {undefined}
    */
   async updateAuthCredentialsModel(
     model: AuthCredentialsModel

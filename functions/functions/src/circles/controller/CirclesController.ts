@@ -1,7 +1,7 @@
-import { Logger } from "../../core/logging/Logger";
 import {
   circlesServiceLocator,
 } from "../../dependencies/CirclesServiceLocator";
+import { Logger } from "../../core/logging/Logger";
 import { Request, Response, Router as expressRouter } from "express";
 
 export const circlesController = expressRouter();
