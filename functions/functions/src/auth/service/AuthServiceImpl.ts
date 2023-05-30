@@ -110,6 +110,55 @@ export class AuthServiceImpl implements AuthService {
   }
 
   /**
+   * Logins the current email and password combination. Retirns a pair of JWT
+   * tokens if credentials are valid.
+   * @param {string} email user email
+   * @param {string} password user password
+   * @return {Promise<UserTokenPairModel>} JWT token pair for auth
+   */
+  async loginUser(
+    email: string,
+    password: string
+  ): Promise<UserTokenPairModel> {
+    const safeEmail = this.trimAndLowerCaseString(email || "");
+    if (Validations.isInvalidEmail(safeEmail)) {
+      throw new Error(`"${safeEmail}" is not a valid email`);
+    }
+
+    const safePwd = (password || "").trim();
+    if (Validations.isInvalidPassword(safePwd)) {
+      throw new Error(`"${safePwd}" is not a valid password`);
+    }
+
+    const emailHash = this.md5HashString(safeEmail);
+    Logger.debug(`email hash is: ${emailHash}`);
+
+    let credentials: AuthCredentialsModel | undefined;
+    try {
+      credentials = await this.authRepo.getAuthCredentialsModel(emailHash);
+    } catch (error) {
+      Logger.debug("unable to get credentials", error);
+      throw new Error("invalid username / password");
+    }
+
+    Logger.debug("checking user credentials");
+    const areCredentialsValid = this.validatePassword(
+      password,
+      credentials.pwdHash
+    );
+    if (!areCredentialsValid) {
+      throw new Error("invalid username / password");
+    }
+
+    Logger.debug("creating token pair for user...");
+    const tokenPair: UserTokenPairModel = {
+      auth: this.tokenService.createAccessToken(credentials.userId),
+      refresh: this.tokenService.createRefreshToken(credentials.userId),
+    };
+    return tokenPair;
+  }
+
+  /**
    * Trims and lower cases the given string
    * @param {string} valueString string to trim and lowercase
    * @return {string} trimed and lowercased string
@@ -134,5 +183,14 @@ export class AuthServiceImpl implements AuthService {
    */
   private bcryptHashString(valueString: string): string {
     return bcrypt.hashSync(valueString, SALT_ROUNDS);
+  }
+
+  /**
+   * @param {string} password user password
+   * @param {string} hash password hash
+   * @return {boolean} `true` if password matches hash, `false` otherwise
+   */
+  private validatePassword(password: string, hash: string): boolean {
+    return bcrypt.compareSync(password, hash);
   }
 }

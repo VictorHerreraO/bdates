@@ -6,4 +6,9 @@ export interface AuthService {
     email: string,
     password: string,
   ): Promise<UserTokenPairModel>
+
+  loginUser(
+    email: string,
+    password: string
+  ): Promise<UserTokenPairModel>
 }

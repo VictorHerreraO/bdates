@@ -29,9 +29,19 @@ authController.post(
 authController.post(
   "/login",
   async (request: Request, response: Response) => {
-    return response.status(500).json(
-      new ServiceErrorResponse("Unsupported operation error")
-    );
+    const params = request.body;
+    const authService = authServiceLocator.getAuthService();
+    try {
+      const tokenPair = await authService.loginUser(
+        params.email,
+        params.password,
+      );
+      response.json(tokenPair);
+    } catch (error: any) {
+      response.status(500).json(
+        new ServiceErrorResponse(error.message)
+      );
+    }
   }
 );
 
