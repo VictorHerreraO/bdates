@@ -88,3 +88,5 @@ app/src/debug/assets/events.json
 app/src/release/assets/events.json
 .DS_Store
 .idea
+functions/functions/.runtimeconfig.json
+functions/functions/env.json

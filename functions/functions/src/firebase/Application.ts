@@ -3,23 +3,34 @@ import { ApplicationConfig } from "../core/api/ApplicationConfig";
 import * as admin from "firebase-admin";
 import * as functions from "firebase-functions";
 
+type Environment = {
+  clientEmail: string,
+  databaseURL: string,
+  jwtSecret: string,
+  privateKey: string,
+  projectId: string,
+}
+
 // Add firebase functions config using the following:
-// firebase functions:config:set private.key="YOUR API KEY" project.id="YOUR CLIENT ID" client.email="YOUR CLIENT EMAIL jwt.secret="JWT SECRET"
+// firebase functions:config:set env="$(cat env.json)"
+// https://dev.to/rajeshkumaravel/google-firebase-functions-setting-and-accessing-environment-variable-1gn2
+const env = functions.config().env as Environment;
+
 admin.initializeApp({
   credential: admin.credential.cert({
-    privateKey: functions.config().private.key.replace(/\\n/g, "\n"),
-    projectId: functions.config().project.id,
-    clientEmail: functions.config().client.email,
+    privateKey: env.privateKey.replace(/\\n/g, "\n"),
+    projectId: env.projectId,
+    clientEmail: env.clientEmail,
   }),
-  databaseURL: "https://bdates-sandbox-default-rtdb.firebaseio.com/",
+  databaseURL: env.databaseURL,
 });
 
 const db = admin.database();
 
 const applicationConfig: ApplicationConfig = {
-  isDebug: true,
-  applicationName: functions.config().project.id,
-  jwtSecret: functions.config().jwt.secret,
+  isDebug: env.projectId.includes("-sandbox"),
+  applicationName: env.projectId,
+  jwtSecret: env.jwtSecret,
 };
 
 export { admin, db, applicationConfig };
