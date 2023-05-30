@@ -48,14 +48,12 @@ export class AuthRepositoryImpl implements AuthRepository {
     model: AuthCredentialsModel
   ): Promise<void> {
     const authId = model.id;
-    Logger.debug(`looking for credentials ${authId}`);
-    const snapshot = await this.authCredentialsRef(authId).once("value");
-
     const data: any = model;
-    delete data.id;
+    const credentialsRef = this.authCredentialsRef(authId);
 
     try {
-      snapshot.ref.set(data);
+      delete data.id;
+      credentialsRef.set(data);
       Logger.debug("crdentials updated");
     } catch (error) {
       Logger.error(error);

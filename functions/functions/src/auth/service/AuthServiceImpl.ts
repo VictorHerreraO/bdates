@@ -1,6 +1,7 @@
 import { AuthCredentialsModel, UserTokenPairModel } from "../api/AuthApi";
 import { AuthRepository } from "../data/AuthRepository";
 import { AuthService } from "./AuthService";
+import { JWTService } from "./JWTService";
 import { Logger } from "../../core/logging/Logger";
 import { UsersRepository } from "../../users/data/UsersRepository";
 import { Validations } from "./Validations";
@@ -15,18 +16,22 @@ const SALT_ROUNDS = 10;
  * Auth Service Implementation
  */
 export class AuthServiceImpl implements AuthService {
+  private tokenService: JWTService;
   private authRepo: AuthRepository;
   private usersRepo: UsersRepository;
 
   /**
    * Creates a new instance
+   * @param {JWTService} tokenService
    * @param {AuthRepository} authRepo
    * @param {UsersRepository} usersRepo
    */
   constructor(
+    tokenService: JWTService,
     authRepo: AuthRepository,
     usersRepo: UsersRepository
   ) {
+    this.tokenService = tokenService;
     this.authRepo = authRepo;
     this.usersRepo = usersRepo;
   }
@@ -96,9 +101,12 @@ export class AuthServiceImpl implements AuthService {
     Logger.debug("registering new auth credentials...");
     await this.authRepo.updateAuthCredentialsModel(credentials);
 
-    // TODO: generate token pair and return
-
-    throw new Error("Code not yet complete :)");
+    Logger.debug("creating token pair for user...");
+    const tokenPair: UserTokenPairModel = {
+      auth: this.tokenService.createAccessToken(newUser.id),
+      refresh: this.tokenService.createRefreshToken(newUser.id),
+    };
+    return tokenPair;
   }
 
   /**
