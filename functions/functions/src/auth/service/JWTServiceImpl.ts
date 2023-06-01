@@ -1,6 +1,8 @@
 import { AccessTokenModel } from "../api/AuthApi";
 import { ApplicationConfig } from "../../core/api/ApplicationConfig";
+import { JwtPayload } from "jsonwebtoken";
 import { JWTService } from "./JWTService";
+import { Logger } from "../../core/logging/Logger";
 import * as jwt from "jsonwebtoken";
 
 // const TIME_ZONE = "America/Mexico_City";
@@ -53,11 +55,28 @@ export class JWTServiceImpl implements JWTService {
   }
 
   /**
+   * Checks if the provided token is valid
    * @param {string} token token to verify
+   * @return {AccessTokenModel} token contents
    * @throws error if token is not valid
    */
   validateToken(token: string): AccessTokenModel {
-    throw new Error("Method not implemented.");
+    const payload = jwt.verify(
+      token,
+      this.appConfig.jwtSecret,
+      {
+        issuer: this.appConfig.applicationName,
+      }
+    ) as JwtPayload;
+
+    Logger.debug("payload is:", payload);
+
+    return {
+      issuer: payload.iss || "",
+      subject: payload.sub || "",
+      expirationTime: payload.exp || 0,
+      issuedAt: payload.iat || 0,
+    };
   }
 
   /**

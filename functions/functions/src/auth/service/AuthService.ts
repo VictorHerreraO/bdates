@@ -11,4 +11,8 @@ export interface AuthService {
     email: string,
     password: string
   ): Promise<UserTokenPairModel>
+
+  refreshTokens(
+    refreshToken: string
+  ): Promise<UserTokenPairModel>
 }
