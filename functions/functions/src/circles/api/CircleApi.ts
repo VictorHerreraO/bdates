@@ -1,5 +1,6 @@
-export interface CricleMetaModel {
+export interface CircleMetaModel {
     id: string,
+    name: string,
     owner: UserSnapshotModel,
     admins: Array<UserSnapshotModel>,
     created_date: number,

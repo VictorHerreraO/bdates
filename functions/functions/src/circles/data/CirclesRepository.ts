@@ -1,7 +1,9 @@
-import { CricleMetaModel, EventMetaModel, EventModel } from "../api/CircleApi";
+import { CircleMetaModel, EventMetaModel, EventModel } from "../api/CircleApi";
 
 export interface CirclesRepository {
-  getCircleMeta(circleId: string): Promise<CricleMetaModel>
+  saveCircleMeta(model: CircleMetaModel): Promise<CircleMetaModel>
+
+  getCircleMeta(circleId: string): Promise<CircleMetaModel>
 
   getCircleEvents(circleId: string): Promise<Array<EventModel>>
 

@@ -1,8 +1,11 @@
 import { CirclesRepository } from "./CirclesRepository";
-import { CricleMetaModel, EventModel, EventMetaModel } from "../api/CircleApi";
+import { CircleMetaModel, EventModel, EventMetaModel } from "../api/CircleApi";
 import { DataSnapshot, Reference } from "firebase-admin/database";
 import { Logger } from "../../core/logging/Logger";
 import { Mapper } from "../../core/mapping/Mapper";
+import {
+  SnapshotToCircleMetaModelMapper,
+} from "./mapping/SnapshotToCircleMetaModelMapper";
 
 const REF_META = "meta";
 const REF_EVENTS = "events";
@@ -13,20 +16,21 @@ const REF_EVENTS_META = "events_meta";
  */
 export class CirclesRepositoryImpl implements CirclesRepository {
   private circlesRef: Reference;
-  private circleMetaModelMapper: Mapper<DataSnapshot, CricleMetaModel>;
+  // TODO: change to interface
+  private circleMetaModelMapper: SnapshotToCircleMetaModelMapper;
   private eventModelMapper: Mapper<DataSnapshot, EventModel>;
   private eventMetaModelMapper: Mapper<DataSnapshot, EventMetaModel>;
 
   /**
    * Creates a new instance
    * @param {Reference} circlesRef reference to the circles database location
-   * @param {Mapper<DataSnapshot, CricleMetaModel>} circleMetaModelMapper
+   * @param {SnapshotToCircleMetaModelMapper} circleMetaModelMapper
    * @param {Mapper<DataSnapshot, EventModel>} eventModelMapper
    * @param {Mapper<DataSnapshot, EventMetaModel>} eventMetaModelMapper
    */
   constructor(
     circlesRef: Reference,
-    circleMetaModelMapper: Mapper<DataSnapshot, CricleMetaModel>,
+    circleMetaModelMapper: SnapshotToCircleMetaModelMapper,
     eventModelMapper: Mapper<DataSnapshot, EventModel>,
     eventMetaModelMapper: Mapper<DataSnapshot, EventMetaModel>,
   ) {
@@ -36,14 +40,30 @@ export class CirclesRepositoryImpl implements CirclesRepository {
     this.eventMetaModelMapper = eventMetaModelMapper;
   }
 
+  /**
+   * @param {CircleMetaModel} model model to be saved
+   * @return {CircleMetaModel} model saved
+   */
+  async saveCircleMeta(model: CircleMetaModel): Promise<CircleMetaModel> {
+    Logger.debug("registering new circle meta");
+    const data = this.circleMetaModelMapper.reverseMap(model);
+    const circleRef = await this.circlesRef.push();
+
+    await this.circleMetaRef(circleRef.key!).set(data);
+
+    model.id = circleRef.key!;
+    Logger.debug(`new circle registered with id: ${model.id}`);
+
+    return model;
+  }
 
   /**
    * @param {string} circleId ID of the circle to fetch
-   * @return {CricleMetaModel} metadata for the circle if found
+   * @return {CircleMetaModel} metadata for the circle if found
    */
   async getCircleMeta(
     circleId: string
-  ): Promise<CricleMetaModel> {
+  ): Promise<CircleMetaModel> {
     Logger.debug("looking for circle " + circleId);
     const snapshot = await this.circleMetaRef(circleId).once("value");
 

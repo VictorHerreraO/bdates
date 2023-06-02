@@ -10,6 +10,7 @@ import { references } from "../firebase/References";
 import { CirclesRepository } from "../circles/data/CirclesRepository";
 import { CirclesServiceImpl } from "../circles/service/CirclesServiceImpl";
 import { CirclesService } from "../circles/service/CirclesService";
+import { usersServiceLocator } from "./UsersServiceLocator";
 
 /**
  * Dependencies for the circles module
@@ -53,7 +54,8 @@ export class CirclesServiceLocator {
   private _circlesService: CirclesService | undefined = undefined;
   getCirclesService(): CirclesService {
     return this._circlesService || (this._circlesService = new CirclesServiceImpl(
-      this.getCirclesRepository()
+      this.getCirclesRepository(),
+      usersServiceLocator.getUsersRepository(),
     ));
   }
 }

@@ -1,9 +1,17 @@
 import {
-  CricleMetaModel, EventMetaModel, EventModel,
+  CircleMetaModel,
+  EventMetaModel,
+  EventModel,
 } from "../api/CircleApi";
 
 export interface CirclesService {
-  getCircleById(circleId: string): Promise<CricleMetaModel>
+  createCircle(
+    name: string,
+    ownerId: string,
+    tier?: string,
+  ): Promise<CircleMetaModel>
+
+  getCircleById(circleId: string): Promise<CircleMetaModel>
 
   getEventList(circleId: string): Promise<Array<EventModel>>
 

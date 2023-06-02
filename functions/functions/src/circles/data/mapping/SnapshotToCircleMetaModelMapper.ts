@@ -1,15 +1,15 @@
 import { DataSnapshot } from "firebase-admin/database";
-import { Mapper } from "../../../core/mapping/Mapper";
-import { CircleTier, CricleMetaModel } from "../../api/CircleApi";
+import { CircleTier, CircleMetaModel } from "../../api/CircleApi";
 import {
   SnapshotToUserSnapshotModelMapper,
 } from "./SnapshotToUserSnapshotModelMapper";
+import { BaseMapperImpl } from "../../../core/mapping/BaseMapperImpl";
 
 /**
  * Maps the given DataSnapshot to a CircleMetaModel
  */
-export class SnapshotToCircleMetaModelMapper implements
-  Mapper<DataSnapshot, CricleMetaModel> {
+export class SnapshotToCircleMetaModelMapper extends
+  BaseMapperImpl<DataSnapshot, CircleMetaModel> {
   private userSnapshotMapper: SnapshotToUserSnapshotModelMapper;
 
   /**
@@ -17,17 +17,19 @@ export class SnapshotToCircleMetaModelMapper implements
    * @param {SnapshotToUserSnapshotModelMapper} userSnapshotMapper
    */
   constructor(userSnapshotMapper: SnapshotToUserSnapshotModelMapper) {
+    super();
     this.userSnapshotMapper = userSnapshotMapper;
   }
 
   /**
    * @param {DataSnapshot} value snapshot to map
-   * @return {CricleMetaModel} model with data in snapshot
+   * @return {CircleMetaModel} model with data in snapshot
    */
-  map(value: DataSnapshot): CricleMetaModel {
+  map(value: DataSnapshot): CircleMetaModel {
     const data = value.val();
-    const model: CricleMetaModel = {
+    const model: CircleMetaModel = {
       id: value.key!,
+      name: data.name || "",
       owner: this.userSnapshotMapper.map(data.owner || {}),
       admins: (Array.isArray(data.admins) ? data.admins : []).map(
         (admin: any) => this.userSnapshotMapper.map(admin)
