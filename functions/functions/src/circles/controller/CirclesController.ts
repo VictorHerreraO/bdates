@@ -9,6 +9,8 @@ import { authenticateCircleAdmin } from "./CirclesMiddleware";
 
 export const circlesController = expressRouter();
 const circlesService = circlesServiceLocator.getCirclesService();
+const errorMapper = circlesServiceLocator
+  .getErrorToServiceErrorResponseMapper();
 
 circlesController.post(
   "/",
@@ -46,14 +48,27 @@ circlesController.get(
   }
 );
 
-circlesController.patch(
-  "/:circleId",
+circlesController.post(
+  "/:circleId/events",
   authenticateRequest,
   authenticateCircleAdmin,
-  async (_request: Request, response: Response) => {
-    response.json(
-      new ServiceErrorResponse("controller reached!")
-    );
+  async (request: Request, response: Response) => {
+    const circleId = request.params.circleId;
+    const userId = request.userId;
+    const params = request.body;
+    try {
+      if (!userId) {
+        throw new Error("no user found on request");
+      }
+
+      const model = await circlesService.createEvent(circleId, userId, params);
+      Logger.debug("model is:", model);
+      response.json(model);
+    } catch (error: any) {
+      Logger.error("unable to create event:", error);
+      const errorResponse = errorMapper.map(error);
+      response.status(errorResponse.code).json(errorResponse);
+    }
   }
 );
 
@@ -67,6 +82,63 @@ circlesController.get(
     } catch (error: any) {
       Logger.error(error);
       response.status(500).json({ error: error.message });
+    }
+  }
+);
+
+circlesController.put(
+  "/:circleId/events/:eventId",
+  authenticateRequest,
+  authenticateCircleAdmin,
+  async (request: Request, response: Response) => {
+    const circleId = request.params.circleId;
+    const eventId = request.params.eventId;
+    const userId = request.userId;
+    const params = request.body;
+    try {
+      if (!userId) {
+        throw new Error("no user found on request");
+      }
+
+      await circlesService.updateEvent(
+        circleId,
+        eventId,
+        userId,
+        params
+      );
+      Logger.debug("model updated");
+      response.status(204).send();
+    } catch (error: any) {
+      Logger.error("unable to update event:", error);
+      const errorResponse = errorMapper.map(error);
+      response.status(errorResponse.code).json(errorResponse);
+    }
+  }
+);
+
+circlesController.delete(
+  "/:circleId/events/:eventId",
+  authenticateRequest,
+  authenticateCircleAdmin,
+  async (request: Request, response: Response) => {
+    const circleId = request.params.circleId;
+    const eventId = request.params.eventId;
+    const userId = request.userId;
+    try {
+      if (!userId) {
+        throw new Error("no user found on request");
+      }
+
+      await circlesService.deleteEvent(
+        circleId,
+        eventId,
+      );
+      Logger.debug(`model deleted by ${userId}`);
+      response.status(204).send();
+    } catch (error: any) {
+      Logger.error("unable to delete event:", error);
+      const errorResponse = errorMapper.map(error);
+      response.status(errorResponse.code).json(errorResponse);
     }
   }
 );

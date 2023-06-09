@@ -10,6 +10,7 @@ import { CirclesRepository } from "../circles/data/CirclesRepository";
 import { CirclesServiceImpl } from "../circles/service/CirclesServiceImpl";
 import { CirclesService } from "../circles/service/CirclesService";
 import { usersServiceLocator } from "./UsersServiceLocator";
+import { ErrorToServiceErrorResponseMapper } from "../core/mapping/ErrorToServiceErrorResponseMapper";
 
 /**
  * Dependencies for the circles module
@@ -51,6 +52,11 @@ export class CirclesServiceLocator {
       this.getCirclesRepository(),
       usersServiceLocator.getUsersRepository(),
     ));
+  }
+
+  private _errorToServiceErrorResponseMapper: ErrorToServiceErrorResponseMapper | undefined;
+  getErrorToServiceErrorResponseMapper(): ErrorToServiceErrorResponseMapper {
+    return this._errorToServiceErrorResponseMapper || (this._errorToServiceErrorResponseMapper = new ErrorToServiceErrorResponseMapper());
   }
 }
 

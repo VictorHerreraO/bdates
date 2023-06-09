@@ -12,7 +12,7 @@ export interface CircleMetaModel {
 export interface EventModel {
     id: string,
     name: string,
-    year: number,
+    year: number | undefined | null,
     day_of_month: number,
     month_of_year: number,
 }
@@ -21,8 +21,8 @@ export interface EventMetaModel {
     id: string,
     created_date: number,
     created_by: UserId,
-    updated_date: number,
-    updated_by: UserId,
+    updated_date?: number,
+    updated_by?: UserId,
 }
 
 export enum CircleTier {
