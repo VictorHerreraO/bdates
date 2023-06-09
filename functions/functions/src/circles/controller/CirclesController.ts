@@ -5,6 +5,7 @@ import { Logger } from "../../core/logging/Logger";
 import { Request, Response, Router as expressRouter } from "express";
 import { authenticateRequest } from "../../auth/controller/AuthMiddleware";
 import { ServiceErrorResponse } from "../../core/api/ResponseApi";
+import { authenticateCircleAdmin } from "./CirclesMiddleware";
 
 export const circlesController = expressRouter();
 const circlesService = circlesServiceLocator.getCirclesService();
@@ -42,6 +43,17 @@ circlesController.get(
       Logger.error(error);
       response.status(500).json({ error: error.message });
     }
+  }
+);
+
+circlesController.patch(
+  "/:circleId",
+  authenticateRequest,
+  authenticateCircleAdmin,
+  async (_request: Request, response: Response) => {
+    response.json(
+      new ServiceErrorResponse("controller reached!")
+    );
   }
 );
 

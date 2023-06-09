@@ -23,12 +23,13 @@ export class SnapshotToCircleMetaModelMapper extends
 
   /**
    * @param {DataSnapshot} value snapshot to map
+   * @param {string} id id to use for model
    * @return {CircleMetaModel} model with data in snapshot
    */
-  map(value: DataSnapshot): CircleMetaModel {
+  map(value: DataSnapshot, id?: string): CircleMetaModel {
     const data = value.val();
     const model: CircleMetaModel = {
-      id: value.key!,
+      id: id || value.key!,
       name: data.name || "",
       owner: this.userSnapshotMapper.map(data.owner || {}),
       admins: (Array.isArray(data.admins) ? data.admins : []).map(

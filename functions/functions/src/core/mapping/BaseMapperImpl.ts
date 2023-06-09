@@ -4,7 +4,7 @@ import { Mapper } from "./Mapper";
  * Base Mapper Implementation
  */
 export abstract class BaseMapperImpl<I, O> implements Mapper<I, O> {
-  abstract map(value: I): O
+  abstract map(value: I, id?: string): O
 
   /**
    * Casts `value` as any and removes `id` property.

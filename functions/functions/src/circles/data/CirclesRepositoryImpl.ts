@@ -72,7 +72,7 @@ export class CirclesRepositoryImpl implements CirclesRepository {
     }
 
     Logger.info("circle found");
-    const model = this.circleMetaModelMapper.map(snapshot);
+    const model = this.circleMetaModelMapper.map(snapshot, circleId);
     return model;
   }
 

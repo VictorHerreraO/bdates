@@ -5,7 +5,7 @@ import {
   Response,
 } from "express";
 import { ServiceErrorResponse } from "../../core/api/ResponseApi";
-import { UnauthenticatedError } from "../api/AuthErrors";
+import { UnauthorizedError } from "../../core/api/ServiceErrorApi";
 
 const AUTH_BEARER = "bearer";
 
@@ -28,7 +28,7 @@ export function authenticateRequest(
     const [authType = "", token = ""] = authHeader.split(" ");
 
     if (!authHeader || authType.toLowerCase() !== AUTH_BEARER || !token) {
-      throw new UnauthenticatedError("Invalid authentication credentials");
+      throw new UnauthorizedError("Invalid authentication credentials");
     }
 
     const tokenService = authServiceLocator.getJWTService();
@@ -41,8 +41,8 @@ export function authenticateRequest(
 
     next();
   } catch (error: any) {
-    response.status(error.code || 401).json(
-      new ServiceErrorResponse(error.message, error.code || 401)
+    response.status(error.code || 500).json(
+      new ServiceErrorResponse(error.message, error.code)
     );
   }
 }
