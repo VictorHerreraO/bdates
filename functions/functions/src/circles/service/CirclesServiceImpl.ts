@@ -3,7 +3,6 @@ import {
   CircleTier,
   EventMetaModel,
   EventModel,
-  UserSnapshotModel,
 } from "../api/CircleApi";
 import { CirclesRepository } from "../data/CirclesRepository";
 import { CirclesService } from "./CirclesService";
@@ -46,10 +45,6 @@ export class CirclesServiceImpl implements CirclesService {
     }
 
     const owner = await this.usersRepo.getUserModel(ownerId);
-    const ownerSnapshot: UserSnapshotModel = {
-      id: owner.id,
-      name: owner.name,
-    };
     // TODO: perform any validations for the user
 
     // TODO: perform validations on circle tier
@@ -58,8 +53,8 @@ export class CirclesServiceImpl implements CirclesService {
     const newCircle = await this.circlesRepo.saveCircleMeta({
       id: "",
       name: safeName,
-      owner: ownerSnapshot,
-      admins: [ownerSnapshot],
+      owner: owner.id,
+      admins: {},
       event_count: 0,
       created_date: now,
       updated_date: now,

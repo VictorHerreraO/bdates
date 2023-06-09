@@ -34,10 +34,7 @@ export function authenticateRequest(
     const tokenService = authServiceLocator.getJWTService();
     const contents = tokenService.validateToken(token);
 
-    request.user = {
-      id: contents.subject,
-      name: "",
-    };
+    request.userId = contents.subject;
 
     next();
   } catch (error: any) {

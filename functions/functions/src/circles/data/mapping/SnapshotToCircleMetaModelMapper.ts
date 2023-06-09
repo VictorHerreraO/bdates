@@ -1,8 +1,5 @@
 import { DataSnapshot } from "firebase-admin/database";
 import { CircleTier, CircleMetaModel } from "../../api/CircleApi";
-import {
-  SnapshotToUserSnapshotModelMapper,
-} from "./SnapshotToUserSnapshotModelMapper";
 import { BaseMapperImpl } from "../../../core/mapping/BaseMapperImpl";
 
 /**
@@ -10,15 +7,11 @@ import { BaseMapperImpl } from "../../../core/mapping/BaseMapperImpl";
  */
 export class SnapshotToCircleMetaModelMapper extends
   BaseMapperImpl<DataSnapshot, CircleMetaModel> {
-  private userSnapshotMapper: SnapshotToUserSnapshotModelMapper;
-
   /**
    * Creates a new instance
-   * @param {SnapshotToUserSnapshotModelMapper} userSnapshotMapper
    */
-  constructor(userSnapshotMapper: SnapshotToUserSnapshotModelMapper) {
+  constructor() {
     super();
-    this.userSnapshotMapper = userSnapshotMapper;
   }
 
   /**
@@ -31,10 +24,8 @@ export class SnapshotToCircleMetaModelMapper extends
     const model: CircleMetaModel = {
       id: id || value.key!,
       name: data.name || "",
-      owner: this.userSnapshotMapper.map(data.owner || {}),
-      admins: (Array.isArray(data.admins) ? data.admins : []).map(
-        (admin: any) => this.userSnapshotMapper.map(admin)
-      ),
+      owner: data.owner || "",
+      admins: (typeof data.admins == "object") ? data.admins : {},
       created_date: data.created_date,
       updated_date: data.updated_date,
       tier: this.mapToCircleTier(data.tier || ""),

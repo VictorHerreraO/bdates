@@ -5,7 +5,6 @@ import { CirclesRepositoryImpl } from "../circles/data/CirclesRepositoryImpl";
 import { SnapshotToCircleMetaModelMapper } from "../circles/data/mapping/SnapshotToCircleMetaModelMapper";
 import { SnapshotToEventMetaModelMapper } from "../circles/data/mapping/SnapshotToEventMetaModelMapper";
 import { SnapshotToEventModelMapper } from "../circles/data/mapping/SnapshotToEventModelMapper";
-import { SnapshotToUserSnapshotModelMapper } from "../circles/data/mapping/SnapshotToUserSnapshotModelMapper";
 import { references } from "../firebase/References";
 import { CirclesRepository } from "../circles/data/CirclesRepository";
 import { CirclesServiceImpl } from "../circles/service/CirclesServiceImpl";
@@ -16,19 +15,14 @@ import { usersServiceLocator } from "./UsersServiceLocator";
  * Dependencies for the circles module
  */
 export class CirclesServiceLocator {
-  private _snapshotToUserSnapshotModelMapper: SnapshotToUserSnapshotModelMapper | undefined = undefined;
-  getSnapshotToUserSnapshotModelMapper(): SnapshotToUserSnapshotModelMapper {
-    return this._snapshotToUserSnapshotModelMapper || (this._snapshotToUserSnapshotModelMapper = new SnapshotToUserSnapshotModelMapper());
-  }
-
   private _snapshotToCircleMetaModelMapper: SnapshotToCircleMetaModelMapper | undefined = undefined;
   getSnapshotToCircleMetaModelMapper(): SnapshotToCircleMetaModelMapper {
-    return this._snapshotToCircleMetaModelMapper || (this._snapshotToCircleMetaModelMapper = new SnapshotToCircleMetaModelMapper(this.getSnapshotToUserSnapshotModelMapper()));
+    return this._snapshotToCircleMetaModelMapper || (this._snapshotToCircleMetaModelMapper = new SnapshotToCircleMetaModelMapper());
   }
 
   private _snapshotToEventMetaMapper: SnapshotToEventMetaModelMapper | undefined = undefined;
   getSnapshotToEventMetaMapper(): SnapshotToEventMetaModelMapper {
-    return this._snapshotToEventMetaMapper || (this._snapshotToEventMetaMapper = new SnapshotToEventMetaModelMapper(this.getSnapshotToUserSnapshotModelMapper()));
+    return this._snapshotToEventMetaMapper || (this._snapshotToEventMetaMapper = new SnapshotToEventMetaModelMapper());
   }
 
   private _snapshotToEventMapper: SnapshotToEventModelMapper | undefined = undefined;

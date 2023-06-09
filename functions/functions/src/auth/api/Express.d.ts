@@ -1,4 +1,4 @@
-import { UserSnapshotModel } from "../../circles/api/CircleApi";
+import { UserId } from "../../circles/api/CircleApi";
 
 export { };
 
@@ -6,9 +6,9 @@ declare global {
   namespace Express {
     export interface Request {
       /**
-       * User snapshot for this request if authenticated
+       * ID of the user that made this request if authenticated
        */
-      user?: UserSnapshotModel;
+      userId?: UserId;
     }
   }
 }

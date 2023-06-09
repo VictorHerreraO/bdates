@@ -36,8 +36,8 @@ export async function authenticateCircleAdmin(
       );
       throw new InternalServerError("no circle id found on request");
     }
-    const user = request.user;
-    if (!user) {
+    const userId = request.userId;
+    if (!userId) {
       Logger.error(
         "no user found in request. Has request being authenticated?"
       );
@@ -47,8 +47,8 @@ export async function authenticateCircleAdmin(
     const circlesService = circlesServiceLocator.getCirclesService();
     const circle = await circlesService.getCircleById(circleId);
     const isAdmin = (
-      circle.owner.id === user.id ||
-      circle.admins.some((admin) => admin.id === user.id)
+      circle.owner === userId ||
+      circle.admins[userId] == true
     );
 
     if (!isAdmin) {

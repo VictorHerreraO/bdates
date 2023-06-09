@@ -14,14 +14,14 @@ circlesController.post(
   "/",
   authenticateRequest,
   async (request: Request, response: Response) => {
-    const user = request.user;
+    const userId = request.userId;
     const params = request.body;
     try {
-      if (!user) {
+      if (!userId) {
         throw new Error("no user found on request");
       }
 
-      const model = await circlesService.createCircle(params.name, user.id);
+      const model = await circlesService.createCircle(params.name, userId);
 
       response.json(model);
     } catch (error: any) {

@@ -1,8 +1,8 @@
 export interface CircleMetaModel {
     id: string,
     name: string,
-    owner: UserSnapshotModel,
-    admins: Array<UserSnapshotModel>,
+    owner: UserId,
+    admins: { [key: UserId]: boolean },
     created_date: number,
     updated_date: number,
     tier: CircleTier,
@@ -20,16 +20,13 @@ export interface EventModel {
 export interface EventMetaModel {
     id: string,
     created_date: number,
-    created_by: UserSnapshotModel,
+    created_by: UserId,
     updated_date: number,
-    updated_by: UserSnapshotModel,
-}
-
-export interface UserSnapshotModel {
-    id: string,
-    name: string
+    updated_by: UserId,
 }
 
 export enum CircleTier {
     FREE
 }
+
+export type UserId = string
