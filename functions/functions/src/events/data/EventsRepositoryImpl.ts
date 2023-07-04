@@ -41,22 +41,34 @@ export class EventsRepositoryImpl implements EventsRepository {
 
   /**
    * @param {string} circleId ID of the circe to fetch events for
+   * @param {number?} sinceTimestamp return events modified after
+   * the given timestamp
    * @return {Array<EventModel>} array of events in the circle
    */
   async getAllEvents(
-    circleId: string
+    circleId: string,
+    sinceTimestamp?: number,
   ): Promise<EventModel[]> {
     Logger.debug("looking for circle " + circleId);
 
-    const fiveMinAgo = this.currentMillis - (1_000 * 60 * 5);
+    let snapshot: DataSnapshot;
+    if (sinceTimestamp) {
     const sortKey: keyof EventModel = "updated_date";
-    const snapshot = await this.eventRef(circleId)
+      snapshot = await this.eventRef(circleId)
       .orderByChild(sortKey)
-      .startAt(fiveMinAgo)
+        .startAt(sinceTimestamp)
       .once("value");
+    } else {
+      snapshot = await this.eventRef(circleId).once("value");
+    }
 
     if (!snapshot.exists()) {
-      throw new Error(`no updated events found since ${fiveMinAgo}`);
+      if (sinceTimestamp) {
+        Logger.debug(`no updated events found since ${sinceTimestamp}`);
+      } else {
+        Logger.debug("no events found in circle");
+      }
+      return [];
     }
 
     const events: Array<EventModel> = [];

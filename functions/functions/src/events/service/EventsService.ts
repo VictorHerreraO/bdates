@@ -20,7 +20,10 @@ export interface EventsService {
     eventId: string,
   ): Promise<void>
 
-  getEventList(circleId: string): Promise<Array<EventModel>>
+  getEventList(
+    circleId: string,
+    sinceTimestamp?: string,
+  ): Promise<Array<EventModel>>
 
   getEventMeta(circleId: string, eventId: string): Promise<EventMetaModel>
 }

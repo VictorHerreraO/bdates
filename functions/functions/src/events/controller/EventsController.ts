@@ -11,12 +11,27 @@ import { Request, Response, Router as expressRouter } from "express";
 export const eventsController = expressRouter();
 const errorMapper = eventsServiceLocator.getErrorToServiceErrorResponseMapper();
 
+type PathVariables = {
+  [key: string]: string
+}
+
+type GetEventsArgs = {
+  sinceTimestamp?: string
+}
+
 eventsController.get(
   "/:circleId/events",
-  async (request: Request, response: Response) => {
+  async (
+    request: Request<PathVariables, unknown, unknown, GetEventsArgs>,
+    response: Response
+  ) => {
     const params = request.params;
+    const args = request.query;
     try {
-      const models = await getEventsService().getEventList(params.circleId);
+      const models = await getEventsService().getEventList(
+        params.circleId,
+        args.sinceTimestamp,
+      );
       response.json({ data: models });
     } catch (error: any) {
       Logger.error(error);

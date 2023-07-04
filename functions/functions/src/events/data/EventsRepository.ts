@@ -7,6 +7,7 @@ import { UserId } from "../../core/api/CommonTypes";
 export interface EventsRepository {
   getAllEvents(
     circleId: string,
+    sinceTimestamp?: number,
   ): Promise<Array<EventModel>>
 
   saveEvent(

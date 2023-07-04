@@ -78,15 +78,27 @@ export class EventsServiceImpl implements EventsService {
 
   /**
    * @param {string} circleId ID of the circe to fetch events for
+   * @param {string?} sinceTimestamp return events modified after
+   * the given timestamp
    * @return {Array<EventModel>} array of events in the circle
    */
   public async getEventList(
-    circleId: string
+    circleId: string,
+    sinceTimestamp?: string,
   ): Promise<Array<EventModel>> {
     if (!circleId) {
       throw new Error("invalid circleId");
     }
-    return this.eventsRepo.getAllEvents(circleId);
+
+    let safeTimestamp : number | undefined;
+    if (sinceTimestamp) {
+      safeTimestamp = parseInt(sinceTimestamp);
+    }
+
+    return this.eventsRepo.getAllEvents(
+      circleId,
+      safeTimestamp
+    );
   }
 
   /**
