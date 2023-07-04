@@ -1,6 +1,6 @@
 import { DataSnapshot } from "firebase-admin/database";
 import { Mapper } from "../../../core/mapping/Mapper";
-import { EventModel } from "../../api/CircleApi";
+import { EventModel } from "../../api/EventTypes";
 
 /**
  * Maps the given DataSnapshot to a EventModel

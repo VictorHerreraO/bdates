@@ -4,7 +4,7 @@ import {
   Response,
 } from "express";
 import {
-  circlesServiceLocator,
+  getCirclesService,
 } from "../../dependencies/CirclesServiceLocator";
 import { ServiceErrorResponse } from "../../core/api/ResponseApi";
 import {
@@ -44,7 +44,7 @@ export async function authenticateCircleAdmin(
       throw new InternalServerError("no user present in request");
     }
 
-    const circlesService = circlesServiceLocator.getCirclesService();
+    const circlesService = getCirclesService();
     const circle = await circlesService.getCircleById(circleId);
     const isAdmin = (
       circle.owner === userId ||

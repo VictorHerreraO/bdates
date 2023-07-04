@@ -1,16 +1,13 @@
 /* eslint-disable max-len */
 /* eslint-disable require-jsdoc */
-import { Reference } from "firebase-admin/database";
-import { CirclesRepositoryImpl } from "../circles/data/CirclesRepositoryImpl";
-import { SnapshotToCircleMetaModelMapper } from "../circles/data/mapping/SnapshotToCircleMetaModelMapper";
-import { SnapshotToEventMetaModelMapper } from "../circles/data/mapping/SnapshotToEventMetaModelMapper";
-import { SnapshotToEventModelMapper } from "../circles/data/mapping/SnapshotToEventModelMapper";
-import { references } from "../firebase/References";
 import { CirclesRepository } from "../circles/data/CirclesRepository";
-import { CirclesServiceImpl } from "../circles/service/CirclesServiceImpl";
+import { CirclesRepositoryImpl } from "../circles/data/CirclesRepositoryImpl";
 import { CirclesService } from "../circles/service/CirclesService";
+import { CirclesServiceImpl } from "../circles/service/CirclesServiceImpl";
+import { Reference } from "firebase-admin/database";
+import { references } from "../firebase/References";
+import { SnapshotToCircleMetaModelMapper } from "../circles/data/mapping/SnapshotToCircleMetaModelMapper";
 import { usersServiceLocator } from "./UsersServiceLocator";
-import { ErrorToServiceErrorResponseMapper } from "../core/mapping/ErrorToServiceErrorResponseMapper";
 
 /**
  * Dependencies for the circles module
@@ -19,16 +16,6 @@ export class CirclesServiceLocator {
   private _snapshotToCircleMetaModelMapper: SnapshotToCircleMetaModelMapper | undefined = undefined;
   getSnapshotToCircleMetaModelMapper(): SnapshotToCircleMetaModelMapper {
     return this._snapshotToCircleMetaModelMapper || (this._snapshotToCircleMetaModelMapper = new SnapshotToCircleMetaModelMapper());
-  }
-
-  private _snapshotToEventMetaMapper: SnapshotToEventMetaModelMapper | undefined = undefined;
-  getSnapshotToEventMetaMapper(): SnapshotToEventMetaModelMapper {
-    return this._snapshotToEventMetaMapper || (this._snapshotToEventMetaMapper = new SnapshotToEventMetaModelMapper());
-  }
-
-  private _snapshotToEventMapper: SnapshotToEventModelMapper | undefined = undefined;
-  getSnapshotToEventMapper(): SnapshotToEventModelMapper {
-    return this._snapshotToEventMapper || (this._snapshotToEventMapper = new SnapshotToEventModelMapper());
   }
 
   private _circlesReference: Reference | undefined = undefined;
@@ -41,8 +28,6 @@ export class CirclesServiceLocator {
     return this._circlesRepository || (this._circlesRepository = new CirclesRepositoryImpl(
       this.getCirclesReference(),
       this.getSnapshotToCircleMetaModelMapper(),
-      this.getSnapshotToEventMapper(),
-      this.getSnapshotToEventMetaMapper()
     ));
   }
 
@@ -53,13 +38,10 @@ export class CirclesServiceLocator {
       usersServiceLocator.getUsersRepository(),
     ));
   }
-
-  private _errorToServiceErrorResponseMapper: ErrorToServiceErrorResponseMapper | undefined;
-  getErrorToServiceErrorResponseMapper(): ErrorToServiceErrorResponseMapper {
-    return this._errorToServiceErrorResponseMapper || (this._errorToServiceErrorResponseMapper = new ErrorToServiceErrorResponseMapper());
-  }
 }
 
-const circlesServiceLocator = new CirclesServiceLocator();
+export const circlesServiceLocator = new CirclesServiceLocator();
 
-export { circlesServiceLocator };
+export function getCirclesService(): CirclesService {
+  return circlesServiceLocator.getCirclesService();
+}

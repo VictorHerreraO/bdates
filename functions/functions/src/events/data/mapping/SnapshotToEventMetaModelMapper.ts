@@ -1,6 +1,6 @@
 import { DataSnapshot } from "firebase-admin/database";
 import { Mapper } from "../../../core/mapping/Mapper";
-import { EventMetaModel } from "../../api/CircleApi";
+import { EventMetaModel } from "../../api/EventTypes";
 
 /**
  * Maps the given DataSnapshot to a CircleMetaModel

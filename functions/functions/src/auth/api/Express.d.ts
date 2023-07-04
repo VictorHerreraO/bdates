@@ -1,4 +1,4 @@
-import { UserId } from "../../circles/api/CircleApi";
+import { UserId } from "../../core/api/CommonTypes";
 
 export { };
 

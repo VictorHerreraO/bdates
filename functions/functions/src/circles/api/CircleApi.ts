@@ -1,3 +1,5 @@
+import { UserId } from "../../core/api/CommonTypes";
+
 export interface CircleMetaModel {
     id: string,
     name: string,
@@ -9,24 +11,6 @@ export interface CircleMetaModel {
     event_count: number,
 }
 
-export interface EventModel {
-    id: string,
-    name: string,
-    year: number | undefined | null,
-    day_of_month: number,
-    month_of_year: number,
-}
-
-export interface EventMetaModel {
-    id: string,
-    created_date: number,
-    created_by: UserId,
-    updated_date?: number,
-    updated_by?: UserId,
-}
-
 export enum CircleTier {
     FREE
 }
-
-export type UserId = string
