@@ -67,11 +67,18 @@ export class EventsRepositoryImpl implements EventsRepository {
     }
 
     const events: Array<EventModel> = [];
+    // If all events were requested (sinceTimestamp != true)
+    //   then filter out deleted events
+    const removeDeleted = !sinceTimestamp;
     snapshot.forEach((child: DataSnapshot) => {
-      events.push(this.eventModelMapper.map(
+      const event = this.eventModelMapper.map(
         child.val(),
         child.key!,
-      ));
+      );
+
+      if (removeDeleted && event.deleted) return;
+
+      events.push(event);
     });
 
     return events;
@@ -157,6 +164,10 @@ export class EventsRepositoryImpl implements EventsRepository {
 
     const now = this.currentMillis;
     await eventSnapshot.ref.update({
+      "name": null,
+      "day_of_month": null,
+      "month_of_year": null,
+      "year": null,
       "deleted": true,
       "updated_date": now,
     } as EventModelUpdate);
