@@ -7,8 +7,8 @@ import { EventsServiceImpl } from "../events/service/EventsServiceImpl";
 import { Reference } from "firebase-admin/database";
 import { references } from "../firebase/References";
 import { SnapshotToEventMetaModelMapper } from "../events/data/mapping/SnapshotToEventMetaModelMapper";
-import { SnapshotToEventModelMapper } from "../events/data/mapping/SnapshotToEventModelMapper";
 import { ErrorToServiceErrorResponseMapper } from "../core/mapping/ErrorToServiceErrorResponseMapper";
+import { EventModelMapper, EventModelMapperImpl } from "../events/data/mapping/EventModelMapper";
 
 /**
  * Dependencies for the Events module
@@ -19,9 +19,9 @@ export class EventsServiceLocator {
     return this._circlesReference || (this._circlesReference = references.circles);
   }
 
-  private _snapshotToEventMapper: SnapshotToEventModelMapper | undefined = undefined;
-  getSnapshotToEventMapper(): SnapshotToEventModelMapper {
-    return this._snapshotToEventMapper || (this._snapshotToEventMapper = new SnapshotToEventModelMapper());
+  private _eventModelMapper: EventModelMapper | undefined;
+  getEventModelMapper(): EventModelMapper {
+    return this._eventModelMapper || (this._eventModelMapper = new EventModelMapperImpl());
   }
 
   private _snapshotToEventMetaMapper: SnapshotToEventMetaModelMapper | undefined = undefined;
@@ -34,7 +34,7 @@ export class EventsServiceLocator {
   getEventsRepository(): EventsRepository {
     return this._eventsRepository || (this._eventsRepository = new EventsRepositoryImpl(
       this.getCirclesReference(),
-      this.getSnapshotToEventMapper(),
+      this.getEventModelMapper(),
       this.getSnapshotToEventMetaMapper(),
     ));
   }

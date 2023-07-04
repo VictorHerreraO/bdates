@@ -4,6 +4,7 @@ import { Logger } from "../../core/logging/Logger";
 import { Mapper } from "../../core/mapping/Mapper";
 import { Reference, DataSnapshot } from "firebase-admin/database";
 import { ModelUpdate, UserId } from "../../core/api/CommonTypes";
+import { EventModelMapper } from "./mapping/EventModelMapper";
 
 const REF_EVENTS = "events";
 const REF_EVENTS_META = "events_meta";
@@ -13,7 +14,7 @@ const REF_EVENTS_META = "events_meta";
  */
 export class EventsRepositoryImpl implements EventsRepository {
   private circlesRef: Reference;
-  private eventModelMapper: Mapper<DataSnapshot, EventModel>;
+  private eventModelMapper: EventModelMapper;
   private eventMetaModelMapper: Mapper<DataSnapshot, EventMetaModel>;
 
   /**
@@ -26,12 +27,12 @@ export class EventsRepositoryImpl implements EventsRepository {
   /**
    * Creates a new instance
    * @param {Reference} circlesRef reference to the circles database location
-   * @param {Mapper<DataSnapshot, EventModel>} eventModelMapper
+   * @param {EventModelMapper} eventModelMapper
    * @param {Mapper<DataSnapshot, EventMetaModel>} eventMetaModelMapper
    */
   constructor(
     circlesRef: Reference,
-    eventModelMapper: Mapper<DataSnapshot, EventModel>,
+    eventModelMapper: EventModelMapper,
     eventMetaModelMapper: Mapper<DataSnapshot, EventMetaModel>,
   ) {
     this.circlesRef = circlesRef;
@@ -53,11 +54,11 @@ export class EventsRepositoryImpl implements EventsRepository {
 
     let snapshot: DataSnapshot;
     if (sinceTimestamp) {
-    const sortKey: keyof EventModel = "updated_date";
+      const sortKey: keyof EventModel = "updated_date";
       snapshot = await this.eventRef(circleId)
-      .orderByChild(sortKey)
+        .orderByChild(sortKey)
         .startAt(sinceTimestamp)
-      .once("value");
+        .once("value");
     } else {
       snapshot = await this.eventRef(circleId).once("value");
     }
@@ -73,7 +74,10 @@ export class EventsRepositoryImpl implements EventsRepository {
 
     const events: Array<EventModel> = [];
     snapshot.forEach((child: DataSnapshot) => {
-      events.push(this.eventModelMapper.map(child));
+      events.push(this.eventModelMapper.map(
+        child.val(),
+        child.key!,
+      ));
     });
 
     return events;
