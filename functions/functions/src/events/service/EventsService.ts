@@ -1,5 +1,5 @@
 import { UserId } from "../../core/api/CommonTypes";
-import { EventMetaModel, EventModel } from "../api/EventTypes";
+import { EventModel } from "../api/EventTypes";
 
 export interface EventsService {
   createEvent(
@@ -24,8 +24,6 @@ export interface EventsService {
     circleId: string,
     sinceTimestamp?: string,
   ): Promise<Array<EventModel>>
-
-  getEventMeta(circleId: string, eventId: string): Promise<EventMetaModel>
 }
 
 export type EventParams = {

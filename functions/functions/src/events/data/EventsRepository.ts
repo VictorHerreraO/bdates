@@ -1,7 +1,4 @@
-import {
-  EventMetaModel,
-  EventModel,
-} from "../api/EventTypes";
+import { EventModel } from "../api/EventTypes";
 import { UserId } from "../../core/api/CommonTypes";
 
 export interface EventsRepository {
@@ -26,9 +23,4 @@ export interface EventsRepository {
     circleId: string,
     eventId: string,
   ): Promise<void>
-
-  getEventMeta(
-    circleId: string,
-    eventId: string,
-  ): Promise<EventMetaModel>
 }

@@ -6,7 +6,6 @@ import { EventsService } from "../events/service/EventsService";
 import { EventsServiceImpl } from "../events/service/EventsServiceImpl";
 import { Reference } from "firebase-admin/database";
 import { references } from "../firebase/References";
-import { SnapshotToEventMetaModelMapper } from "../events/data/mapping/SnapshotToEventMetaModelMapper";
 import { ErrorToServiceErrorResponseMapper } from "../core/mapping/ErrorToServiceErrorResponseMapper";
 import { EventModelMapper, EventModelMapperImpl } from "../events/data/mapping/EventModelMapper";
 
@@ -24,18 +23,11 @@ export class EventsServiceLocator {
     return this._eventModelMapper || (this._eventModelMapper = new EventModelMapperImpl());
   }
 
-  private _snapshotToEventMetaMapper: SnapshotToEventMetaModelMapper | undefined = undefined;
-  getSnapshotToEventMetaMapper(): SnapshotToEventMetaModelMapper {
-    return this._snapshotToEventMetaMapper || (this._snapshotToEventMetaMapper = new SnapshotToEventMetaModelMapper());
-  }
-
-
   private _eventsRepository: EventsRepository | undefined;
   getEventsRepository(): EventsRepository {
     return this._eventsRepository || (this._eventsRepository = new EventsRepositoryImpl(
       this.getCirclesReference(),
       this.getEventModelMapper(),
-      this.getSnapshotToEventMetaMapper(),
     ));
   }
 
@@ -55,6 +47,6 @@ export class EventsServiceLocator {
 
 export const eventsServiceLocator = new EventsServiceLocator();
 
-export function getEventsService() : EventsService {
+export function getEventsService(): EventsService {
   return eventsServiceLocator.getEventsService();
 }

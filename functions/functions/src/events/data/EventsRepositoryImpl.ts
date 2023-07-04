@@ -1,13 +1,11 @@
-import { EventModel, EventMetaModel } from "../api/EventTypes";
+import { EventModel } from "../api/EventTypes";
 import { EventsRepository } from "./EventsRepository";
 import { Logger } from "../../core/logging/Logger";
-import { Mapper } from "../../core/mapping/Mapper";
 import { Reference, DataSnapshot } from "firebase-admin/database";
 import { ModelUpdate, UserId } from "../../core/api/CommonTypes";
 import { EventModelMapper } from "./mapping/EventModelMapper";
 
 const REF_EVENTS = "events";
-const REF_EVENTS_META = "events_meta";
 
 /**
  * Events repository implementation
@@ -15,7 +13,6 @@ const REF_EVENTS_META = "events_meta";
 export class EventsRepositoryImpl implements EventsRepository {
   private circlesRef: Reference;
   private eventModelMapper: EventModelMapper;
-  private eventMetaModelMapper: Mapper<DataSnapshot, EventMetaModel>;
 
   /**
    * Current time millis
@@ -28,16 +25,13 @@ export class EventsRepositoryImpl implements EventsRepository {
    * Creates a new instance
    * @param {Reference} circlesRef reference to the circles database location
    * @param {EventModelMapper} eventModelMapper
-   * @param {Mapper<DataSnapshot, EventMetaModel>} eventMetaModelMapper
    */
   constructor(
     circlesRef: Reference,
     eventModelMapper: EventModelMapper,
-    eventMetaModelMapper: Mapper<DataSnapshot, EventMetaModel>,
   ) {
     this.circlesRef = circlesRef;
     this.eventModelMapper = eventModelMapper;
-    this.eventMetaModelMapper = eventMetaModelMapper;
   }
 
   /**
@@ -107,18 +101,6 @@ export class EventsRepositoryImpl implements EventsRepository {
 
     Logger.debug(`new event registered with id: ${eventId}`);
 
-    const metaRef = this.eventMetaRef(circleId, eventId);
-    const metaModel: EventMetaModel = {
-      id: "",
-      created_date: now,
-      created_by: creator,
-    };
-    const metaData = metaModel as any;
-    delete metaData.id;
-
-    await metaRef.set(metaData);
-    Logger.debug("event metadata created");
-
     // TODO: Replace with repository
     /*
     await circleSnapshot.ref.update({
@@ -156,13 +138,6 @@ export class EventsRepositoryImpl implements EventsRepository {
     await eventSnapshot.ref.set(data);
 
     Logger.debug("event updated!");
-
-    const metaRef = this.eventMetaRef(circleId, eventId);
-    await metaRef.update({
-      updated_date: now,
-      updated_by: editor,
-    } as EventMetaModelUpdate);
-    Logger.debug("event metadata updated!");
   }
 
 
@@ -185,9 +160,6 @@ export class EventsRepositoryImpl implements EventsRepository {
       "deleted": true,
       "updated_date": now,
     } as EventModelUpdate);
-    await this.eventMetaRef(circleId, eventId).update({
-      "updated_date": now,
-    } as EventMetaModelUpdate);
 
     // TODO: replace with repository
     /*
@@ -195,27 +167,6 @@ export class EventsRepositoryImpl implements EventsRepository {
       event_count: ServerValue.increment(-1),
     } as CircleMetaModelUpdate);
     */
-  }
-
-  /**
-   * @param {string} circleId ID of the circle which contains the event
-   * @param {string} eventId ID of the circle to fetch
-   */
-  async getEventMeta(
-    circleId: string,
-    eventId: string
-  ): Promise<EventMetaModel> {
-    Logger.debug(`looking for event ${eventId} in circle ${circleId}`);
-    const snapshot = await this.eventMetaRef(circleId, eventId).once("value");
-
-    if (!snapshot.exists()) {
-      throw new Error(
-        `no event found with id ${eventId} in circle ${circleId}`
-      );
-    }
-
-    const event = this.eventMetaModelMapper.map(snapshot);
-    return event;
   }
 
   /**
@@ -234,20 +185,6 @@ export class EventsRepositoryImpl implements EventsRepository {
       return ref;
     }
   }
-
-  /**
-   * @param {string} circleId ID of the circle
-   * @param {string} eventId ID of the event
-   * @return {Reference} reference to the event meta data
-   */
-  private eventMetaRef(circleId: string, eventId: string): Reference {
-    return this.circlesRef
-      .child(circleId)
-      .child(REF_EVENTS_META)
-      .child(eventId);
-  }
 }
-
-type EventMetaModelUpdate = ModelUpdate<EventMetaModel>
 
 type EventModelUpdate = ModelUpdate<EventModel>

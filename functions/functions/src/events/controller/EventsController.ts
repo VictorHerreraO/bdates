@@ -124,20 +124,3 @@ eventsController.delete(
     }
   }
 );
-
-eventsController.get(
-  "/:circleId/events/:eventId/meta",
-  async (request: Request, response: Response) => {
-    const params = request.params;
-    try {
-      const model = await getEventsService().getEventMeta(
-        params.circleId,
-        params.eventId
-      );
-      response.json(model);
-    } catch (error: any) {
-      Logger.error(error);
-      response.status(500).json({ error: error.message });
-    }
-  }
-);

@@ -1,4 +1,4 @@
-import { EventModel, EventMetaModel } from "../api/EventTypes";
+import { EventModel } from "../api/EventTypes";
 import { EventParams, EventsService } from "./EventsService";
 import { EventsRepository } from "../data/EventsRepository";
 import { IllegalArgumentError } from "../../core/api/Error";
@@ -99,23 +99,6 @@ export class EventsServiceImpl implements EventsService {
       circleId,
       safeTimestamp
     );
-  }
-
-  /**
-   * @param {string} circleId ID of the circle which contains the event
-   * @param {string} eventId ID of the circle to fetch
-   */
-  public async getEventMeta(
-    circleId: string,
-    eventId: string
-  ): Promise<EventMetaModel> {
-    if (!circleId) {
-      throw new Error("invalid circleID");
-    }
-    if (!eventId) {
-      throw new Error("invalid eventId");
-    }
-    return this.eventsRepo.getEventMeta(circleId, eventId);
   }
 
   /**
