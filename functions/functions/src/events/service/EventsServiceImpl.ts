@@ -41,14 +41,12 @@ export class EventsServiceImpl implements EventsService {
   /**
    * @param {string} circleId ID of the circle to which this event belongs
    * @param {string} eventId ID of the event to update
-   * @param {string} editor ID of the user who edits this event
    * @param {EventParams} params poperties of the event to be updated
    * @return {void}
    */
   updateEvent(
     circleId: string,
     eventId: string,
-    editor: UserId,
     params: EventParams,
   ): Promise<void> {
     if (!circleId || !eventId) {
@@ -57,7 +55,7 @@ export class EventsServiceImpl implements EventsService {
 
     const event = this.validateEventParams(params);
     event.id = eventId;
-    return this.eventsRepo.updateEvent(circleId, editor, event);
+    return this.eventsRepo.updateEvent(circleId, event);
   }
 
   /**

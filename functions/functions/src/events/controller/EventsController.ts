@@ -75,17 +75,11 @@ eventsController.put(
   async (request: Request, response: Response) => {
     const circleId = request.params.circleId;
     const eventId = request.params.eventId;
-    const userId = request.userId;
     const params = request.body;
     try {
-      if (!userId) {
-        throw new Error("no user found on request");
-      }
-
       await getEventsService().updateEvent(
         circleId,
         eventId,
-        userId,
         params
       );
       Logger.debug("model updated");

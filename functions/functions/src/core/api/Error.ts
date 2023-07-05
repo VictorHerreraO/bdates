@@ -13,3 +13,9 @@ export class IllegalArgumentError extends Error {
     super(`illegal value for ${argName}, expected it to be ${boundaries}`);
   }
 }
+
+/**
+ * Indicates that the requested Model was not found.
+ * It may not exist or has been deleted
+ */
+export class ModelNotFoundError extends Error { }

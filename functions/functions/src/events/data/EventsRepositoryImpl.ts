@@ -1,10 +1,14 @@
+import {
+  CirclesRepository,
+  EventCount,
+} from "../../circles/data/CirclesRepository";
 import { EventModel } from "../api/EventTypes";
+import { EventModelMapper } from "./mapping/EventModelMapper";
 import { EventsRepository } from "./EventsRepository";
 import { Logger } from "../../core/logging/Logger";
-import { Reference, DataSnapshot } from "firebase-admin/database";
 import { ModelUpdate, UserId } from "../../core/api/CommonTypes";
-import { EventModelMapper } from "./mapping/EventModelMapper";
-import { CirclesRepository, EventCount } from "../../circles/data/CirclesRepository";
+import { Reference, DataSnapshot } from "firebase-admin/database";
+import { ModelNotFoundError } from "../../core/api/Error";
 
 const REF_EVENTS = "events";
 
@@ -123,28 +127,26 @@ export class EventsRepositoryImpl implements EventsRepository {
 
   /**
    * @param {string} circleId ID of the circle to which this event belongs
-   * @param {UserId} editor ID of the user who edits this event
    * @param {EventModel} model model to be saved
    * @return {void}
    */
   async updateEvent(
     circleId: string,
-    editor: UserId,
     model: EventModel
   ): Promise<void> {
     const eventId = model.id;
-    const eventSnapshot = await this.eventRef(circleId, eventId).once("value");
-    if (!eventSnapshot.exists()) {
-      throw new Error(`no event found with id ${eventId}`);
-    }
 
+    // Check if event exists and is not deleted
+    await this.getEvent(circleId, eventId);
+
+    const eventRef = this.eventRef(circleId, eventId);
     const now = this.currentMillis;
     model.updated_date = now;
 
     const data = model as any;
     delete data.id;
 
-    await eventSnapshot.ref.set(data);
+    await eventRef.set(data);
 
     Logger.debug("event updated!");
   }
@@ -159,13 +161,12 @@ export class EventsRepositoryImpl implements EventsRepository {
     circleId: string,
     eventId: string,
   ): Promise<void> {
-    const eventSnapshot = await this.eventRef(circleId, eventId).once("value");
-    if (!eventSnapshot.exists()) {
-      throw new Error(`no event found with id ${eventId}`);
-    }
+    // Check if event exists and is not deleted
+    await this.getEvent(circleId, eventId);
 
+    const eventRef = this.eventRef(circleId, eventId);
     const now = this.currentMillis;
-    await eventSnapshot.ref.update({
+    await eventRef.update({
       "name": null,
       "day_of_month": null,
       "month_of_year": null,
@@ -197,6 +198,35 @@ export class EventsRepositoryImpl implements EventsRepository {
     } else {
       return ref;
     }
+  }
+
+  /**
+   * @param {string} circleId ID of the circle
+   * @param {string} eventId ID of the event
+   * @return {EventModel} event model if event exists and is not deleted
+   */
+  private async getEvent(
+    circleId: string,
+    eventId: string,
+  ): Promise<EventModel> {
+    const snapshot = await this.eventRef(circleId, eventId).once("value");
+    const notFoundError = new ModelNotFoundError(
+      `no event found with id: ${eventId}`
+    );
+
+    if (!snapshot.exists()) {
+      throw notFoundError;
+    }
+
+    const value = snapshot.val();
+    if (value.deleted) {
+      throw notFoundError;
+    }
+
+    return this.eventModelMapper.map(
+      value,
+      eventId,
+    );
   }
 }
 

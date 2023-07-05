@@ -1,9 +1,10 @@
-import { IllegalArgumentError } from "../api/Error";
+import { IllegalArgumentError, ModelNotFoundError } from "../api/Error";
 import { ServiceErrorResponse } from "../api/ResponseApi";
 import {
   BadRequestError,
   HttpError,
   InternalServerError,
+  NotFoundError,
 } from "../api/ServiceErrorApi";
 import { Mapper } from "./Mapper";
 
@@ -22,6 +23,8 @@ export class ErrorToServiceErrorResponseMapper implements
 
     if (value instanceof IllegalArgumentError) {
       httpError = new BadRequestError();
+    } else if (value instanceof ModelNotFoundError) {
+      httpError = new NotFoundError();
     }
 
     return new ServiceErrorResponse(value.message, httpError.code);

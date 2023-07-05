@@ -15,7 +15,6 @@ export interface EventsRepository {
 
   updateEvent(
     circleId: string,
-    editor: UserId,
     model: EventModel,
   ): Promise<void>
 

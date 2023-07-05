@@ -11,7 +11,6 @@ export interface EventsService {
   updateEvent(
     circleId: string,
     eventId: string,
-    editor: UserId,
     params: EventParams,
   ): Promise<void>
 
