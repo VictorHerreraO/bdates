@@ -8,6 +8,8 @@ import { Reference } from "firebase-admin/database";
 import { references } from "../firebase/References";
 import { ErrorToServiceErrorResponseMapper } from "../core/mapping/ErrorToServiceErrorResponseMapper";
 import { EventModelMapper, EventModelMapperImpl } from "../events/data/mapping/EventModelMapper";
+import { CirclesRepository } from "../circles/data/CirclesRepository";
+import { circlesServiceLocator } from "./CirclesServiceLocator";
 
 /**
  * Dependencies for the Events module
@@ -23,10 +25,16 @@ export class EventsServiceLocator {
     return this._eventModelMapper || (this._eventModelMapper = new EventModelMapperImpl());
   }
 
+  private _circlesRepository: CirclesRepository | undefined;
+  getCirclesRepository(): CirclesRepository {
+    return this._circlesRepository || (this._circlesRepository = circlesServiceLocator.getCirclesRepository());
+  }
+
   private _eventsRepository: EventsRepository | undefined;
   getEventsRepository(): EventsRepository {
     return this._eventsRepository || (this._eventsRepository = new EventsRepositoryImpl(
       this.getCirclesReference(),
+      this.getCirclesRepository(),
       this.getEventModelMapper(),
     ));
   }

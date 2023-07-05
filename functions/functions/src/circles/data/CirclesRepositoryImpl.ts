@@ -1,10 +1,11 @@
-import { CirclesRepository } from "./CirclesRepository";
+import { CirclesRepository, EventCount } from "./CirclesRepository";
 import { CircleMetaModel } from "../api/CircleApi";
-import { Reference } from "firebase-admin/database";
+import { Reference, ServerValue } from "firebase-admin/database";
 import { Logger } from "../../core/logging/Logger";
 import {
   SnapshotToCircleMetaModelMapper,
 } from "./mapping/SnapshotToCircleMetaModelMapper";
+import { ModelUpdate } from "../../core/api/CommonTypes";
 
 const REF_META = "meta";
 
@@ -74,6 +75,22 @@ export class CirclesRepositoryImpl implements CirclesRepository {
   }
 
   /**
+   * @param {string} circleId  ID of the circle
+   * @param {EventCount} count update type to be done
+   */
+  async updateCircleEventCount(
+    circleId: string,
+    count: EventCount,
+  ): Promise<void> {
+    await this.circleMetaRef(circleId).update({
+      event_count: ServerValue.increment(count),
+      updated_date: this.currentMillis,
+    } as CircleMetaModelUpdate);
+
+    Logger.debug("event count updated");
+  }
+
+  /**
    * @param {string} circleId ID of the circle
    * @return {Reference} reference to the circle meta
    */
@@ -83,3 +100,5 @@ export class CirclesRepositoryImpl implements CirclesRepository {
       .child(REF_META);
   }
 }
+
+type CircleMetaModelUpdate = ModelUpdate<CircleMetaModel>

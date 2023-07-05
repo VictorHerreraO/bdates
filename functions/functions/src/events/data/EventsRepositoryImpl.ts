@@ -4,6 +4,7 @@ import { Logger } from "../../core/logging/Logger";
 import { Reference, DataSnapshot } from "firebase-admin/database";
 import { ModelUpdate, UserId } from "../../core/api/CommonTypes";
 import { EventModelMapper } from "./mapping/EventModelMapper";
+import { CirclesRepository, EventCount } from "../../circles/data/CirclesRepository";
 
 const REF_EVENTS = "events";
 
@@ -12,6 +13,7 @@ const REF_EVENTS = "events";
  */
 export class EventsRepositoryImpl implements EventsRepository {
   private circlesRef: Reference;
+  private circlesRepo: CirclesRepository;
   private eventModelMapper: EventModelMapper;
 
   /**
@@ -24,13 +26,16 @@ export class EventsRepositoryImpl implements EventsRepository {
   /**
    * Creates a new instance
    * @param {Reference} circlesRef reference to the circles database location
+   * @param {CirclesRepository} circlesRepo Circles Repository
    * @param {EventModelMapper} eventModelMapper
    */
   constructor(
     circlesRef: Reference,
+    circlesRepo: CirclesRepository,
     eventModelMapper: EventModelMapper,
   ) {
     this.circlesRef = circlesRef;
+    this.circlesRepo = circlesRepo;
     this.eventModelMapper = eventModelMapper;
   }
 
@@ -108,13 +113,10 @@ export class EventsRepositoryImpl implements EventsRepository {
 
     Logger.debug(`new event registered with id: ${eventId}`);
 
-    // TODO: Replace with repository
-    /*
-    await circleSnapshot.ref.update({
-      event_count: ServerValue.increment(1),
-      updated_date: now,
-    } as CircleMetaModelUpdate);
-    */
+    await this.circlesRepo.updateCircleEventCount(
+      circleId,
+      EventCount.INCREASE
+    );
 
     return model;
   }
@@ -172,12 +174,12 @@ export class EventsRepositoryImpl implements EventsRepository {
       "updated_date": now,
     } as EventModelUpdate);
 
-    // TODO: replace with repository
-    /*
-    await circleSnapshot.ref.update({
-      event_count: ServerValue.increment(-1),
-    } as CircleMetaModelUpdate);
-    */
+    Logger.debug("event deleted!");
+
+    await this.circlesRepo.updateCircleEventCount(
+      circleId,
+      EventCount.DECREASE
+    );
   }
 
   /**
