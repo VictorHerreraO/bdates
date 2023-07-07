@@ -53,11 +53,9 @@ class AddEventBottomSheet : BottomSheetDialogFragment() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.navigation.collect {
                 it.consume { event ->
-                    when (event) {
-                        is NavigationEvent.NavigateBack -> {
-                            notifyEventCreated()
-                            dismiss()
-                        }
+                    if (event is NavigationEvent.NavigateBack) {
+                        notifyEventCreated()
+                        dismiss()
                     }
                 }
             }
