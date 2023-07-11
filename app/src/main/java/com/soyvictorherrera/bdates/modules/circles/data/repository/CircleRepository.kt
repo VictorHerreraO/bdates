@@ -1,31 +1,30 @@
 package com.soyvictorherrera.bdates.modules.circles.data.repository
 
+import com.soyvictorherrera.bdates.core.network.Resource
+import com.soyvictorherrera.bdates.core.network.asError
+import com.soyvictorherrera.bdates.core.network.asSuccess
 import com.soyvictorherrera.bdates.modules.circles.data.datasource.local.LocalCircleDataSourceContract
 import com.soyvictorherrera.bdates.modules.circles.data.datasource.remote.RemoteCircleDataSourceContract
 import com.soyvictorherrera.bdates.modules.circles.domain.model.Circle
 import javax.inject.Inject
-import timber.log.Timber
 
 class CircleRepository @Inject constructor(
     private val localDataSource: LocalCircleDataSourceContract,
     private val remoteDataSource: RemoteCircleDataSourceContract,
 ) : CircleRepositoryContract {
 
-    override suspend fun getCircles(): List<Circle> {
-        Timber.d("fetch circles")
+    override suspend fun getCircles(): Resource<List<Circle>> {
         return remoteDataSource.runCatching {
             getCircles()
         }.fold(
             onSuccess = { circles ->
-                Timber.d("circles fetched")
-                circles.forEach {
-                    localDataSource.updateCircle(it)
+                circles.forEach { circle ->
+                    localDataSource.updateCircle(circle)
                 }
-                circles
+                localDataSource.getCircles().asSuccess()
             },
             onFailure = {
-                Timber.e(it)
-                localDataSource.getCircles()
+                localDataSource.getCircles().asError(cause = it)
             }
         )
     }

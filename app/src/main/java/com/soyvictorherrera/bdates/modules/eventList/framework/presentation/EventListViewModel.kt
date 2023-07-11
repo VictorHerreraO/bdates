@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.soyvictorherrera.bdates.core.arch.execute
 import com.soyvictorherrera.bdates.core.date.DateProviderContract
 import com.soyvictorherrera.bdates.core.navigation.NavigationEvent
 import com.soyvictorherrera.bdates.core.resource.ResourceManagerContract
@@ -12,6 +13,7 @@ import com.soyvictorherrera.bdates.modules.eventList.domain.usecase.FilterEventL
 import com.soyvictorherrera.bdates.modules.eventList.domain.usecase.FilterEventListUseCaseContract
 import com.soyvictorherrera.bdates.modules.eventList.domain.usecase.GetDayEventListUseCaseContract
 import com.soyvictorherrera.bdates.modules.eventList.domain.usecase.GetNonDayEventListUseCaseContract
+import com.soyvictorherrera.bdates.modules.eventList.domain.usecase.UpdateEventsUseCaseContract
 import dagger.hilt.android.lifecycle.HiltViewModel
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -28,6 +30,7 @@ class EventListViewModel @Inject constructor(
     private val getDayEventList: GetDayEventListUseCaseContract,
     private val getNonDayEventList: GetNonDayEventListUseCaseContract,
     private val filterEventListUseCase: FilterEventListUseCaseContract,
+    private val updateEventList: UpdateEventsUseCaseContract,
 ) : ViewModel() {
 
     private val _navigation = MutableLiveData<NavigationEvent>()
@@ -61,6 +64,9 @@ class EventListViewModel @Inject constructor(
         viewModelScope.launch {
             this@EventListViewModel.dayEvents = getDayEventList.execute()
             this@EventListViewModel.allEvents = getNonDayEventList.execute()
+        }
+        viewModelScope.launch {
+            updateEventList.execute()
         }
     }
 

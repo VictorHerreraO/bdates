@@ -7,8 +7,8 @@ import com.soyvictorherrera.bdates.modules.circles.data.datasource.local.LocalCi
 import com.soyvictorherrera.bdates.modules.circles.data.datasource.remote.CircleApi
 import com.soyvictorherrera.bdates.modules.circles.data.datasource.remote.RemoteCircleDataSource
 import com.soyvictorherrera.bdates.modules.circles.data.datasource.remote.RemoteCircleDataSourceContract
-import com.soyvictorherrera.bdates.modules.circles.data.mapper.CircleDtoToModelMapper
-import com.soyvictorherrera.bdates.modules.circles.data.mapper.CircleDtoToModelMapperContract
+import com.soyvictorherrera.bdates.modules.circles.data.mapper.CircleResponseResponseDtoToModelMapper
+import com.soyvictorherrera.bdates.modules.circles.data.mapper.CircleResponseDtoToModelMapperContract
 import com.soyvictorherrera.bdates.modules.circles.data.mapper.CircleEntityToModelMapper
 import com.soyvictorherrera.bdates.modules.circles.data.mapper.CircleEntityToModelMapperContract
 import com.soyvictorherrera.bdates.modules.circles.data.preferences.CirclePreferences
@@ -64,9 +64,9 @@ abstract class CirclesModule {
         ): CircleEntityToModelMapperContract = CircleEntityToModelMapper
 
         @Provides
-        fun provideCircleDtoToModelMapperContract(
+        fun provideCircleResponseDtoToModelMapperContract(
 
-        ): CircleDtoToModelMapperContract = CircleDtoToModelMapper
+        ): CircleResponseDtoToModelMapperContract = CircleResponseResponseDtoToModelMapper
 
         @Provides
         fun provideCircleDao(appDatabase: AppDatabase): CircleDao {
