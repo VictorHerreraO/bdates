@@ -1,7 +1,7 @@
 package com.soyvictorherrera.bdates.core.delegate
 
-import com.soyvictorherrera.bdates.BuildConfig
 import com.soyvictorherrera.bdates.core.coroutines.MainCoroutineScope
+import com.soyvictorherrera.bdates.modules.appConfig.AppConfigContract
 import com.soyvictorherrera.bdates.modules.circles.domain.CreateLocalCircleUseCaseContract
 import com.soyvictorherrera.bdates.modules.notifications.NotificationManagerContract
 import javax.inject.Inject
@@ -17,6 +17,7 @@ class ApplicationCreatedCallbackDelegate @Inject constructor(
     @MainCoroutineScope private val coroutineScope: CoroutineScope,
     private val createLocalCircle: CreateLocalCircleUseCaseContract,
     private val notificationManager: NotificationManagerContract,
+    private val appConfig: AppConfigContract,
 ) : ApplicationCreatedCallbackDelegateContract {
 
     override fun onApplicationCreated() {
@@ -26,7 +27,7 @@ class ApplicationCreatedCallbackDelegate @Inject constructor(
     }
 
     private fun setupLogging() {
-        if (BuildConfig.DEBUG) {
+        if (appConfig.isDebug) {
             Timber.plant(Timber.DebugTree())
         }
     }
