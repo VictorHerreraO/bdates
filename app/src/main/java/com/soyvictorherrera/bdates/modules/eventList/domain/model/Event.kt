@@ -11,4 +11,5 @@ data class Event(
     val year: Int?,
     val currentYearOccurrence: LocalDate? = null,
     val nextOccurrence: LocalDate? = null,
+    val deleted: Boolean = false,
 )

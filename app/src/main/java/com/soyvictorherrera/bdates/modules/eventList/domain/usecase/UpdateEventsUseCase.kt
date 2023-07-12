@@ -54,12 +54,15 @@ class UpdateEventsUseCase @Inject constructor(
 
         val circleId = circle.id ?: return
         val now = dateProvider.currentLocalDateTime.toEpochMilli()
-        val lastCheck = circle.lastUpdateCheck ?: 0
+        val lastCheck = circle.lastUpdateCheck
 
         Timber.d("Working with ${circle.name}")
         Timber.d("last check was: $lastCheck")
-        Timber.d("Once refreshed will update with millis = $now")
-        eventsRepo.getCircleEventList(circleId = circleId, isLocalOnly = false)
+        eventsRepo.getCircleEventList(
+            circleId = circleId,
+            lastUpdateDate = lastCheck
+        )
+        Timber.d("event list updated at: $now")
 
         circle.lastUpdateCheck = now
     }

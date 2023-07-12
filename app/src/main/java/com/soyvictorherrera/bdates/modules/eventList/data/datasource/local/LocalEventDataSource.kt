@@ -19,7 +19,7 @@ class LocalEventDataSource @Inject constructor(
 ) : LocalEventDataSourceContract {
 
     override suspend fun getEventList(): List<Event> {
-        return dao.getAll().map(mapper::map)
+        return dao.getAll().filter { it.name.isNotEmpty() }.map(mapper::map)
     }
 
     override suspend fun getEvent(eventId: String): Event? {

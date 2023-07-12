@@ -6,6 +6,7 @@ import com.soyvictorherrera.bdates.core.persistence.booleanKey
 import com.soyvictorherrera.bdates.core.persistence.stringKey
 import com.soyvictorherrera.bdates.modules.eventList.data.datasource.assets.forEach
 import javax.inject.Inject
+import org.json.JSONException
 import org.json.JSONObject
 
 interface CirclePreferencesContract {
@@ -78,7 +79,11 @@ internal class KeyValueLongPreference(
     }
 
     override fun get(key: String): Long? {
-        return valueJSON.optLong(key)
+        return try {
+            valueJSON.getLong(key)
+        } catch (ex: JSONException) {
+            null
+        }
     }
 
     private fun JSONObject.sync() {

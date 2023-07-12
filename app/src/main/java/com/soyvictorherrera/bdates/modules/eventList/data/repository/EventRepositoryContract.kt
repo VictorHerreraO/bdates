@@ -7,7 +7,7 @@ interface EventRepositoryContract {
 
     suspend fun getCircleEventList(
         circleId: String,
-        isLocalOnly: Boolean,
+        lastUpdateDate: Long?,
     ): List<Event>
 
     suspend fun getEvent(eventId: String): Event
