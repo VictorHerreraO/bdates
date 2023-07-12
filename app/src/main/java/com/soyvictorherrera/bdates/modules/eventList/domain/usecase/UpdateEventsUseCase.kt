@@ -7,6 +7,7 @@ import com.soyvictorherrera.bdates.core.network.Resource
 import com.soyvictorherrera.bdates.modules.circles.data.preferences.CirclePreferencesContract
 import com.soyvictorherrera.bdates.modules.circles.data.repository.CircleRepositoryContract
 import com.soyvictorherrera.bdates.modules.circles.domain.model.Circle
+import com.soyvictorherrera.bdates.modules.eventList.data.repository.EventRepositoryContract
 import com.soyvictorherrera.bdates.modules.eventList.domain.model.Event
 import javax.inject.Inject
 import timber.log.Timber
@@ -15,6 +16,7 @@ interface UpdateEventsUseCaseContract : UseCase<Unit, Resource<List<Event>>>
 
 class UpdateEventsUseCase @Inject constructor(
     private val circlesRepo: CircleRepositoryContract,
+    private val eventsRepo: EventRepositoryContract,
     private val circlePrefs: CirclePreferencesContract,
     private val dateProvider: DateProviderContract,
 ) : UpdateEventsUseCaseContract {
@@ -50,12 +52,14 @@ class UpdateEventsUseCase @Inject constructor(
             return
         }
 
+        val circleId = circle.id ?: return
         val now = dateProvider.currentLocalDateTime.toEpochMilli()
         val lastCheck = circle.lastUpdateCheck ?: 0
 
         Timber.d("Working with ${circle.name}")
         Timber.d("last check was: $lastCheck")
         Timber.d("Once refreshed will update with millis = $now")
+        eventsRepo.getCircleEventList(circleId = circleId, isLocalOnly = false)
 
         circle.lastUpdateCheck = now
     }

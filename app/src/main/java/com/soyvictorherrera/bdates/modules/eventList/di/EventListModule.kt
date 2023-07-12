@@ -13,6 +13,7 @@ import com.soyvictorherrera.bdates.modules.eventList.data.datasource.local.Event
 import com.soyvictorherrera.bdates.modules.eventList.data.datasource.local.LocalEventDataSource
 import com.soyvictorherrera.bdates.modules.eventList.data.datasource.local.LocalEventDataSourceContract
 import com.soyvictorherrera.bdates.modules.eventList.data.mapper.EventEntityToModelMapper
+import com.soyvictorherrera.bdates.modules.eventList.data.mapper.EventEntityToModelMapperContract
 import com.soyvictorherrera.bdates.modules.eventList.data.mapper.JsonToEventMapper
 import com.soyvictorherrera.bdates.modules.eventList.data.repository.EventRepository
 import com.soyvictorherrera.bdates.modules.eventList.data.repository.EventRepositoryContract
@@ -109,7 +110,7 @@ abstract class EventListModule {
         }
 
         @Provides
-        fun provideEventEntityToModelMapper(): Mapper<EventEntity, Event> {
+        fun provideEventEntityToModelMapperContract(): EventEntityToModelMapperContract {
             return EventEntityToModelMapper
         }
     }
