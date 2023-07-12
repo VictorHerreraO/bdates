@@ -11,6 +11,7 @@ import org.json.JSONObject
 interface CirclePreferencesContract {
     var isLocalCircleCreated: Boolean
     var localCircleId: String?
+    var defaultRemoteCircleId: String?
     val updateTimestamps: KeyValuePreference<Long>
 }
 
@@ -18,6 +19,7 @@ class CirclePreferences @Inject constructor(
     private val store: KeyValueStoreContract,
 ) : CirclePreferencesContract {
     private companion object {
+        val DEFAULT_REMOTE_CIRCLE_ID = stringKey("default_remote_circle_id")
         val IS_LOCAL_CIRCLE_CREATED_KEY = booleanKey("is_local_circle_created")
         val LOCAL_CIRCLE_ID_KEY = stringKey("local_circle_id")
         val UPDATE_TIMESTAMPS = stringKey("update_timestamps")
@@ -33,6 +35,12 @@ class CirclePreferences @Inject constructor(
         get() = store[LOCAL_CIRCLE_ID_KEY]
         set(value) {
             store[LOCAL_CIRCLE_ID_KEY] = value
+        }
+
+    override var defaultRemoteCircleId: String?
+        get() = store[DEFAULT_REMOTE_CIRCLE_ID]
+        set(value) {
+            store[DEFAULT_REMOTE_CIRCLE_ID] = value
         }
 
     override val updateTimestamps: KeyValuePreference<Long> = KeyValueLongPreference(
