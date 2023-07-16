@@ -149,6 +149,8 @@ export class EventsRepositoryImpl implements EventsRepository {
     await eventRef.set(data);
 
     Logger.debug("event updated!");
+
+    await this.circlesRepo.updateCircleUpdateDate(circleId);
   }
 
 

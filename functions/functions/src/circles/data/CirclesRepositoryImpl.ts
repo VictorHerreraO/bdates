@@ -92,6 +92,16 @@ export class CirclesRepositoryImpl implements CirclesRepository {
 
   /**
    * @param {string} circleId ID of the circle
+   */
+  async updateCircleUpdateDate(circleId: string): Promise<void> {
+    await this.circleMetaRef(circleId).update({
+      updated_date: this.currentMillis,
+    } as CircleMetaModelUpdate);
+    Logger.debug("event count updated");
+  }
+
+  /**
+   * @param {string} circleId ID of the circle
    * @return {Reference} reference to the circle meta
    */
   private circleMetaRef(circleId: string): Reference {
