@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
@@ -19,9 +20,11 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.soyvictorherrera.bdates.NavGraphDirections
 import com.soyvictorherrera.bdates.R
-import com.soyvictorherrera.bdates.core.navigation.NavigationEvent
-import com.soyvictorherrera.bdates.core.navigation.consume
+import com.soyvictorherrera.bdates.core.event.NavigationEvent
+import com.soyvictorherrera.bdates.core.event.consume
+import com.soyvictorherrera.bdates.core.event.consumeValue
 import com.soyvictorherrera.bdates.databinding.FragmentEventListBinding
+import com.soyvictorherrera.bdates.modules.eventList.framework.presentation.Error
 import com.soyvictorherrera.bdates.modules.eventList.framework.presentation.EventListViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -54,6 +57,7 @@ class EventListFragment : Fragment() {
         initRecyclerView()
         setupListeners()
         setupResultListener()
+        bindViewModel()
     }
 
     override fun onDestroyView() {
@@ -100,29 +104,32 @@ class EventListFragment : Fragment() {
         }
     }
 
-    private fun setupListeners() = with(binding) {
-        viewModel.navigation.observe(viewLifecycleOwner) { event ->
-            event.consume {
-                when (it) {
-                    is NavigationEvent.EventBottomSheet -> {
-                        NavGraphDirections.actionCreateEventBottomSheet(
-                            eventId = it.eventId
-                        ).let {
-                            findNavController().navigate(it)
-                        }
-                    }
-                    is NavigationEvent.NavigateBack -> {
-                        /* no-op */
+    private fun bindViewModel() = with(viewModel) {
+        navigation.observe(viewLifecycleOwner) { navEvent ->
+            navEvent.consume { event ->
+                if (event is NavigationEvent.EventBottomSheet) {
+                    NavGraphDirections.actionCreateEventBottomSheet(
+                        eventId = event.eventId
+                    ).let {
+                        findNavController().navigate(it)
                     }
                 }
             }
         }
-        viewModel.events.observe(viewLifecycleOwner, adapter::submitList)
-        viewModel.todayEvents.observe(viewLifecycleOwner) {
+        events.observe(viewLifecycleOwner, adapter::submitList)
+        todayEvents.observe(viewLifecycleOwner) {
             todayAdapter.submitList(it)
-            layoutTodayEvents.visibility = if (it.isEmpty()) View.GONE else View.VISIBLE
+            binding.layoutTodayEvents.visibility = if (it.isEmpty()) View.GONE else View.VISIBLE
         }
+        isRefreshing.observe(viewLifecycleOwner) {
+            binding.swipeLayout.isRefreshing = it
+        }
+        errorMessage.observe(viewLifecycleOwner) {
+            it.consumeValue(::showSnackBar)
+        }
+    }
 
+    private fun setupListeners() = with(binding) {
         inputSearch.addTextChangedListener { text ->
             viewModel.onQueryTextChanged(text.toString())
         }
@@ -132,11 +139,15 @@ class EventListFragment : Fragment() {
                     hideSoftKeyboard()
                     true
                 }
+
                 else -> false
             }
         }
         btnAddEvent.setOnClickListener {
             viewModel.onAddEventClick()
+        }
+        swipeLayout.setOnRefreshListener {
+            viewModel.refresh()
         }
     }
 
@@ -157,6 +168,10 @@ class EventListFragment : Fragment() {
                 }
             }
         }
+    }
+
+    private fun showSnackBar(error: Error) {
+        Toast.makeText(requireContext(), error::class.java.simpleName, Toast.LENGTH_SHORT).show()
     }
 
 }

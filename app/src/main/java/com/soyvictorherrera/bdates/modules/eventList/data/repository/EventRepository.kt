@@ -19,7 +19,7 @@ class EventRepository @Inject constructor(
 ) : EventRepositoryContract {
     override suspend fun getEventList(): List<Event> {
         return mutableListOf<Event>()
-            //.addSource(assetsDataSource) { getEventList() }
+            // .addSource(assetsDataSource) { getEventList() }
             .addSource(localDataSource) {
                 getEventList().also {
                     Timber.d("Fetched local event source")

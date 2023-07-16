@@ -3,7 +3,7 @@ package com.soyvictorherrera.bdates.modules.eventList.framework.presentation
 import androidx.lifecycle.SavedStateHandle
 import com.google.common.truth.Truth.assertThat
 import com.soyvictorherrera.bdates.core.date.DateProviderContract
-import com.soyvictorherrera.bdates.core.navigation.NavigationEvent
+import com.soyvictorherrera.bdates.core.event.NavigationEvent
 import com.soyvictorherrera.bdates.modules.circles.data.preferences.CirclePreferencesContract
 import com.soyvictorherrera.bdates.modules.eventList.data.repository.EventRepositoryContract
 import com.soyvictorherrera.bdates.modules.eventList.domain.model.Event

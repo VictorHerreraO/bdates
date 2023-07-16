@@ -4,15 +4,15 @@ import com.soyvictorherrera.bdates.core.arch.UseCase
 import com.soyvictorherrera.bdates.core.date.DateProviderContract
 import com.soyvictorherrera.bdates.core.date.toEpochMilli
 import com.soyvictorherrera.bdates.core.network.Resource
+import com.soyvictorherrera.bdates.core.network.asSuccess
 import com.soyvictorherrera.bdates.modules.circles.data.preferences.CirclePreferencesContract
 import com.soyvictorherrera.bdates.modules.circles.data.repository.CircleRepositoryContract
 import com.soyvictorherrera.bdates.modules.circles.domain.model.Circle
 import com.soyvictorherrera.bdates.modules.eventList.data.repository.EventRepositoryContract
-import com.soyvictorherrera.bdates.modules.eventList.domain.model.Event
 import javax.inject.Inject
 import timber.log.Timber
 
-interface UpdateEventsUseCaseContract : UseCase<Unit, Resource<List<Event>>>
+interface UpdateEventsUseCaseContract : UseCase<Unit, Resource<Boolean>>
 
 class UpdateEventsUseCase @Inject constructor(
     private val circlesRepo: CircleRepositoryContract,
@@ -20,26 +20,27 @@ class UpdateEventsUseCase @Inject constructor(
     private val circlePrefs: CirclePreferencesContract,
     private val dateProvider: DateProviderContract,
 ) : UpdateEventsUseCaseContract {
-    override suspend fun execute(params: Unit): Resource<List<Event>> {
-        fetchCircles().forEach {
-            fetchCircleEvents(it)
-        }
-        return Resource.Success(emptyList())
-    }
+    private var isEventListUpdated = false
 
-    private suspend fun fetchCircles(): List<Circle> {
-        return when (val resource = circlesRepo.getCircles()) {
+    override suspend fun execute(params: Unit): Resource<Boolean> {
+        isEventListUpdated = false
+        return when (val result = fetchCircles()) {
             is Resource.Success -> {
-                resource.data
+                result.data.forEach {
+                    fetchCircleEvents(it)
+                }
+                isEventListUpdated.asSuccess()
             }
 
             else -> {
-                if (resource is Resource.Error) {
-                    Timber.e(resource.cause)
-                }
-                emptyList()
+                val cause = (result as? Resource.Error)?.cause
+                Resource.Error(cause = cause)
             }
         }
+    }
+
+    private suspend fun fetchCircles(): Resource<List<Circle>> {
+        return circlesRepo.getCircles()
     }
 
     private suspend fun fetchCircleEvents(circle: Circle) {
@@ -63,6 +64,7 @@ class UpdateEventsUseCase @Inject constructor(
             lastUpdateDate = lastCheck
         )
         Timber.d("event list updated at: $now")
+        isEventListUpdated = true
 
         circle.lastUpdateCheck = now
     }

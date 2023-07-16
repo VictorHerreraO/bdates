@@ -16,8 +16,8 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.soyvictorherrera.bdates.core.compose.theme.setBdatesContent
-import com.soyvictorherrera.bdates.core.navigation.NavigationEvent
-import com.soyvictorherrera.bdates.core.navigation.consume
+import com.soyvictorherrera.bdates.core.event.NavigationEvent
+import com.soyvictorherrera.bdates.core.event.consume
 import com.soyvictorherrera.bdates.modules.eventList.framework.presentation.AddEventViewModel
 import com.soyvictorherrera.bdates.modules.eventList.framework.ui.compose.AddEventSheetContent
 import dagger.hilt.android.AndroidEntryPoint

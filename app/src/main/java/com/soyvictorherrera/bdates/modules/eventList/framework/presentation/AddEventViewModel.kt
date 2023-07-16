@@ -4,7 +4,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.soyvictorherrera.bdates.core.date.DateProviderContract
-import com.soyvictorherrera.bdates.core.navigation.NavigationEvent
+import com.soyvictorherrera.bdates.core.event.NavigationEvent
 import com.soyvictorherrera.bdates.modules.circles.data.preferences.CirclePreferencesContract
 import com.soyvictorherrera.bdates.modules.eventList.data.repository.EventRepositoryContract
 import com.soyvictorherrera.bdates.modules.eventList.domain.model.Event

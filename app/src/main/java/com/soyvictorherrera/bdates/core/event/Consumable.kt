@@ -1,9 +1,6 @@
-package com.soyvictorherrera.bdates.core.navigation
+package com.soyvictorherrera.bdates.core.event
 
-sealed class NavigationEvent {
-    class NavigateBack : NavigationEvent()
-    class EventBottomSheet(val eventId: String? = null) : NavigationEvent()
-
+abstract class Consumable {
     var consumed: Boolean = false
         get() {
             return if (field) {
@@ -16,6 +13,6 @@ sealed class NavigationEvent {
         private set
 }
 
-inline fun <T : NavigationEvent> T?.consume(consumer: (T) -> Unit) {
+inline fun <C : Consumable> C?.consume(consumer: (C) -> Unit) {
     this?.takeIf { consumed.not() }?.let(consumer)
 }

@@ -6,7 +6,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.soyvictorherrera.bdates.core.arch.execute
 import com.soyvictorherrera.bdates.core.date.DateProviderContract
-import com.soyvictorherrera.bdates.core.navigation.NavigationEvent
+import com.soyvictorherrera.bdates.core.event.ConsumableEvent
+import com.soyvictorherrera.bdates.core.event.NavigationEvent
+import com.soyvictorherrera.bdates.core.network.onError
+import com.soyvictorherrera.bdates.core.network.onSuccess
 import com.soyvictorherrera.bdates.core.resource.ResourceManagerContract
 import com.soyvictorherrera.bdates.modules.eventList.domain.model.Event
 import com.soyvictorherrera.bdates.modules.eventList.domain.usecase.FilterEventListArgs
@@ -33,6 +36,7 @@ class EventListViewModel @Inject constructor(
     private val updateEventList: UpdateEventsUseCaseContract,
 ) : ViewModel() {
 
+    //region View Props
     private val _navigation = MutableLiveData<NavigationEvent>()
     val navigation: LiveData<NavigationEvent>
         get() = _navigation
@@ -44,6 +48,15 @@ class EventListViewModel @Inject constructor(
     private val _todayEvents = MutableLiveData<List<TodayEventViewState>>()
     val todayEvents: LiveData<List<TodayEventViewState>>
         get() = _todayEvents
+
+    private val _isRefreshing = MutableLiveData(false)
+    val isRefreshing: LiveData<Boolean>
+        get() = _isRefreshing
+
+    private val _errorMessage = MutableLiveData<ConsumableEvent<Error>?>(null)
+    val errorMessage: LiveData<ConsumableEvent<Error>?>
+        get() = _errorMessage
+    //endregion
 
     private val today: LocalDate = dateProvider.currentLocalDate
     private val longFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("EEEE, dd/MM")
@@ -58,15 +71,33 @@ class EventListViewModel @Inject constructor(
 
     init {
         getData()
+        refreshData()
     }
 
-    private fun getData() {
-        viewModelScope.launch {
-            this@EventListViewModel.dayEvents = getDayEventList.execute()
-            this@EventListViewModel.allEvents = getNonDayEventList.execute()
+    private fun getData(): Unit = with(viewModelScope) {
+        launch {
+            dayEvents = getDayEventList.execute()
         }
+        launch {
+            allEvents = getNonDayEventList.execute()
+        }
+    }
+
+    private fun refreshData() {
         viewModelScope.launch {
+            _isRefreshing.value = true
+
             updateEventList.execute()
+                .onSuccess {
+                    Timber.d("Success")
+                    getData()
+                }
+                .onError { _, cause ->
+                    Timber.d(cause, "Show refresh error")
+                    _errorMessage.value = ConsumableEvent(Error.UnableToRefresh)
+                }
+
+            _isRefreshing.value = false
         }
     }
 
@@ -144,6 +175,10 @@ class EventListViewModel @Inject constructor(
         }
     }
 
-    fun refresh() = getData()
+    fun refresh() = refreshData()
 
+}
+
+sealed class Error {
+    object UnableToRefresh : Error()
 }
