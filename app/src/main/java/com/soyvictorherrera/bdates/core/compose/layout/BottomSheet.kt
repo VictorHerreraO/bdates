@@ -33,6 +33,7 @@ fun BottomSheet(
     title: String,
     onBottomSheetDismiss: () -> Unit,
     modifier: Modifier = Modifier,
+    hasActions: Boolean = false,
     actions: (@Composable RowScope.() -> Unit)? = null,
     content: @Composable () -> Unit,
 ) = Surface(
@@ -43,6 +44,7 @@ fun BottomSheet(
         modifier = Modifier.fillMaxWidth()
     ) {
         val elevation = LocalSizes.current.dimen_2
+        val renderActions = hasActions && actions!= null
 
         BottomSheetTopBar(
             title = title,
@@ -53,7 +55,7 @@ fun BottomSheet(
         Column(modifier = modifier) {
             Surface(
                 elevation = elevation,
-                shape = if (actions != null) {
+                shape = if (renderActions) {
                     BottomSheetContentShape
                 } else {
                     RectangleShape
@@ -68,13 +70,13 @@ fun BottomSheet(
                 }
             }
 
-            actions?.let {
+            if (renderActions && actions != null) {
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(LocalSizes.current.dimen_32),
-                    content = it
+                    content = actions
                 )
             }
         }
@@ -109,6 +111,7 @@ private fun BottomSheetWithActionsPreview() {
         BottomSheet(
             title = "Bottom sheet",
             onBottomSheetDismiss = {},
+            hasActions = true,
             actions = {
                 Button(
                     onClick = { /*TODO*/ },

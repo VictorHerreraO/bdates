@@ -38,4 +38,9 @@
     <string name="add_event_save_event">Crear evento</string>
     <string name="add_event_save_changes">Guardar cambios</string>
     <string name="add_event_delete_event">Eliminar evento</string>
+
+    <!-- Preview events -->
+    <string name="preview_event_date_type_subtitle" translatable="false">%1$s • %2$s</string>
+    <string name="preview_event_no_age_title" translatable="false">🎉</string>
+    <string name="preview_event_date">EEEE, dd/MM</string>
 </resources>

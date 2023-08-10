@@ -20,7 +20,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.rememberNestedScrollInteropConnection
@@ -38,14 +37,13 @@ import com.soyvictorherrera.bdates.core.compose.widget.DeleteActionButton
 import com.soyvictorherrera.bdates.core.compose.widget.PrimaryActionButton
 import com.soyvictorherrera.bdates.modules.eventList.framework.presentation.AddEventViewState
 import com.soyvictorherrera.bdates.modules.eventList.framework.presentation.EditMode
-import java.time.LocalDate
 import kotlinx.coroutines.flow.distinctUntilChanged
+import java.time.LocalDate
 
 internal const val ICON_ALPHA = 0.6F
 internal const val ICON_DISABLED_ALPHA = 0.2F
 
 @Composable
-@OptIn(ExperimentalComposeUiApi::class)
 fun AddEventSheetContent(
     state: AddEventViewState,
     onEventNameChange: (String) -> Unit,
@@ -65,6 +63,7 @@ fun AddEventSheetContent(
         }
     ),
     onBottomSheetDismiss = onBottomSheetDismiss,
+    hasActions = true,
     actions = {
         EventActions(
             state = state,

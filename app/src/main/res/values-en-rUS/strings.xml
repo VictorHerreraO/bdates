@@ -36,4 +36,7 @@
     <string name="add_event_save_event">Create event</string>
     <string name="add_event_save_changes">Save changes</string>
     <string name="add_event_delete_event">Delete event</string>
+
+    <!-- Preview events -->
+    <string name="preview_event_date">EEEE, MM/dd</string>
 </resources>
