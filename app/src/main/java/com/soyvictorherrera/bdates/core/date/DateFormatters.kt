@@ -2,6 +2,7 @@ package com.soyvictorherrera.bdates.core.date
 
 import com.soyvictorherrera.bdates.R
 import com.soyvictorherrera.bdates.core.resource.ResourceManagerContract
+import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 
@@ -20,3 +21,7 @@ class DateFormatters @Inject constructor(
 
     override val ddMMYYYYFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
 }
+
+fun LocalDate.formatWithPattern(stringPattern: String): String = DateTimeFormatter
+    .ofPattern(stringPattern)
+    .format(this)
