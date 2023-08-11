@@ -22,12 +22,16 @@ import com.soyvictorherrera.bdates.modules.eventList.data.mapper.JsonToEventMapp
 import com.soyvictorherrera.bdates.modules.eventList.data.repository.EventRepository
 import com.soyvictorherrera.bdates.modules.eventList.data.repository.EventRepositoryContract
 import com.soyvictorherrera.bdates.modules.eventList.domain.model.Event
+import com.soyvictorherrera.bdates.modules.eventList.domain.usecase.CalculateEventOccurrenceUseCase
+import com.soyvictorherrera.bdates.modules.eventList.domain.usecase.CalculateEventOccurrenceUseCaseContract
 import com.soyvictorherrera.bdates.modules.eventList.domain.usecase.FilterEventListUseCase
 import com.soyvictorherrera.bdates.modules.eventList.domain.usecase.FilterEventListUseCaseContract
 import com.soyvictorherrera.bdates.modules.eventList.domain.usecase.GetDayEventListUseCase
 import com.soyvictorherrera.bdates.modules.eventList.domain.usecase.GetDayEventListUseCaseContract
 import com.soyvictorherrera.bdates.modules.eventList.domain.usecase.GetEventListUseCase
 import com.soyvictorherrera.bdates.modules.eventList.domain.usecase.GetEventListUseCaseContract
+import com.soyvictorherrera.bdates.modules.eventList.domain.usecase.GetEventUseCase
+import com.soyvictorherrera.bdates.modules.eventList.domain.usecase.GetEventUseCaseContract
 import com.soyvictorherrera.bdates.modules.eventList.domain.usecase.GetNonDayEventListUseCase
 import com.soyvictorherrera.bdates.modules.eventList.domain.usecase.GetNonDayEventListUseCaseContract
 import com.soyvictorherrera.bdates.modules.eventList.domain.usecase.GetUpcomingEventListUseCase
@@ -104,6 +108,16 @@ abstract class EventListModule {
     abstract fun bindFilterEventListUseCase(
         filterEventListUseCase: FilterEventListUseCase,
     ): FilterEventListUseCaseContract
+
+    @Binds
+    abstract fun bindCalculateEventOccurrenceUseCaseContract(
+        calculateEventOccurrenceUseCase: CalculateEventOccurrenceUseCase
+    ): CalculateEventOccurrenceUseCaseContract
+
+    @Binds
+    abstract fun bindGetEventUseCaseContract(
+        getEventUseCase: GetEventUseCase
+    ): GetEventUseCaseContract
     //endregion
 
     companion object {
