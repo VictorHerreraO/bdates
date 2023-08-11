@@ -117,7 +117,11 @@ class EventListFragment : Fragment() {
                     }
 
                     is NavigationEvent.PreviewEventBottomSheet -> {
-                        // TODO: Implement navigation
+                        NavGraphDirections.actionPreviewEventBottomSheet(
+                            eventId = event.eventId
+                        ).run {
+                            findNavController().navigate(this)
+                        }
                     }
 
                     is NavigationEvent.NavigateBack -> {

@@ -33,7 +33,7 @@ private const val BACKGROUND_ALPHA = 0.25f
 
 //region Content
 @Composable
-fun EventPreviewSheetContent(
+fun PreviewEventSheetContent(
     state: PreviewEventViewState,
     onEditEvent: () -> Unit,
     onBottomSheetDismiss: () -> Unit,
@@ -144,7 +144,7 @@ private fun EventPreviewContentPreview() {
                 isEditable = false,
                 isLoading = false,
             )
-            EventPreviewSheetContent(
+            PreviewEventSheetContent(
                 state = state,
                 onEditEvent = {},
                 onBottomSheetDismiss = {}
@@ -169,7 +169,7 @@ private fun EditableEventPreviewContentPreview() {
                 isEditable = true,
                 isLoading = false
             )
-            EventPreviewSheetContent(
+            PreviewEventSheetContent(
                 state = state,
                 onEditEvent = {},
                 onBottomSheetDismiss = {}
