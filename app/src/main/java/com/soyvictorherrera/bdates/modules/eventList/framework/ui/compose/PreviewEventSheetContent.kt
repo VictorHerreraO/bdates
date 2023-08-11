@@ -17,6 +17,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import com.soyvictorherrera.bdates.R
 import com.soyvictorherrera.bdates.core.compose.layout.BottomSheet
@@ -72,11 +73,12 @@ fun PreviewEventSheetContent(
 
             Text(
                 text = state.eventName,
-                style = MaterialTheme.typography.subtitle1,
-                fontWeight = FontWeight.Bold
+                style = MaterialTheme.typography.h5,
+                fontWeight = FontWeight.Bold,
+                textAlign = TextAlign.Center
             )
 
-            SpacerSm()
+            SpacerM()
 
             Text(
                 text = stringResource(

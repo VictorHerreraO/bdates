@@ -57,7 +57,9 @@ class PreviewEventViewModel @Inject constructor(
     }
 
     fun onActionClick() {
-        _navigation.value = NavigationEvent.AddEventBottomSheet()
+        _navigation.value = NavigationEvent.AddEventBottomSheet(
+            eventId = eventId
+        )
     }
 
     private fun loadEvent(eventId: String) {
