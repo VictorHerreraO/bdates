@@ -105,13 +105,23 @@ class EventListFragment : Fragment() {
     }
 
     private fun bindViewModel() = with(viewModel) {
-        navigation.observe(viewLifecycleOwner) { navEvent ->
-            navEvent.consume { event ->
-                if (event is NavigationEvent.EventBottomSheet) {
-                    NavGraphDirections.actionCreateEventBottomSheet(
-                        eventId = event.eventId
-                    ).let {
-                        findNavController().navigate(it)
+        navigation.observe(viewLifecycleOwner) { consumable ->
+            consumable.consume { event ->
+                when (event) {
+                    is NavigationEvent.AddEventBottomSheet -> {
+                        NavGraphDirections.actionCreateEventBottomSheet(
+                            eventId = event.eventId
+                        ).run {
+                            findNavController().navigate(this)
+                        }
+                    }
+
+                    is NavigationEvent.PreviewEventBottomSheet -> {
+                        // TODO: Implement navigation
+                    }
+
+                    is NavigationEvent.NavigateBack -> {
+                        /* Do nothing */
                     }
                 }
             }

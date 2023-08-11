@@ -107,11 +107,11 @@ class EventListViewModel @Inject constructor(
     }
 
     fun onEventClick(eventId: String) {
-        _navigation.value = NavigationEvent.EventBottomSheet(eventId = eventId)
+        _navigation.value = NavigationEvent.PreviewEventBottomSheet(eventId = eventId)
     }
 
     fun onAddEventClick() {
-        _navigation.value = NavigationEvent.EventBottomSheet()
+        _navigation.value = NavigationEvent.AddEventBottomSheet()
     }
 
     private fun processEventList(events: List<Event>) = viewModelScope.launch {
