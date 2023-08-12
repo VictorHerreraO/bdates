@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -22,8 +23,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.soyvictorherrera.bdates.R
 import com.soyvictorherrera.bdates.core.compose.layout.BottomSheet
 import com.soyvictorherrera.bdates.core.compose.layout.SpacerM
-import com.soyvictorherrera.bdates.core.compose.layout.SpacerSm
 import com.soyvictorherrera.bdates.core.compose.theme.BdatesTheme
+import com.soyvictorherrera.bdates.core.compose.theme.LocalSizes
 import com.soyvictorherrera.bdates.core.compose.theme.Rajah
 import com.soyvictorherrera.bdates.core.compose.theme.Typography
 import com.soyvictorherrera.bdates.core.compose.widget.PrimaryActionButton
@@ -55,13 +56,10 @@ fun PreviewEventSheetContent(
         Column(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text(
-                text = state.age ?: stringResource(id = R.string.preview_event_no_age_title),
-                style = BalloonTextStyle
-            )
+            MainEventHeading(text = state.age)
 
             state.circleName?.let { circleName ->
-                SpacerSm()
+                SpacerM()
 
                 Text(
                     text = circleName,
@@ -107,9 +105,26 @@ private fun BackgroundImage(
 )
 
 @Composable
+private fun MainEventHeading(
+    text: String?,
+    modifier: Modifier = Modifier,
+) = if (text != null) {
+    Text(
+        text = text,
+        style = BalloonTextStyle
+    )
+} else {
+    Image(
+        painter = painterResource(id = R.drawable.popper),
+        contentDescription = null,
+        modifier = modifier.size(LocalSizes.current.dimen_100)
+    )
+}
+
+@Composable
 private fun PreviewActions(
     modifier: Modifier = Modifier,
-    onEditEvent: () -> Unit
+    onEditEvent: () -> Unit,
 ) = PrimaryActionButton(
     text = R.string.add_event_title_edit,
     modifier = modifier.fillMaxWidth(),
