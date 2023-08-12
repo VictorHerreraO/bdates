@@ -12,6 +12,7 @@ import com.soyvictorherrera.bdates.core.network.onError
 import com.soyvictorherrera.bdates.core.network.onSuccess
 import com.soyvictorherrera.bdates.core.resource.ResourceManagerContract
 import com.soyvictorherrera.bdates.modules.eventList.domain.model.Event
+import com.soyvictorherrera.bdates.modules.eventList.domain.model.nextOccurrenceAge
 import com.soyvictorherrera.bdates.modules.eventList.domain.usecase.FilterEventListArgs
 import com.soyvictorherrera.bdates.modules.eventList.domain.usecase.FilterEventListUseCaseContract
 import com.soyvictorherrera.bdates.modules.eventList.domain.usecase.GetDayEventListUseCaseContract
@@ -140,8 +141,7 @@ class EventListViewModel @Inject constructor(
                         name = event.name,
                         description = nextOccurrence.let { date ->
                             val formatted = date.format(longFormatter)
-                            return@let event.year?.let { birthYear ->
-                                val yearsOld = nextOccurrence.year.minus(birthYear)
+                            return@let event.nextOccurrenceAge?.let { yearsOld ->
                                 "$formatted " + resourceManager.getString(
                                     identifier = "event_birthday_description",
                                     yearsOld
