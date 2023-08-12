@@ -14,8 +14,10 @@ import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.navOptions
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.soyvictorherrera.bdates.NavGraphDirections
+import com.soyvictorherrera.bdates.R
 import com.soyvictorherrera.bdates.core.compose.theme.setBdatesContent
 import com.soyvictorherrera.bdates.core.event.NavigationEvent
 import com.soyvictorherrera.bdates.core.event.consume
@@ -57,7 +59,12 @@ class PreviewEventBottomSheet : BottomSheetDialogFragment() {
                             NavGraphDirections.actionCreateEventBottomSheet(
                                 eventId = event.eventId
                             ).run {
-                                findNavController().navigate(this)
+                                val navOptions = navOptions {
+                                    popUpTo(R.id.previewEventBottomSheet) {
+                                        inclusive = true
+                                    }
+                                }
+                                findNavController().navigate(this, navOptions)
                             }
                         }
 
