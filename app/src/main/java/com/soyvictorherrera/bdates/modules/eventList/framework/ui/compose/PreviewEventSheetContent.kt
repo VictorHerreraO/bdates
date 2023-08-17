@@ -1,7 +1,7 @@
 package com.soyvictorherrera.bdates.modules.eventList.framework.ui.compose
 
+import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -15,18 +15,17 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import com.soyvictorherrera.bdates.R
 import com.soyvictorherrera.bdates.core.compose.layout.BottomSheet
 import com.soyvictorherrera.bdates.core.compose.layout.SpacerM
 import com.soyvictorherrera.bdates.core.compose.theme.BdatesTheme
 import com.soyvictorherrera.bdates.core.compose.theme.LocalSizes
-import com.soyvictorherrera.bdates.core.compose.theme.Rajah
-import com.soyvictorherrera.bdates.core.compose.theme.Typography
 import com.soyvictorherrera.bdates.core.compose.widget.PrimaryActionButton
 import com.soyvictorherrera.bdates.modules.eventList.framework.presentation.PreviewEventViewState
 
@@ -56,35 +55,26 @@ fun PreviewEventSheetContent(
         Column(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            MainEventHeading(text = state.age)
+            HeadingIcon(
+                iconSize = LocalSizes.current.dimen_100
+            )
 
-            state.circleName?.let { circleName ->
-                SpacerM()
-
-                Text(
-                    text = circleName,
-                    style = MaterialTheme.typography.caption
-                )
-            }
-
-            SpacerM()
-
-            Text(
-                text = state.eventName,
-                style = MaterialTheme.typography.h5,
-                fontWeight = FontWeight.Bold,
-                textAlign = TextAlign.Center
+            EventCircleDescription(
+                circleName = state.circleName
             )
 
             SpacerM()
 
-            Text(
-                text = stringResource(
-                    id = R.string.preview_event_date_type_subtitle,
-                    state.eventDate,
-                    state.eventType
-                ),
-                style = MaterialTheme.typography.caption
+            EventTitle(
+                eventName = state.eventName,
+                ordinalAge = state.ordinalAge
+            )
+
+            SpacerM()
+
+            EventSummary(
+                eventDate = state.eventDate,
+                remainingDays = state.remainingDays
             )
         }
     }
@@ -105,19 +95,68 @@ private fun BackgroundImage(
 )
 
 @Composable
-private fun MainEventHeading(
-    text: String?,
+private fun HeadingIcon(
+    iconSize: Dp,
     modifier: Modifier = Modifier,
-) = if (text != null) {
+    @DrawableRes iconDrawable: Int = R.drawable.popper,
+) = Image(
+    painter = painterResource(id = iconDrawable),
+    contentDescription = null,
+    modifier = modifier.size(iconSize)
+)
+
+@Composable
+private fun EventTitle(
+    eventName: String,
+    ordinalAge: String?,
+    modifier: Modifier = Modifier,
+) = Text(
+    text = stringResource(
+        id = ordinalAge
+            ?.let { R.string.preview_event_title_birthday_w_age }
+            ?: R.string.preview_event_title_birthday,
+        eventName,
+        ordinalAge.orEmpty()
+    ),
+    style = MaterialTheme.typography.h5,
+    fontWeight = FontWeight.Bold,
+    textAlign = TextAlign.Center,
+    modifier = modifier,
+)
+
+@Composable
+private fun EventCircleDescription(
+    circleName: String?,
+    modifier: Modifier = Modifier,
+) = circleName?.let { name ->
+    SpacerM()
+
     Text(
-        text = text,
-        style = BalloonTextStyle
+        text = name,
+        style = MaterialTheme.typography.caption,
+        modifier = modifier,
     )
-} else {
-    Image(
-        painter = painterResource(id = R.drawable.popper),
-        contentDescription = null,
-        modifier = modifier.size(LocalSizes.current.dimen_100)
+}
+
+@Composable
+private fun EventSummary(
+    eventDate: String,
+    remainingDays: String,
+    modifier: Modifier = Modifier,
+) {
+    val remainingDaysText = pluralStringResource(
+        id = R.plurals.preview_event_remaining_time,
+        count = remainingDays.toIntOrNull() ?: 0,
+        remainingDays
+    )
+    Text(
+        text = stringResource(
+            id = R.string.preview_event_date_w_remaining_days_subtitle,
+            eventDate,
+            remainingDaysText
+        ),
+        style = MaterialTheme.typography.caption,
+        modifier = modifier,
     )
 }
 
@@ -130,17 +169,6 @@ private fun PreviewActions(
     modifier = modifier.fillMaxWidth(),
     onClick = onEditEvent
 )
-
-private val BalloonTextStyle: TextStyle
-    @Composable
-    get() = Typography.h1.copy(
-        color = if (isSystemInDarkTheme()) {
-            Rajah
-        } else {
-            Rajah
-        },
-        fontWeight = FontWeight.Bold,
-    )
 //endregion
 
 //region Previews
@@ -153,13 +181,14 @@ private fun EventPreviewContentPreview() {
             verticalArrangement = Arrangement.Bottom
         ) {
             val state = PreviewEventViewState(
-                age = null,
+                ordinalAge = null,
                 circleName = "Family",
                 eventName = "Michael Scott",
                 eventDate = "Monday, 03/15",
                 eventType = "Birthday",
                 isEditable = false,
                 isLoading = false,
+                remainingDays = "10"
             )
             PreviewEventSheetContent(
                 state = state,
@@ -179,12 +208,13 @@ private fun EditableEventPreviewContentPreview() {
             verticalArrangement = Arrangement.Bottom
         ) {
             val state = PreviewEventViewState(
-                age = "41",
+                ordinalAge = "41",
                 eventName = "Michael Scott",
                 eventDate = "Monday, 03/15",
                 eventType = "Birthday",
                 isEditable = true,
-                isLoading = false
+                isLoading = false,
+                remainingDays = "1"
             )
             PreviewEventSheetContent(
                 state = state,

@@ -1,5 +1,6 @@
 package com.soyvictorherrera.bdates.modules.eventList.framework.presentation
 
+import android.icu.text.MessageFormat
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -17,6 +18,8 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import java.time.temporal.ChronoUnit
+import java.util.Locale
 import javax.inject.Inject
 
 @HiltViewModel
@@ -39,12 +42,13 @@ class PreviewEventViewModel @Inject constructor(
 
     private val _state = MutableStateFlow(
         PreviewEventViewState(
-            age = "",
+            ordinalAge = "",
             eventName = "",
             eventDate = "",
             eventType = "",
             isEditable = false,
-            isLoading = true
+            isLoading = true,
+            remainingDays = "",
         )
     )
     val state: StateFlow<PreviewEventViewState> = _state
@@ -72,18 +76,27 @@ class PreviewEventViewModel @Inject constructor(
     private fun onEventLoaded(event: Event) {
         currentEvent = event
         val upcomingFriendAge = event.nextOccurrenceAge?.toString()
+        val ordinalAge = upcomingFriendAge?.let {
+            MessageFormat("{0,ordinal}", Locale.getDefault()).run {
+                format(arrayOf(it.toInt()))
+            }
+        }
         val eventDate = event.nextOccurrence?.let { nextOccurrence ->
             dateProvider.formatDateAsDayAndMonth(nextOccurrence)
         } ?: throw IllegalStateException("No next occurrence for event")
+        val remainingTime = event.nextOccurrence.let { nextOccurrence ->
+            ChronoUnit.DAYS.between(dateProvider.currentLocalDate, nextOccurrence)
+        }
 
         _state.update {
             it.copy(
-                age = upcomingFriendAge,
+                ordinalAge = ordinalAge,
                 eventName = event.name,
                 eventDate = eventDate,
                 eventType = resources.getString("preview_event_type_birthday"),
                 isEditable = event.circleId == localCircleId,
-                isLoading = false
+                isLoading = false,
+                remainingDays = remainingTime.toString()
             )
         }
     }

@@ -37,6 +37,15 @@
     <string name="add_event_save_changes">Save changes</string>
     <string name="add_event_delete_event">Delete event</string>
 
+    <!-- Preview events -->
+    <string name="preview_event_date_w_remaining_days_subtitle">%1$s • %2$s</string>
+    <string name="preview_event_title_birthday">%1$s\'s birthday</string>
+    <string name="preview_event_title_birthday_w_age">%1$s\'s %2$s birthday</string>
+    <plurals name="preview_event_remaining_time">
+        <item quantity="one">%1$s day remaining</item>
+        <item quantity="other">%1$s days remaining</item>
+    </plurals>
+
     <!-- Localized date formatter -->
     <string name="date_format_long_day_with_month">EEEE, MM/dd</string>
 </resources>
