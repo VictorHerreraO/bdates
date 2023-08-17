@@ -19,17 +19,16 @@ import com.soyvictorherrera.bdates.modules.eventList.domain.usecase.GetDayEventL
 import com.soyvictorherrera.bdates.modules.eventList.domain.usecase.GetNonDayEventListUseCaseContract
 import com.soyvictorherrera.bdates.modules.eventList.domain.usecase.UpdateEventsUseCaseContract
 import dagger.hilt.android.lifecycle.HiltViewModel
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
-import java.time.temporal.ChronoUnit
-import javax.inject.Inject
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import java.time.LocalDate
+import java.time.temporal.ChronoUnit
+import javax.inject.Inject
 import kotlin.properties.Delegates
 
 @HiltViewModel
 class EventListViewModel @Inject constructor(
-    dateProvider: DateProviderContract,
+    private val dateProvider: DateProviderContract,
     private val resourceManager: ResourceManagerContract,
     private val getDayEventList: GetDayEventListUseCaseContract,
     private val getNonDayEventList: GetNonDayEventListUseCaseContract,
@@ -59,8 +58,8 @@ class EventListViewModel @Inject constructor(
         get() = _errorMessage
     //endregion
 
-    private val today: LocalDate = dateProvider.currentLocalDate
-    private val longFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("EEEE, dd/MM")
+    private val today: LocalDate
+        get() = dateProvider.currentLocalDate
 
     private var allEvents by Delegates.observable(emptyList<Event>()) { _, _, list ->
         processEventList(list)
@@ -140,7 +139,7 @@ class EventListViewModel @Inject constructor(
                         },
                         name = event.name,
                         description = nextOccurrence.let { date ->
-                            val formatted = date.format(longFormatter)
+                            val formatted = dateProvider.formatDateAsDayAndMonth(date)
                             return@let event.nextOccurrenceAge?.let { yearsOld ->
                                 "$formatted " + resourceManager.getString(
                                     identifier = "event_birthday_description",
