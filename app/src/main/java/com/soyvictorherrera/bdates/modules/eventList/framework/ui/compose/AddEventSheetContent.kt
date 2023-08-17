@@ -71,10 +71,7 @@ fun AddEventSheetContent(
             onDeleteClick = onDeleteClick
         )
     },
-    modifier = modifier
-        .nestedScroll(rememberNestedScrollInteropConnection())
-        .verticalScroll(state = rememberScrollState())
-        .clearFocusOnTap(),
+    modifier = modifier,
 ) {
     Column {
         EventNameSection(

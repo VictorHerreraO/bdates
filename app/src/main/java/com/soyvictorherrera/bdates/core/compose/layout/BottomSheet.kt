@@ -6,6 +6,8 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Icon
@@ -20,9 +22,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.platform.rememberNestedScrollInteropConnection
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.soyvictorherrera.bdates.core.compose.modifier.clearFocusOnTap
 import com.soyvictorherrera.bdates.core.compose.theme.BdatesTheme
 import com.soyvictorherrera.bdates.core.compose.theme.BottomSheetContentShape
 import com.soyvictorherrera.bdates.core.compose.theme.BottomSheetDialogShape
@@ -44,7 +49,11 @@ fun BottomSheet(
         modifier = Modifier.fillMaxWidth()
     ) {
         val elevation = LocalSizes.current.dimen_2
-        val renderActions = hasActions && actions!= null
+        val renderActions = hasActions && actions != null
+        val scrollModifier = Modifier
+            .nestedScroll(rememberNestedScrollInteropConnection())
+            .verticalScroll(state = rememberScrollState())
+            .clearFocusOnTap()
 
         BottomSheetTopBar(
             title = title,
@@ -52,7 +61,9 @@ fun BottomSheet(
             elevation = elevation
         )
 
-        Column(modifier = modifier) {
+        Column(
+            modifier = modifier.then(scrollModifier)
+        ) {
             Surface(
                 elevation = elevation,
                 shape = if (renderActions) {
