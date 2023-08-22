@@ -70,15 +70,15 @@ class EventListFragment : Fragment() {
         val orientation = resources.configuration.orientation
         // Setup all events recycler view
         LinearLayoutManager(requireActivity()).also {
-            recyclerEvents.layoutManager = it
+            layoutUpcomingEvents.recyclerEvents.layoutManager = it
         }
         adapter = EventListAdapter(onItemClick = {
             viewModel.onEventClick(it)
         }).also {
-            recyclerEvents.adapter = it
+            layoutUpcomingEvents.recyclerEvents.adapter = it
         }
         onScrollListener = FabScrollBehavior(btnAddEvent).also {
-            recyclerEvents.addOnScrollListener(it)
+            layoutUpcomingEvents.recyclerEvents.addOnScrollListener(it)
         }
         // Setup today events recycler view
         LinearLayoutManager(
@@ -136,7 +136,7 @@ class EventListFragment : Fragment() {
             binding.layoutTodayEvents.visibility = if (it.isEmpty()) View.GONE else View.VISIBLE
         }
         isRefreshing.observe(viewLifecycleOwner) {
-            binding.swipeLayout.isRefreshing = it
+            binding.layoutUpcomingEvents.swipeLayout.isRefreshing = it
         }
         errorMessage.observe(viewLifecycleOwner) {
             it.consumeValue(::showSnackBar)
@@ -144,10 +144,10 @@ class EventListFragment : Fragment() {
     }
 
     private fun setupListeners() = with(binding) {
-        inputSearch.addTextChangedListener { text ->
+        layoutUpcomingEvents.inputSearch.addTextChangedListener { text ->
             viewModel.onQueryTextChanged(text.toString())
         }
-        inputSearch.setOnEditorActionListener { _, actionId, _ ->
+        layoutUpcomingEvents.inputSearch.setOnEditorActionListener { _, actionId, _ ->
             return@setOnEditorActionListener when (actionId) {
                 EditorInfo.IME_ACTION_SEARCH -> {
                     hideSoftKeyboard()
@@ -160,7 +160,7 @@ class EventListFragment : Fragment() {
         btnAddEvent.setOnClickListener {
             viewModel.onAddEventClick()
         }
-        swipeLayout.setOnRefreshListener {
+        layoutUpcomingEvents.swipeLayout.setOnRefreshListener {
             viewModel.refresh()
         }
     }
