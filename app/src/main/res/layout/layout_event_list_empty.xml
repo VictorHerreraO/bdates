@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/background_bottom_sheet"
+    android:gravity="center"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/layout_empty_event_list_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/shape_circle">
+
+        <ImageView
+            android:id="@+id/img_empty_event_list"
+            android:layout_width="@dimen/dimen_120"
+            android:layout_height="@dimen/dimen_120"
+            android:alpha="0.7"
+            android:importantForAccessibility="no"
+            android:padding="@dimen/dimen_8"
+            android:scaleType="fitCenter"
+            app:srcCompat="@drawable/vector_balloon" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/lbl_empty_event_list_title"
+        style="@style/TextAppearance.MaterialComponents.Body1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/dimen_32"
+        android:layout_marginTop="@dimen/dimen_48"
+        android:text="No hay eventos que mostrar"
+        android:textAlignment="center" />
+
+    <TextView
+        android:id="@+id/lbl_empty_event_list_description"
+        style="@style/TextAppearance.MaterialComponents.Body2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/dimen_32"
+        android:layout_marginTop="@dimen/dimen_8"
+        android:alpha="0.7"
+        android:text="Agrega nuevos eventos para recibir recordatorios"
+        android:textAlignment="center" />
+</LinearLayout>
