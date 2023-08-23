@@ -49,6 +49,7 @@
         android:id="@+id/layout_event_list_empty"
         layout="@layout/layout_event_list_empty"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dimen_0"
-        android:layout_weight="1" />
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dimen_40"
+        android:visibility="gone" />
 </LinearLayout>

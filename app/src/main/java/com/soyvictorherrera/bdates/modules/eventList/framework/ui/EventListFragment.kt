@@ -10,6 +10,8 @@ import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.core.content.ContextCompat
+import androidx.core.view.isGone
+import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResultListener
@@ -130,7 +132,14 @@ class EventListFragment : Fragment() {
                 }
             }
         }
-        events.observe(viewLifecycleOwner, adapter::submitList)
+        events.observe(viewLifecycleOwner) {
+            adapter.submitList(it)
+            with(binding.layoutUpcomingEvents) {
+                val showEmptyIcon = it.isEmpty() && inputSearch.text.isEmpty()
+                swipeLayout.isGone = showEmptyIcon
+                layoutEventListEmpty.root.isVisible = showEmptyIcon
+            }
+        }
         todayEvents.observe(viewLifecycleOwner) {
             todayAdapter.submitList(it)
             binding.layoutTodayEvents.visibility = if (it.isEmpty()) View.GONE else View.VISIBLE
