@@ -33,8 +33,9 @@
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/swipe_layout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="@dimen/dimen_8">
+        android:layout_height="@dimen/dimen_0"
+        android:layout_marginTop="@dimen/dimen_8"
+        android:layout_weight="1">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recycler_events"
@@ -43,4 +44,11 @@
             tools:itemCount="5"
             tools:listitem="@layout/item_event" />
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+    <include
+        android:id="@+id/layout_event_list_empty"
+        layout="@layout/layout_event_list_empty"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dimen_0"
+        android:layout_weight="1" />
 </LinearLayout>
