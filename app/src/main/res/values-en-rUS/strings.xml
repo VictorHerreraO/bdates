@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Birthdays</string>
+
+    <!-- Event list -->
     <string name="title_today_occasions">Today\'s occasions</string>
     <string name="title_today_occasions_break_line">Today\'s\noccasions</string>
     <string name="title_upcoming_events">Upcoming big days</string>
@@ -10,6 +12,8 @@
     <string name="event_birthday_title">Birthday</string>
     <string name="event_birthday_description">• Turns %d</string>
     <string name="add_event">Add Event</string>
+    <string name="event_list_no_events_title">No events to show</string>
+    <string name="event_list_no_events_description">Try adding new events to get reminders</string>
 
     <!-- Notification channels -->
     <string name="notification_channel_name_event_reminders">Event reminders</string>

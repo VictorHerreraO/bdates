@@ -1,5 +1,7 @@
 <resources>
     <string name="app_name">Cumpleaños</string>
+
+    <!-- Event list -->
     <string name="title_today_occasions">Hoy celebramos</string>
     <string name="title_today_occasions_break_line">Hoy celebramos</string>
     <string name="title_upcoming_events">Se viene lo bueno</string>
@@ -9,6 +11,8 @@
     <string name="event_birthday_title">Cumpleaños</string>
     <string name="event_birthday_description">• Cumple %d</string>
     <string name="add_event">Agregar evento</string>
+    <string name="event_list_no_events_title">No hay eventos que mostrar</string>
+    <string name="event_list_no_events_description">Agrega nuevos eventos para recibir recordatorios</string>
 
     <!-- Notification channels -->
     <string name="notification_channel_name_event_reminders">Recordatorios de eventos</string>
