@@ -8,7 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
-import android.widget.Toast
+import androidx.annotation.StringRes
 import androidx.core.content.ContextCompat
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
@@ -20,6 +20,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.snackbar.Snackbar
 import com.soyvictorherrera.bdates.NavGraphDirections
 import com.soyvictorherrera.bdates.R
 import com.soyvictorherrera.bdates.core.event.NavigationEvent
@@ -194,7 +195,16 @@ class EventListFragment : Fragment() {
     }
 
     private fun showSnackBar(error: Error) {
-        Toast.makeText(requireContext(), error::class.java.simpleName, Toast.LENGTH_SHORT).show()
+        Snackbar.make(
+            binding.layoutRoot,
+            error.getMessage(),
+            Snackbar.LENGTH_SHORT
+        ).show()
     }
 
+}
+
+@StringRes
+private fun Error.getMessage(): Int = when (this) {
+    Error.UnableToRefresh -> R.string.event_list_error_fetch_list
 }

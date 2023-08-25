@@ -14,6 +14,7 @@
     <string name="add_event">Add Event</string>
     <string name="event_list_no_events_title">No events to show</string>
     <string name="event_list_no_events_description">Try adding new events to get reminders</string>
+    <string name="event_list_error_fetch_list">Unable to update event list</string>
 
     <!-- Notification channels -->
     <string name="notification_channel_name_event_reminders">Event reminders</string>
