@@ -194,12 +194,14 @@ class EventListFragment : Fragment() {
         }
     }
 
-    private fun showSnackBar(error: Error) {
+    private fun showSnackBar(error: Error): Unit = with(binding) {
         Snackbar.make(
-            binding.layoutRoot,
+            layoutRoot,
             error.getMessage(),
             Snackbar.LENGTH_SHORT
-        ).show()
+        ).apply {
+            anchorView = btnAddEvent
+        }.show()
     }
 
 }
