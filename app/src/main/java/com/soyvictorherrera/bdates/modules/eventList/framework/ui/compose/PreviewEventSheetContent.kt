@@ -48,16 +48,15 @@ fun PreviewEventSheetContent(
             onEditEvent = onEditEvent
         )
     },
+    showLoadingIndicator = state.isLoading,
+    loadingIndicator = {
+        LoadingSheetContent()
+    }
 ) {
     Box(
         modifier = Modifier.fillMaxWidth(),
         contentAlignment = Alignment.Center
     ) {
-        if (state.isLoading) {
-            LoadingSheetContent()
-            return@BottomSheet
-        }
-
         BackgroundImage()
 
         Column(
