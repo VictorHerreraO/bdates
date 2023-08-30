@@ -10,6 +10,7 @@ data class AddEventViewState(
     val isYearDisabled: Boolean,
     val validYearRange: IntRange,
     val isLoading: Boolean,
+    val isSaving: Boolean,
 ) {
     val isSaveEnabled: Boolean
         get() {

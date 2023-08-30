@@ -40,6 +40,8 @@ fun BottomSheet(
     modifier: Modifier = Modifier,
     hasActions: Boolean = false,
     actions: (@Composable RowScope.() -> Unit)? = null,
+    showLoadingIndicator: Boolean = false,
+    loadingIndicator: (@Composable () -> Unit)? = null,
     content: @Composable () -> Unit,
 ) = Surface(
     shape = BottomSheetDialogShape,
@@ -54,12 +56,18 @@ fun BottomSheet(
             .nestedScroll(rememberNestedScrollInteropConnection())
             .verticalScroll(state = rememberScrollState())
             .clearFocusOnTap()
+        val renderLoadingIndicator = showLoadingIndicator && loadingIndicator != null
 
         BottomSheetTopBar(
             title = title,
             onDismissClick = onBottomSheetDismiss,
             elevation = elevation
         )
+
+        if (renderLoadingIndicator) {
+            loadingIndicator?.invoke()
+            return@Surface
+        }
 
         Column(
             modifier = modifier.then(scrollModifier)

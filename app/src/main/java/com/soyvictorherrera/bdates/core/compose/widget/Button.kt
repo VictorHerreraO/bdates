@@ -3,6 +3,7 @@ package com.soyvictorherrera.bdates.core.compose.widget
 import androidx.annotation.StringRes
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonColors
 import androidx.compose.material.ButtonDefaults
@@ -14,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.soyvictorherrera.bdates.core.compose.theme.LocalSizes
 import com.soyvictorherrera.bdates.core.compose.theme.Salmon
 
 @Composable
@@ -22,16 +24,23 @@ fun PrimaryActionButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
+    showLoader: Boolean = false,
 ) = Button(
     onClick = onClick,
     modifier = modifier.heightIn(min = 48.dp),
     colors = primaryActionButtonColors(),
     enabled = enabled,
 ) {
-    Text(
-        text = stringResource(text),
-        textAlign = TextAlign.Center,
-    )
+    if (showLoader) {
+        CircularLoadingIndicator(
+            modifier = Modifier.size(LocalSizes.current.dimen_32)
+        )
+    } else {
+        Text(
+            text = stringResource(text),
+            textAlign = TextAlign.Center,
+        )
+    }
 }
 
 @Composable

@@ -4,9 +4,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Checkbox
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
@@ -21,8 +19,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.compose.ui.platform.rememberNestedScrollInteropConnection
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.tooling.preview.Preview
@@ -31,7 +27,6 @@ import com.soyvictorherrera.bdates.core.compose.layout.BottomSheet
 import com.soyvictorherrera.bdates.core.compose.layout.SpacerL
 import com.soyvictorherrera.bdates.core.compose.layout.SpacerSm
 import com.soyvictorherrera.bdates.core.compose.layout.SpacerXs
-import com.soyvictorherrera.bdates.core.compose.modifier.clearFocusOnTap
 import com.soyvictorherrera.bdates.core.compose.theme.BdatesTheme
 import com.soyvictorherrera.bdates.core.compose.widget.DeleteActionButton
 import com.soyvictorherrera.bdates.core.compose.widget.PrimaryActionButton
@@ -69,6 +64,12 @@ fun AddEventSheetContent(
             state = state,
             onActionClick = onActionClick,
             onDeleteClick = onDeleteClick
+        )
+    },
+    showLoadingIndicator = state.isLoading,
+    loadingIndicator = {
+        LoadingSheetContent(
+            fillMaxHeight = true
         )
     },
     modifier = modifier,
@@ -244,10 +245,12 @@ private fun EventActions(
                     text = R.string.add_event_save_event,
                     onClick = onActionClick,
                     modifier = Modifier.weight(1f),
-                    enabled = state.isSaveEnabled,
+                    enabled = state.isSaveEnabled && !state.isSaving,
+                    showLoader = state.isSaving
                 )
             }
         }
+
         EditMode.EDIT -> {
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
@@ -257,7 +260,8 @@ private fun EventActions(
                     text = R.string.add_event_save_changes,
                     onClick = onActionClick,
                     modifier = Modifier.fillMaxWidth(),
-                    enabled = state.isSaveEnabled,
+                    enabled = state.isSaveEnabled && !state.isSaving,
+                    showLoader = state.isSaving
                 )
 
                 SpacerL()
@@ -265,6 +269,7 @@ private fun EventActions(
                 DeleteActionButton(
                     text = R.string.add_event_delete_event,
                     onClick = onDeleteClick,
+                    enabled = !state.isSaving
                 )
             }
         }
@@ -283,6 +288,7 @@ fun AddEventContentPreview() {
                 editMode = EditMode.CREATE,
                 isYearDisabled = false,
                 isLoading = false,
+                isSaving = true,
                 validYearRange = 1900..2100,
             ),
             onEventNameChange = {},
@@ -301,7 +307,7 @@ fun AddEventContentPreview() {
 @Preview
 @Composable
 fun EditEventContentPreview() {
-    BdatesTheme {
+    BdatesTheme(darkTheme = true) {
         AddEventSheetContent(
             state = AddEventViewState(
                 eventName = "John Appleseed",
@@ -310,6 +316,35 @@ fun EditEventContentPreview() {
                 editMode = EditMode.EDIT,
                 isYearDisabled = false,
                 isLoading = false,
+                isSaving = false,
+                validYearRange = 1900..2100,
+            ),
+            onEventNameChange = {},
+            onDateSelected = {},
+            onYearSelected = {},
+            onYearCleared = {},
+            onYearDisabled = {},
+            onActionClick = {},
+            onDeleteClick = {},
+            onBottomSheetDismiss = {},
+            modifier = Modifier.fillMaxWidth(),
+        )
+    }
+}
+
+@Preview
+@Composable
+fun LoadingEventContentPreview() {
+    BdatesTheme {
+        AddEventSheetContent(
+            state = AddEventViewState(
+                eventName = "",
+                selectedDate = LocalDate.now(),
+                selectedYear = LocalDate.now().year,
+                editMode = EditMode.EDIT,
+                isYearDisabled = false,
+                isLoading = true,
+                isSaving = false,
                 validYearRange = 1900..2100,
             ),
             onEventNameChange = {},

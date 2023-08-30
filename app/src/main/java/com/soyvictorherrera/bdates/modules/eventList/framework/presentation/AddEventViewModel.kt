@@ -10,13 +10,14 @@ import com.soyvictorherrera.bdates.modules.eventList.data.repository.EventReposi
 import com.soyvictorherrera.bdates.modules.eventList.domain.model.Event
 import com.soyvictorherrera.bdates.modules.eventList.framework.ui.AddEventBottomSheetArgs
 import dagger.hilt.android.lifecycle.HiltViewModel
-import java.time.LocalDate
-import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import java.time.LocalDate
+import javax.inject.Inject
 
 private const val INITIAL_YEAR_RANGE = 1901
 
@@ -45,14 +46,25 @@ class AddEventViewModel @Inject constructor(
                 EditMode.EDIT
             },
             isYearDisabled = false,
-            isLoading = false,
-            validYearRange = INITIAL_YEAR_RANGE..dateProvider.currentLocalDate.year
+            isLoading = true,
+            isSaving = false,
+            validYearRange = INITIAL_YEAR_RANGE..dateProvider.currentLocalDate.year,
         )
     )
-    val state: StateFlow<AddEventViewState> = _state
+    val state: StateFlow<AddEventViewState> = _state.asStateFlow()
+
+    private var isLoading: Boolean
+        get() = _state.value.isLoading
+        set(value) {
+            _state.update { it.copy(isLoading = value) }
+        }
 
     init {
-        eventId?.let(::loadEvent)
+        if (eventId != null) {
+            loadEvent(eventId)
+        } else {
+            isLoading = false
+        }
     }
 
     fun onEventNameChange(eventName: String) {
@@ -107,7 +119,7 @@ class AddEventViewModel @Inject constructor(
         }
 
         _state.update {
-            it.copy(isLoading = true)
+            it.copy(isSaving = true)
         }
 
         viewModelScope.launch {
@@ -119,8 +131,11 @@ class AddEventViewModel @Inject constructor(
                 }
             }.onSuccess {
                 _navigation.value = NavigationEvent.NavigateBack()
-            }.onFailure {
-                Timber.e(it, "Unable to save event")
+            }.onFailure { throwable ->
+                Timber.e(throwable, "Unable to save event")
+                _state.update {
+                    it.copy(isSaving = false)
+                }
             }
         }
     }
@@ -139,6 +154,7 @@ class AddEventViewModel @Inject constructor(
     }
 
     private fun loadEvent(eventId: String) {
+        isLoading = true
         viewModelScope.launch {
             eventRepository.runCatching {
                 getEvent(eventId)
@@ -153,11 +169,13 @@ class AddEventViewModel @Inject constructor(
                             event.dayOfMonth
                         ),
                         selectedYear = event.year,
-                        isYearDisabled = event.year == null
+                        isYearDisabled = event.year == null,
+                        isLoading = false
                     )
                 }
             }.onFailure {
                 Timber.e(it, "Unable to load event :(")
+                isLoading = false
             }
         }
     }
