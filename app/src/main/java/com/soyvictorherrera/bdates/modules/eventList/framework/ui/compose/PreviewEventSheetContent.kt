@@ -43,13 +43,21 @@ fun PreviewEventSheetContent(
     onBottomSheetDismiss = onBottomSheetDismiss,
     hasActions = state.isEditable,
     actions = {
-        PreviewActions(onEditEvent = onEditEvent)
+        PreviewActions(
+            enabled = !state.isLoading,
+            onEditEvent = onEditEvent
+        )
     },
 ) {
     Box(
         modifier = Modifier.fillMaxWidth(),
         contentAlignment = Alignment.Center
     ) {
+        if (state.isLoading) {
+            LoadingSheetContent()
+            return@BottomSheet
+        }
+
         BackgroundImage()
 
         Column(
@@ -163,10 +171,12 @@ private fun EventSummary(
 @Composable
 private fun PreviewActions(
     modifier: Modifier = Modifier,
+    enabled: Boolean = true,
     onEditEvent: () -> Unit,
 ) = PrimaryActionButton(
     text = R.string.add_event_title_edit,
     modifier = modifier.fillMaxWidth(),
+    enabled = enabled,
     onClick = onEditEvent
 )
 //endregion
@@ -174,7 +184,7 @@ private fun PreviewActions(
 //region Previews
 @Preview(showSystemUi = true)
 @Composable
-private fun EventPreviewContentPreview() {
+private fun PreviewEventSheetContentPreview() {
     BdatesTheme(darkTheme = true) {
         Column(
             modifier = Modifier.fillMaxSize(),
@@ -201,7 +211,7 @@ private fun EventPreviewContentPreview() {
 
 @Preview(showSystemUi = true)
 @Composable
-private fun EditableEventPreviewContentPreview() {
+private fun EditablePreviewEventSheetContentPreview() {
     BdatesTheme {
         Column(
             modifier = Modifier.fillMaxSize(),
@@ -215,6 +225,58 @@ private fun EditableEventPreviewContentPreview() {
                 isEditable = true,
                 isLoading = false,
                 remainingDays = "1"
+            )
+            PreviewEventSheetContent(
+                state = state,
+                onEditEvent = {},
+                onBottomSheetDismiss = {}
+            )
+        }
+    }
+}
+
+@Preview(showSystemUi = true)
+@Composable
+private fun LoadingPreviewEventSheetContentPreview() {
+    BdatesTheme {
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.Bottom
+        ) {
+            val state = PreviewEventViewState(
+                ordinalAge = "",
+                eventName = "",
+                eventDate = "",
+                eventType = "",
+                isEditable = false,
+                isLoading = true,
+                remainingDays = "",
+            )
+            PreviewEventSheetContent(
+                state = state,
+                onEditEvent = {},
+                onBottomSheetDismiss = {}
+            )
+        }
+    }
+}
+
+@Preview(showSystemUi = true)
+@Composable
+private fun LoadingEditablePreviewEventSheetContentPreview() {
+    BdatesTheme(darkTheme = true) {
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.Bottom
+        ) {
+            val state = PreviewEventViewState(
+                ordinalAge = "",
+                eventName = "",
+                eventDate = "",
+                eventType = "",
+                isEditable = true,
+                isLoading = true,
+                remainingDays = "",
             )
             PreviewEventSheetContent(
                 state = state,
