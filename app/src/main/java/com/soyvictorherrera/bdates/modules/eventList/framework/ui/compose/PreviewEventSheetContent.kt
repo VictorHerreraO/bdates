@@ -1,5 +1,6 @@
 package com.soyvictorherrera.bdates.modules.eventList.framework.ui.compose
 
+import android.content.Context
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
@@ -9,11 +10,16 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.SnackbarDuration
+import androidx.compose.material.SnackbarHostState
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
@@ -27,6 +33,7 @@ import com.soyvictorherrera.bdates.core.compose.layout.SpacerM
 import com.soyvictorherrera.bdates.core.compose.theme.BdatesTheme
 import com.soyvictorherrera.bdates.core.compose.theme.LocalSizes
 import com.soyvictorherrera.bdates.core.compose.widget.PrimaryActionButton
+import com.soyvictorherrera.bdates.modules.eventList.framework.presentation.PreviewEventError
 import com.soyvictorherrera.bdates.modules.eventList.framework.presentation.PreviewEventViewState
 
 private const val NO_TITLE = ""
@@ -38,6 +45,7 @@ fun PreviewEventSheetContent(
     state: PreviewEventViewState,
     onEditEvent: () -> Unit,
     onBottomSheetDismiss: () -> Unit,
+    snackbarHostState: SnackbarHostState = remember { SnackbarHostState() },
 ) = BottomSheet(
     title = NO_TITLE,
     onBottomSheetDismiss = onBottomSheetDismiss,
@@ -51,7 +59,8 @@ fun PreviewEventSheetContent(
     showLoadingIndicator = state.isLoading,
     loadingIndicator = {
         LoadingSheetContent()
-    }
+    },
+    snackbarHostState = snackbarHostState,
 ) {
     Box(
         modifier = Modifier.fillMaxWidth(),
@@ -84,6 +93,14 @@ fun PreviewEventSheetContent(
                 remainingDays = state.remainingDays
             )
         }
+    }
+
+    val context = LocalContext.current
+    LaunchedEffect(key1 = state.error) {
+        state.error?.showMessage(
+            context = context,
+            snackbarHostState = snackbarHostState
+        )
     }
 }
 //endregion
@@ -180,6 +197,20 @@ private fun PreviewActions(
 )
 //endregion
 
+//region Error messages
+private suspend fun PreviewEventError.showMessage(
+    context: Context,
+    snackbarHostState: SnackbarHostState,
+) {
+    when (this) {
+        PreviewEventError.ERROR_LOADING -> snackbarHostState.showSnackbar(
+            message = context.getString(R.string.preview_event_error_loading),
+            duration = SnackbarDuration.Indefinite,
+        )
+    }
+}
+//endregion
+
 //region Previews
 @Preview(showSystemUi = true)
 @Composable
@@ -202,7 +233,7 @@ private fun PreviewEventSheetContentPreview() {
             PreviewEventSheetContent(
                 state = state,
                 onEditEvent = {},
-                onBottomSheetDismiss = {}
+                onBottomSheetDismiss = {},
             )
         }
     }
@@ -228,7 +259,7 @@ private fun EditablePreviewEventSheetContentPreview() {
             PreviewEventSheetContent(
                 state = state,
                 onEditEvent = {},
-                onBottomSheetDismiss = {}
+                onBottomSheetDismiss = {},
             )
         }
     }
@@ -254,7 +285,7 @@ private fun LoadingPreviewEventSheetContentPreview() {
             PreviewEventSheetContent(
                 state = state,
                 onEditEvent = {},
-                onBottomSheetDismiss = {}
+                onBottomSheetDismiss = {},
             )
         }
     }
@@ -280,7 +311,7 @@ private fun LoadingEditablePreviewEventSheetContentPreview() {
             PreviewEventSheetContent(
                 state = state,
                 onEditEvent = {},
-                onBottomSheetDismiss = {}
+                onBottomSheetDismiss = {},
             )
         }
     }

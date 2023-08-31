@@ -50,6 +50,7 @@
     <string name="preview_event_type_birthday" translatable="false">@string/event_birthday_title</string>
     <string name="preview_event_title_birthday">Cumpleaños de %1$s</string>
     <string name="preview_event_title_birthday_w_age">%2$s cumpleaños de %1$s</string>
+    <string name="preview_event_error_loading">No fue posible cargar el evento</string>
     <plurals name="preview_event_remaining_time">
         <item quantity="one">Falta %1$s día</item>
         <item quantity="other">Faltan %1$s días</item>

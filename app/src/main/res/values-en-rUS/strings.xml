@@ -46,6 +46,7 @@
     <string name="preview_event_date_w_remaining_days_subtitle">%1$s • %2$s</string>
     <string name="preview_event_title_birthday">%1$s\'s birthday</string>
     <string name="preview_event_title_birthday_w_age">%1$s\'s %2$s birthday</string>
+    <string name="preview_event_error_loading">Unable to load the event</string>
     <plurals name="preview_event_remaining_time">
         <item quantity="one">%1$s day remaining</item>
         <item quantity="other">%1$s days remaining</item>

@@ -13,12 +13,15 @@ import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.SnackbarHost
+import androidx.compose.material.SnackbarHostState
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.RectangleShape
@@ -42,63 +45,69 @@ fun BottomSheet(
     actions: (@Composable RowScope.() -> Unit)? = null,
     showLoadingIndicator: Boolean = false,
     loadingIndicator: (@Composable () -> Unit)? = null,
+    snackbarHostState: SnackbarHostState = remember { SnackbarHostState() },
     content: @Composable () -> Unit,
 ) = Surface(
     shape = BottomSheetDialogShape,
     color = MaterialTheme.colors.background,
+    elevation = LocalSizes.current.dimen_2
 ) {
-    Column(
-        modifier = Modifier.fillMaxWidth()
-    ) {
-        val elevation = LocalSizes.current.dimen_2
-        val renderActions = hasActions && actions != null
-        val scrollModifier = Modifier
-            .nestedScroll(rememberNestedScrollInteropConnection())
-            .verticalScroll(state = rememberScrollState())
-            .clearFocusOnTap()
-        val renderLoadingIndicator = showLoadingIndicator && loadingIndicator != null
-
-        BottomSheetTopBar(
-            title = title,
-            onDismissClick = onBottomSheetDismiss,
-            elevation = elevation
-        )
-
-        if (renderLoadingIndicator) {
-            loadingIndicator?.invoke()
-            return@Surface
-        }
-
+    Box {
         Column(
-            modifier = modifier.then(scrollModifier)
+            modifier = Modifier.fillMaxWidth()
         ) {
-            Surface(
-                elevation = elevation,
-                shape = if (renderActions) {
-                    BottomSheetContentShape
-                } else {
-                    RectangleShape
-                }
-            ) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(LocalSizes.current.dimen_32)
-                ) {
-                    content()
-                }
+            val renderActions = hasActions && actions != null
+            val scrollModifier = Modifier
+                .nestedScroll(rememberNestedScrollInteropConnection())
+                .verticalScroll(state = rememberScrollState())
+                .clearFocusOnTap()
+            val renderLoadingIndicator = showLoadingIndicator && loadingIndicator != null
+
+            BottomSheetTopBar(
+                title = title,
+                onDismissClick = onBottomSheetDismiss,
+            )
+
+            if (renderLoadingIndicator) {
+                loadingIndicator?.invoke()
+                return@Surface
             }
 
-            if (renderActions && actions != null) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(LocalSizes.current.dimen_32),
-                    content = actions
-                )
+            Column(
+                modifier = modifier.then(scrollModifier)
+            ) {
+                Surface(
+                    shape = if (renderActions) {
+                        BottomSheetContentShape
+                    } else {
+                        RectangleShape
+                    }
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(LocalSizes.current.dimen_32)
+                    ) {
+                        content()
+                    }
+                }
+
+                if (renderActions && actions != null) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(LocalSizes.current.dimen_32),
+                        content = actions
+                    )
+                }
             }
         }
+
+        SnackbarHost(
+            hostState = snackbarHostState,
+            Modifier.align(Alignment.BottomCenter)
+        )
     }
 }
 
