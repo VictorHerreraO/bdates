@@ -52,54 +52,81 @@ fun PreviewEventSheetContent(
     hasActions = state.isEditable,
     actions = {
         PreviewActions(
-            enabled = !state.isLoading,
+            enabled = state.isSuccess,
             onEditEvent = onEditEvent
         )
     },
-    showLoadingIndicator = state.isLoading,
-    loadingIndicator = {
-        LoadingSheetContent()
-    },
     snackbarHostState = snackbarHostState,
 ) {
-    Box(
-        modifier = Modifier.fillMaxWidth(),
-        contentAlignment = Alignment.Center
-    ) {
-        BackgroundImage()
+    when {
+        state.isLoading -> LoadingPreviewEventSheetContent()
 
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            HeadingIcon(
-                iconSize = LocalSizes.current.dimen_100
-            )
+        state.isError -> ErrorPreviewEventSheetContent(
+            state = state,
+            snackbarHostState = snackbarHostState
+        )
 
-            EventCircleDescription(
-                circleName = state.circleName
-            )
-
-            SpacerM()
-
-            EventTitle(
-                eventName = state.eventName,
-                ordinalAge = state.ordinalAge
-            )
-
-            SpacerM()
-
-            EventSummary(
-                eventDate = state.eventDate,
-                remainingDays = state.remainingDays
-            )
-        }
+        state.isSuccess -> SuccessPreviewEventSheetContent(
+            state = state
+        )
     }
+}
+
+@Composable
+private fun LoadingPreviewEventSheetContent(
+    modifier: Modifier = Modifier,
+) = LoadingSheetContent(modifier = modifier)
+
+@Composable
+private fun ErrorPreviewEventSheetContent(
+    state: PreviewEventViewState,
+    snackbarHostState: SnackbarHostState,
+    modifier: Modifier = Modifier,
+) {
+    ErrorSheetContent(modifier)
 
     val context = LocalContext.current
     LaunchedEffect(key1 = state.error) {
         state.error?.showMessage(
             context = context,
             snackbarHostState = snackbarHostState
+        )
+    }
+}
+
+@Composable
+private fun SuccessPreviewEventSheetContent(
+    state: PreviewEventViewState,
+    modifier: Modifier = Modifier,
+) = Box(
+    modifier = modifier.fillMaxWidth(),
+    contentAlignment = Alignment.Center
+) {
+    BackgroundImage()
+
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        HeadingIcon(
+            iconSize = LocalSizes.current.dimen_100
+        )
+
+        EventCircleDescription(
+            circleName = state.circleName
+        )
+
+        SpacerM()
+
+        EventTitle(
+            eventName = state.eventName,
+            ordinalAge = state.ordinalAge
+        )
+
+        SpacerM()
+
+        EventSummary(
+            eventDate = state.eventDate,
+            remainingDays = state.remainingDays
         )
     }
 }
@@ -306,6 +333,34 @@ private fun LoadingEditablePreviewEventSheetContentPreview() {
                 eventType = "",
                 isEditable = true,
                 isLoading = true,
+                remainingDays = "",
+            )
+            PreviewEventSheetContent(
+                state = state,
+                onEditEvent = {},
+                onBottomSheetDismiss = {},
+            )
+        }
+    }
+}
+
+@Preview(showSystemUi = true)
+@Composable
+private fun ErrorPreviewEventSheetContentPreview() {
+    BdatesTheme(darkTheme = true) {
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.Bottom
+        ) {
+            val state = PreviewEventViewState(
+                ordinalAge = "",
+                eventName = "",
+                eventDate = "",
+                eventType = "",
+                isEditable = false,
+                isLoading = false,
+                isError = true,
+                error = PreviewEventError.ERROR_LOADING,
                 remainingDays = "",
             )
             PreviewEventSheetContent(
