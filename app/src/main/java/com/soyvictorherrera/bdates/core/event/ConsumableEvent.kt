@@ -19,9 +19,10 @@ inline fun <T> ConsumableEvent<T>?.consumeValue(consumer: (T) -> Unit) {
 }
 
 /**
- * Wrap [this] inside a [ConsumableEvent]. Uses [System.currentTimeMillis] as an ID by default
+ * Wrap [this] inside a [ConsumableEvent]. Uses [System.currentTimeMillis] as the consumable event id
+ * by default
  */
-fun <T> T.asConsumable(
+fun <T> T.asConsumableEvent(
     id: Any? = System.currentTimeMillis(),
 ): ConsumableEvent<T> = ConsumableEvent(
     value = this,

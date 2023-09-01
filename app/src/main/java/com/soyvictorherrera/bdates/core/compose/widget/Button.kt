@@ -54,16 +54,23 @@ fun DeleteActionButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
+    showLoader: Boolean = false,
 ) = TextButton(
     onClick = onClick,
     modifier = modifier.heightIn(min = 48.dp),
     colors = deleteActionButtonColors(),
     enabled = enabled,
 ) {
-    Text(
-        text = stringResource(text),
-        textAlign = TextAlign.Center,
-    )
+    if (showLoader) {
+        CircularLoadingIndicator(
+            modifier = Modifier.size(LocalSizes.current.dimen_32)
+        )
+    } else {
+        Text(
+            text = stringResource(text),
+            textAlign = TextAlign.Center,
+        )
+    }
 }
 
 @Composable

@@ -43,6 +43,9 @@
     <string name="add_event_save_event">Crear evento</string>
     <string name="add_event_save_changes">Guardar cambios</string>
     <string name="add_event_delete_event">Eliminar evento</string>
+    <string name="add_event_error_loading">@string/preview_event_error_loading</string>
+    <string name="add_event_error_saving">Lo sentimos, los cambios no se pudieron guardar</string>
+    <string name="add_event_error_deleting">@string/add_event_error_saving</string>
 
     <!-- Preview events -->
     <string name="preview_event_date_w_remaining_days_subtitle">%1$s • %2$s</string>

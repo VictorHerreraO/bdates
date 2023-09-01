@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.soyvictorherrera.bdates.core.date.DateProviderContract
 import com.soyvictorherrera.bdates.core.event.NavigationEvent
+import com.soyvictorherrera.bdates.core.event.asConsumableEvent
 import com.soyvictorherrera.bdates.modules.circles.data.preferences.CirclePreferencesContract
 import com.soyvictorherrera.bdates.modules.eventList.data.repository.EventRepositoryContract
 import com.soyvictorherrera.bdates.modules.eventList.domain.model.Event
@@ -53,17 +54,11 @@ class AddEventViewModel @Inject constructor(
     )
     val state: StateFlow<AddEventViewState> = _state.asStateFlow()
 
-    private var isLoading: Boolean
-        get() = _state.value.isLoading
-        set(value) {
-            _state.update { it.copy(isLoading = value) }
-        }
-
     init {
         if (eventId != null) {
             loadEvent(eventId)
         } else {
-            isLoading = false
+            _state.update { it.copy(isLoading = false) }
         }
     }
 
@@ -134,7 +129,10 @@ class AddEventViewModel @Inject constructor(
             }.onFailure { throwable ->
                 Timber.e(throwable, "Unable to save event")
                 _state.update {
-                    it.copy(isSaving = false)
+                    it.copy(
+                        isSaving = false,
+                        error = AddEventError.ERROR_SAVING_EVENT.asConsumableEvent()
+                    )
                 }
             }
         }
@@ -142,19 +140,29 @@ class AddEventViewModel @Inject constructor(
 
     fun onDeleteClick() {
         eventId ?: return
+
+        _state.update {
+            it.copy(isDeleting = true)
+        }
+
         viewModelScope.launch {
             eventRepository.runCatching {
                 deleteEvent(eventId)
             }.onSuccess {
                 _navigation.value = NavigationEvent.NavigateBack()
-            }.onFailure {
-                Timber.e(it, "Unable to delete event")
+            }.onFailure { throwable ->
+                Timber.e(throwable, "Unable to delete event")
+                _state.update {
+                    it.copy(
+                        isDeleting = false,
+                        error = AddEventError.ERROR_DELETING_EVENT.asConsumableEvent()
+                    )
+                }
             }
         }
     }
 
     private fun loadEvent(eventId: String) {
-        isLoading = true
         viewModelScope.launch {
             eventRepository.runCatching {
                 getEvent(eventId)
@@ -173,9 +181,15 @@ class AddEventViewModel @Inject constructor(
                         isLoading = false
                     )
                 }
-            }.onFailure {
-                Timber.e(it, "Unable to load event :(")
-                isLoading = false
+            }.onFailure { throwable ->
+                Timber.e(throwable, "Unable to load event :(")
+                _state.update {
+                    it.copy(
+                        isLoading = false,
+                        isError = true,
+                        error = AddEventError.ERROR_LOADING.asConsumableEvent()
+                    )
+                }
             }
         }
     }
