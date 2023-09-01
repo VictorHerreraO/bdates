@@ -43,8 +43,6 @@ fun BottomSheet(
     modifier: Modifier = Modifier,
     hasActions: Boolean = false,
     actions: (@Composable RowScope.() -> Unit)? = null,
-    showLoadingIndicator: Boolean = false,
-    loadingIndicator: (@Composable () -> Unit)? = null,
     snackbarHostState: SnackbarHostState = remember { SnackbarHostState() },
     content: @Composable () -> Unit,
 ) = Surface(
@@ -61,17 +59,11 @@ fun BottomSheet(
                 .nestedScroll(rememberNestedScrollInteropConnection())
                 .verticalScroll(state = rememberScrollState())
                 .clearFocusOnTap()
-            val renderLoadingIndicator = showLoadingIndicator && loadingIndicator != null
 
             BottomSheetTopBar(
                 title = title,
                 onDismissClick = onBottomSheetDismiss,
             )
-
-            if (renderLoadingIndicator) {
-                loadingIndicator?.invoke()
-                return@Surface
-            }
 
             Column(
                 modifier = modifier.then(scrollModifier)
@@ -142,7 +134,7 @@ private fun BottomSheetWithActionsPreview() {
             hasActions = true,
             actions = {
                 Button(
-                    onClick = { /*TODO*/ },
+                    onClick = {},
                     colors = ButtonDefaults.buttonColors(
                         backgroundColor = MaterialTheme.colors.secondary
                     )
