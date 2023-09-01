@@ -11,4 +11,12 @@ data class Event(
     val year: Int?,
     val currentYearOccurrence: LocalDate? = null,
     val nextOccurrence: LocalDate? = null,
+    val deleted: Boolean = false,
 )
+
+val Event.nextOccurrenceAge: Int?
+    get() = if (nextOccurrence != null && year != null) {
+        nextOccurrence.year - year
+    } else {
+        null
+    }

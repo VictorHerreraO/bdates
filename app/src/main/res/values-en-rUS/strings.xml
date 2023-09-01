@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Birthdays</string>
+
+    <!-- Event list -->
     <string name="title_today_occasions">Today\'s occasions</string>
     <string name="title_today_occasions_break_line">Today\'s\noccasions</string>
     <string name="title_upcoming_events">Upcoming big days</string>
@@ -10,6 +12,9 @@
     <string name="event_birthday_title">Birthday</string>
     <string name="event_birthday_description">• Turns %d</string>
     <string name="add_event">Add Event</string>
+    <string name="event_list_no_events_title">No events to show</string>
+    <string name="event_list_no_events_description">Try adding new events to get reminders</string>
+    <string name="event_list_error_fetch_list">Unable to update event list</string>
 
     <!-- Notification channels -->
     <string name="notification_channel_name_event_reminders">Event reminders</string>
@@ -36,4 +41,20 @@
     <string name="add_event_save_event">Create event</string>
     <string name="add_event_save_changes">Save changes</string>
     <string name="add_event_delete_event">Delete event</string>
+    <string name="add_event_error_loading">@string/preview_event_error_loading</string>
+    <string name="add_event_error_saving">Sorry, changes couldn\'t be saved</string>
+    <string name="add_event_error_deleting">@string/add_event_error_saving</string>
+
+    <!-- Preview events -->
+    <string name="preview_event_date_w_remaining_days_subtitle">%1$s • %2$s</string>
+    <string name="preview_event_title_birthday">%1$s\'s birthday</string>
+    <string name="preview_event_title_birthday_w_age">%1$s\'s %2$s birthday</string>
+    <string name="preview_event_error_loading">Unable to load the event</string>
+    <plurals name="preview_event_remaining_time">
+        <item quantity="one">%1$s day remaining</item>
+        <item quantity="other">%1$s days remaining</item>
+    </plurals>
+
+    <!-- Localized date formatter -->
+    <string name="date_format_long_day_with_month">EEEE, MM/dd</string>
 </resources>

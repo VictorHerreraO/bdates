@@ -14,10 +14,12 @@ import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.setFragmentResult
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.soyvictorherrera.bdates.core.compose.theme.setBdatesContent
-import com.soyvictorherrera.bdates.core.navigation.NavigationEvent
-import com.soyvictorherrera.bdates.core.navigation.consume
+import com.soyvictorherrera.bdates.core.event.NavigationEvent
+import com.soyvictorherrera.bdates.core.event.consume
 import com.soyvictorherrera.bdates.modules.eventList.framework.presentation.AddEventViewModel
 import com.soyvictorherrera.bdates.modules.eventList.framework.ui.compose.AddEventSheetContent
 import dagger.hilt.android.AndroidEntryPoint
@@ -50,6 +52,7 @@ class AddEventBottomSheet : BottomSheetDialogFragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        setupBottomSheet()
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.navigation.collect {
                 it.consume { event ->
@@ -65,10 +68,14 @@ class AddEventBottomSheet : BottomSheetDialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return super.onCreateDialog(savedInstanceState).apply {
             setOnShowListener {
-                (view?.parent as ViewGroup).background =
-                    ColorDrawable(Color.TRANSPARENT)
+                (view?.parent as ViewGroup).background = ColorDrawable(Color.TRANSPARENT)
+                setOnShowListener(null)
             }
         }
+    }
+
+    private fun setupBottomSheet() {
+        (dialog as? BottomSheetDialog)?.behavior?.state = BottomSheetBehavior.STATE_EXPANDED
     }
 
     private fun notifyEventCreated() {

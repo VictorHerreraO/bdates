@@ -1,5 +1,7 @@
 <resources>
     <string name="app_name">Cumpleaños</string>
+
+    <!-- Event list -->
     <string name="title_today_occasions">Hoy celebramos</string>
     <string name="title_today_occasions_break_line">Hoy celebramos</string>
     <string name="title_upcoming_events">Se viene lo bueno</string>
@@ -9,6 +11,9 @@
     <string name="event_birthday_title">Cumpleaños</string>
     <string name="event_birthday_description">• Cumple %d</string>
     <string name="add_event">Agregar evento</string>
+    <string name="event_list_no_events_title">No hay eventos que mostrar</string>
+    <string name="event_list_no_events_description">Agrega nuevos eventos para recibir recordatorios</string>
+    <string name="event_list_error_fetch_list">No fue posible actualizar la lista de eventos</string>
 
     <!-- Notification channels -->
     <string name="notification_channel_name_event_reminders">Recordatorios de eventos</string>
@@ -38,4 +43,22 @@
     <string name="add_event_save_event">Crear evento</string>
     <string name="add_event_save_changes">Guardar cambios</string>
     <string name="add_event_delete_event">Eliminar evento</string>
+    <string name="add_event_error_loading">@string/preview_event_error_loading</string>
+    <string name="add_event_error_saving">Lo sentimos, los cambios no se pudieron guardar</string>
+    <string name="add_event_error_deleting">@string/add_event_error_saving</string>
+
+    <!-- Preview events -->
+    <string name="preview_event_date_w_remaining_days_subtitle">%1$s • %2$s</string>
+    <string name="preview_event_no_age_title" translatable="false">🎉</string>
+    <string name="preview_event_type_birthday" translatable="false">@string/event_birthday_title</string>
+    <string name="preview_event_title_birthday">Cumpleaños de %1$s</string>
+    <string name="preview_event_title_birthday_w_age">%2$s cumpleaños de %1$s</string>
+    <string name="preview_event_error_loading">No fue posible cargar el evento</string>
+    <plurals name="preview_event_remaining_time">
+        <item quantity="one">Falta %1$s día</item>
+        <item quantity="other">Faltan %1$s días</item>
+    </plurals>
+
+    <!-- Localized date formatter -->
+    <string name="date_format_long_day_with_month">EEEE, dd/MM</string>
 </resources>

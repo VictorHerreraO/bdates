@@ -23,7 +23,8 @@ class CreateLocalCircleUseCase @Inject constructor(
             id = null,
             name = "Device local circle",
             description = "",
-            isLocalOnly = true
+            isLocalOnly = true,
+            updateDate = null,
         )
     }
 

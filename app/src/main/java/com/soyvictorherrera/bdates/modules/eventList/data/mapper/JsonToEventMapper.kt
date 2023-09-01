@@ -4,7 +4,7 @@ import com.soyvictorherrera.bdates.core.arch.Mapper
 import com.soyvictorherrera.bdates.modules.eventList.domain.model.Event
 import org.json.JSONObject
 
-object JsonToEventMapper : Mapper<JSONObject, Event>() {
+object JsonToEventMapper : Mapper<JSONObject, Event> {
     private const val KEY_ID = "id"
     private const val KEY_NAME = "nombre"
     private const val KEY_BIRTH_DATE = "fechaNac"

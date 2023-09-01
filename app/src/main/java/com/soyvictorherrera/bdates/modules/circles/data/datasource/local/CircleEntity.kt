@@ -10,4 +10,5 @@ data class CircleEntity(
     @ColumnInfo("name") val name: String,
     @ColumnInfo("description") val description: String?,
     @ColumnInfo("local_only") val isLocalOnly: Boolean,
+    @ColumnInfo("update_date") val updateDate: Long?,
 )

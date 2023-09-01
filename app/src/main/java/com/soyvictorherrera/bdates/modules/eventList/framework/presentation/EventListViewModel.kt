@@ -4,32 +4,39 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.soyvictorherrera.bdates.core.arch.execute
 import com.soyvictorherrera.bdates.core.date.DateProviderContract
-import com.soyvictorherrera.bdates.core.navigation.NavigationEvent
+import com.soyvictorherrera.bdates.core.event.ConsumableEvent
+import com.soyvictorherrera.bdates.core.event.NavigationEvent
+import com.soyvictorherrera.bdates.core.network.onError
+import com.soyvictorherrera.bdates.core.network.onSuccess
 import com.soyvictorherrera.bdates.core.resource.ResourceManagerContract
 import com.soyvictorherrera.bdates.modules.eventList.domain.model.Event
+import com.soyvictorherrera.bdates.modules.eventList.domain.model.nextOccurrenceAge
 import com.soyvictorherrera.bdates.modules.eventList.domain.usecase.FilterEventListArgs
 import com.soyvictorherrera.bdates.modules.eventList.domain.usecase.FilterEventListUseCaseContract
 import com.soyvictorherrera.bdates.modules.eventList.domain.usecase.GetDayEventListUseCaseContract
 import com.soyvictorherrera.bdates.modules.eventList.domain.usecase.GetNonDayEventListUseCaseContract
+import com.soyvictorherrera.bdates.modules.eventList.domain.usecase.UpdateEventsUseCaseContract
 import dagger.hilt.android.lifecycle.HiltViewModel
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
-import java.time.temporal.ChronoUnit
-import javax.inject.Inject
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import java.time.LocalDate
+import java.time.temporal.ChronoUnit
+import javax.inject.Inject
 import kotlin.properties.Delegates
 
 @HiltViewModel
 class EventListViewModel @Inject constructor(
-    dateProvider: DateProviderContract,
+    private val dateProvider: DateProviderContract,
     private val resourceManager: ResourceManagerContract,
     private val getDayEventList: GetDayEventListUseCaseContract,
     private val getNonDayEventList: GetNonDayEventListUseCaseContract,
     private val filterEventListUseCase: FilterEventListUseCaseContract,
+    private val updateEventList: UpdateEventsUseCaseContract,
 ) : ViewModel() {
 
+    //region View Props
     private val _navigation = MutableLiveData<NavigationEvent>()
     val navigation: LiveData<NavigationEvent>
         get() = _navigation
@@ -42,8 +49,17 @@ class EventListViewModel @Inject constructor(
     val todayEvents: LiveData<List<TodayEventViewState>>
         get() = _todayEvents
 
-    private val today: LocalDate = dateProvider.currentLocalDate
-    private val longFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("EEEE, dd/MM")
+    private val _isRefreshing = MutableLiveData(false)
+    val isRefreshing: LiveData<Boolean>
+        get() = _isRefreshing
+
+    private val _errorMessage = MutableLiveData<ConsumableEvent<Error>?>(null)
+    val errorMessage: LiveData<ConsumableEvent<Error>?>
+        get() = _errorMessage
+    //endregion
+
+    private val today: LocalDate
+        get() = dateProvider.currentLocalDate
 
     private var allEvents by Delegates.observable(emptyList<Event>()) { _, _, list ->
         processEventList(list)
@@ -55,12 +71,33 @@ class EventListViewModel @Inject constructor(
 
     init {
         getData()
+        refreshData()
     }
 
-    private fun getData() {
+    private fun getData(): Unit = with(viewModelScope) {
+        launch {
+            dayEvents = getDayEventList.execute()
+        }
+        launch {
+            allEvents = getNonDayEventList.execute()
+        }
+    }
+
+    private fun refreshData() {
         viewModelScope.launch {
-            this@EventListViewModel.dayEvents = getDayEventList.execute()
-            this@EventListViewModel.allEvents = getNonDayEventList.execute()
+            _isRefreshing.value = true
+
+            updateEventList.execute()
+                .onSuccess {
+                    Timber.d("Success")
+                    getData()
+                }
+                .onError { _, cause ->
+                    Timber.d(cause, "Show refresh error")
+                    _errorMessage.value = ConsumableEvent(Error.UnableToRefresh)
+                }
+
+            _isRefreshing.value = false
         }
     }
 
@@ -70,11 +107,11 @@ class EventListViewModel @Inject constructor(
     }
 
     fun onEventClick(eventId: String) {
-        _navigation.value = NavigationEvent.EventBottomSheet(eventId = eventId)
+        _navigation.value = NavigationEvent.PreviewEventBottomSheet(eventId = eventId)
     }
 
     fun onAddEventClick() {
-        _navigation.value = NavigationEvent.EventBottomSheet()
+        _navigation.value = NavigationEvent.AddEventBottomSheet()
     }
 
     private fun processEventList(events: List<Event>) = viewModelScope.launch {
@@ -102,9 +139,8 @@ class EventListViewModel @Inject constructor(
                         },
                         name = event.name,
                         description = nextOccurrence.let { date ->
-                            val formatted = date.format(longFormatter)
-                            return@let event.year?.let { birthYear ->
-                                val yearsOld = nextOccurrence.year.minus(birthYear)
+                            val formatted = dateProvider.formatDateAsDayAndMonth(date)
+                            return@let event.nextOccurrenceAge?.let { yearsOld ->
                                 "$formatted " + resourceManager.getString(
                                     identifier = "event_birthday_description",
                                     yearsOld
@@ -138,6 +174,10 @@ class EventListViewModel @Inject constructor(
         }
     }
 
-    fun refresh() = getData()
+    fun refresh() = refreshData()
 
+}
+
+sealed class Error {
+    object UnableToRefresh : Error()
 }

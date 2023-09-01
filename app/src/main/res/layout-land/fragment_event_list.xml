@@ -1,96 +1,60 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/layout_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <LinearLayout
-        android:id="@+id/layout_today_events"
-        android:layout_width="wrap_content"
-        android:layout_height="@dimen/dimen_0"
-        android:orientation="vertical"
-        android:paddingVertical="@dimen/dimen_16"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/layout_upcoming_events"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_chainStyle="packed">
+        android:id="@+id/layout_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:baselineAligned="false"
+        android:orientation="horizontal">
 
-        <TextView
-            android:id="@+id/lbl_today_events"
-            style="@style/TextAppearance.MaterialComponents.Headline5"
+        <LinearLayout
+            android:id="@+id/layout_today_events"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="@dimen/dimen_16"
-            android:text="@string/title_today_occasions_break_line"
-            android:textColor="?colorOnPrimary" />
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:paddingHorizontal="@dimen/dimen_16">
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recycler_today_events"
-            android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="@dimen/dimen_8"
-            android:layout_weight="1"
-            tools:layout_width="120dp"
-            tools:listitem="@layout/item_event_birth_day" />
+            <TextView
+                android:id="@+id/lbl_today_events"
+                style="@style/TextAppearance.MaterialComponents.Headline5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="@dimen/dimen_16"
+                android:text="@string/title_today_occasions_break_line"
+                android:textColor="?colorOnPrimary" />
 
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recycler_today_events"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="@dimen/dimen_8"
+                android:layout_weight="1"
+                tools:listitem="@layout/item_event_birth_day" />
+        </LinearLayout>
+
+        <include
+            android:id="@+id/layout_upcoming_events"
+            layout="@layout/layout_event_list"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1" />
     </LinearLayout>
 
-    <LinearLayout
-        android:id="@+id/layout_upcoming_events"
-        android:layout_width="@dimen/dimen_0"
-        android:layout_height="@dimen/dimen_0"
-        android:background="@drawable/background_bottom_sheet"
-        android:orientation="vertical"
-        android:paddingTop="@dimen/dimen_16"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/layout_today_events"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <TextView
-            style="@style/TextAppearance.MaterialComponents.Headline5"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="@dimen/dimen_16"
-            android:text="@string/title_upcoming_events" />
-
-        <EditText
-            android:id="@+id/input_search"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="@dimen/dimen_16"
-            android:layout_marginVertical="@dimen/dimen_8"
-            android:background="@drawable/background_search_bar"
-            android:drawableStart="@drawable/ic_baseline_search_18"
-            android:drawablePadding="@dimen/dimen_8"
-            android:gravity="center_vertical"
-            android:hint="@string/hint_search_event_by_name"
-            android:imeOptions="actionSearch"
-            android:importantForAutofill="no"
-            android:inputType="text"
-            android:padding="@dimen/dimen_8" />
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recycler_events"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_marginTop="@dimen/dimen_8"
-            android:layout_weight="1"
-            tools:itemCount="5"
-            tools:listitem="@layout/item_event" />
-    </LinearLayout>
 
     <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
         android:id="@+id/btn_add_event"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
         android:layout_margin="16dp"
         android:contentDescription="@string/add_event"
         android:text="@string/add_event"
-        app:icon="@drawable/ic_add_48"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
-</androidx.constraintlayout.widget.ConstraintLayout>
+        app:icon="@drawable/ic_add_48" />
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

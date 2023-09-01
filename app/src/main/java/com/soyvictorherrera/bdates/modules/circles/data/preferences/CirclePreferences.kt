@@ -1,21 +1,29 @@
 package com.soyvictorherrera.bdates.modules.circles.data.preferences
 
+import com.soyvictorherrera.bdates.core.persistence.Key
 import com.soyvictorherrera.bdates.core.persistence.KeyValueStoreContract
 import com.soyvictorherrera.bdates.core.persistence.booleanKey
 import com.soyvictorherrera.bdates.core.persistence.stringKey
+import com.soyvictorherrera.bdates.modules.eventList.data.datasource.assets.forEach
 import javax.inject.Inject
+import org.json.JSONException
+import org.json.JSONObject
 
 interface CirclePreferencesContract {
     var isLocalCircleCreated: Boolean
     var localCircleId: String?
+    var defaultRemoteCircleId: String?
+    val updateTimestamps: KeyValuePreference<Long>
 }
 
 class CirclePreferences @Inject constructor(
     private val store: KeyValueStoreContract,
 ) : CirclePreferencesContract {
     private companion object {
+        val DEFAULT_REMOTE_CIRCLE_ID = stringKey("default_remote_circle_id")
         val IS_LOCAL_CIRCLE_CREATED_KEY = booleanKey("is_local_circle_created")
         val LOCAL_CIRCLE_ID_KEY = stringKey("local_circle_id")
+        val UPDATE_TIMESTAMPS = stringKey("update_timestamps")
     }
 
     override var isLocalCircleCreated: Boolean
@@ -29,4 +37,56 @@ class CirclePreferences @Inject constructor(
         set(value) {
             store[LOCAL_CIRCLE_ID_KEY] = value
         }
+
+    override var defaultRemoteCircleId: String?
+        get() = store[DEFAULT_REMOTE_CIRCLE_ID]
+        set(value) {
+            store[DEFAULT_REMOTE_CIRCLE_ID] = value
+        }
+
+    override val updateTimestamps: KeyValuePreference<Long> = KeyValueLongPreference(
+        store = store,
+        storeKey = UPDATE_TIMESTAMPS
+    )
+}
+
+interface KeyValuePreference<T> {
+    operator fun set(key: String, value: T?)
+    operator fun get(key: String): T?
+}
+
+internal class KeyValueLongPreference(
+    private val store: KeyValueStoreContract,
+    private val storeKey: Key<String>,
+) : KeyValuePreference<Long> {
+    private val valueJSON: JSONObject
+
+    init {
+        val valueString = store[storeKey].orEmpty()
+        valueJSON = try {
+            JSONObject(valueString)
+        } catch (ex: Exception) {
+            JSONObject()
+        }
+        valueJSON.names()?.forEach {
+            this[it as String] = valueJSON.getLong(it)
+        }
+    }
+
+    override fun set(key: String, value: Long?) {
+        valueJSON.put(key, value)
+        valueJSON.sync()
+    }
+
+    override fun get(key: String): Long? {
+        return try {
+            valueJSON.getLong(key)
+        } catch (ex: JSONException) {
+            null
+        }
+    }
+
+    private fun JSONObject.sync() {
+        store[storeKey] = toString()
+    }
 }
