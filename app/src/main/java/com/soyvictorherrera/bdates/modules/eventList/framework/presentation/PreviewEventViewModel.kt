@@ -67,8 +67,15 @@ class PreviewEventViewModel @Inject constructor(
         viewModelScope.launch {
             getEvent.execute(eventId)
                 .onSuccess(::onEventLoaded)
-                .onFailure {
-                    Timber.e(it, "Unable to load event :(")
+                .onFailure { throwable ->
+                    Timber.e(throwable, "Unable to load event :(")
+                    _state.update {
+                        it.copy(
+                            isLoading = false,
+                            isError = true,
+                            error = PreviewEventError.ERROR_LOADING
+                        )
+                    }
                 }
         }
     }
@@ -96,6 +103,7 @@ class PreviewEventViewModel @Inject constructor(
                 eventType = resources.getString("preview_event_type_birthday"),
                 isEditable = event.circleId == localCircleId,
                 isLoading = false,
+                isError = false,
                 remainingDays = remainingTime.toString()
             )
         }

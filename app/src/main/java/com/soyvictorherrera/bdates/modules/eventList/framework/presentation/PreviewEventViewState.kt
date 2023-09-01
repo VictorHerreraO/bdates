@@ -9,4 +9,13 @@ data class PreviewEventViewState(
     val circleName: String? = null,
     val isLoading: Boolean,
     val remainingDays: String,
-)
+    val isError: Boolean = false,
+    val error: PreviewEventError? = null,
+) {
+    val isSuccess: Boolean
+        get() = !isLoading && !isError
+}
+
+enum class PreviewEventError {
+    ERROR_LOADING
+}
