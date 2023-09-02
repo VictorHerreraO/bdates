@@ -1,15 +1,12 @@
 package com.soyvictorherrera.bdates.modules.circles.data.repository
 
 import com.google.common.truth.Truth.assertThat
-import com.soyvictorherrera.bdates.core.arch.Mapper
-import com.soyvictorherrera.bdates.modules.circles.data.datasource.local.CircleEntity
+import com.soyvictorherrera.bdates.core.network.Resource
 import com.soyvictorherrera.bdates.modules.circles.data.datasource.local.LocalCircleDataSourceContract
-import com.soyvictorherrera.bdates.modules.circles.domain.model.Circle
-import com.soyvictorherrera.bdates.test.data.circleEntity
+import com.soyvictorherrera.bdates.modules.circles.data.datasource.remote.RemoteCircleDataSourceContract
 import com.soyvictorherrera.bdates.test.data.circleModel
 import io.mockk.coEvery
 import io.mockk.coVerify
-import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
 import io.mockk.runs
@@ -20,28 +17,34 @@ import org.junit.Test
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class CircleRepositoryTest {
-
-    private val localDataSource = mockk<LocalCircleDataSourceContract>()
-    private val localMapper = mockk<Mapper<CircleEntity, Circle>>()
-
     private lateinit var subjectUnderTest: CircleRepository
+
+    private val localDataSource: LocalCircleDataSourceContract = mockk()
+
+    private val remoteDataSource: RemoteCircleDataSourceContract = mockk()
 
     @Before
     fun setUp() {
-        subjectUnderTest = CircleRepository(localDataSource, localMapper)
+        subjectUnderTest = CircleRepository(
+            localDataSource = localDataSource,
+            remoteDataSource = remoteDataSource
+        )
     }
 
     @Test
-    fun `assert get circles`(): Unit = runTest {
+    fun `assert get circles updates local circles with remote ones`(): Unit = runTest {
         val expected = circleModel()
 
-        coEvery { localDataSource.getCircles() } returns listOf(circleEntity())
-        every { localMapper.map(any()) } returns expected
+        coEvery { remoteDataSource.getCircles() } returns listOf(expected)
+        coEvery { localDataSource.getCircles() } returns listOf(expected)
 
         val result = subjectUnderTest.getCircles()
 
-        assertThat(result).isNotEmpty()
-        assertThat(result).contains(expected)
+        coVerify(exactly = 1) { localDataSource.updateCircle(expected) }
+
+        assertThat(result is Resource.Success).isTrue()
+        assertThat(result.data).isNotEmpty()
+        assertThat(result.data).contains(expected)
     }
 
     @Test
@@ -49,8 +52,7 @@ class CircleRepositoryTest {
         val expectedId = "expected-id"
         val expected = circleModel().copy(id = expectedId)
 
-        coEvery { localDataSource.getCircle(expectedId) } returns circleEntity()
-        every { localMapper.map(any()) } returns expected
+        coEvery { localDataSource.getCircle(expectedId) } returns expected
 
         val result = subjectUnderTest.getCircle(expectedId)
 
@@ -60,40 +62,38 @@ class CircleRepositoryTest {
     @Test
     fun `verify create circle`(): Unit = runTest {
         val expectedId = "expected-id"
-        val circle = circleModel().copy(id = "")
+        val model = circleModel().copy(id = "")
 
-        every { localMapper.reverseMap(any()) } returns circleEntity().copy(id = circle.id!!)
-        coEvery { localDataSource.createCircle(any()) } returns expectedId
+        coEvery { localDataSource.createCircle(model) } returns expectedId
 
-        val result = subjectUnderTest.createCircle(circle)
+        val result = subjectUnderTest.createCircle(model)
 
         assertThat(result).isEqualTo(expectedId)
-        coVerify(exactly = 1) { localDataSource.createCircle(any()) }
+        coVerify(exactly = 1) { localDataSource.createCircle(model) }
     }
 
     @Test(expected = IllegalArgumentException::class)
     fun `expect IllegalArgumentException when creating circle with id`(): Unit = runTest {
-        val circle = circleModel().copy(id = "circle-id")
+        val model = circleModel().copy(id = "circle-id")
 
-        subjectUnderTest.createCircle(circle)
+        subjectUnderTest.createCircle(model)
     }
 
     @Test
     fun `verify update circle`(): Unit = runTest {
-        val circle = circleModel()
+        val model = circleModel()
 
-        every { localMapper.reverseMap(any()) } returns circleEntity()
-        coEvery { localDataSource.updateCircle(any()) } just runs
+        coEvery { localDataSource.updateCircle(model) } just runs
 
-        subjectUnderTest.updateCircle(circle)
+        subjectUnderTest.updateCircle(model)
 
-        coVerify(exactly = 1) { localDataSource.updateCircle(any()) }
+        coVerify(exactly = 1) { localDataSource.updateCircle(model) }
     }
 
     @Test(expected = IllegalArgumentException::class)
     fun `expect IllegalArgumentException when updating circle without id`(): Unit = runTest {
-        val circle = circleModel().copy(id = null)
+        val model = circleModel().copy(id = null)
 
-        subjectUnderTest.updateCircle(circle)
+        subjectUnderTest.updateCircle(model)
     }
 }

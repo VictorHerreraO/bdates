@@ -22,8 +22,8 @@ class LocalCircleDataSource @Inject constructor(
 
     override suspend fun createCircle(circle: Circle): String {
         return circle
-            .copy(id = randomUUID())
             .let(mapper::reverseMap)
+            .copy(id = randomUUID())
             .also {
                 dao.upsertAll(it)
             }.id

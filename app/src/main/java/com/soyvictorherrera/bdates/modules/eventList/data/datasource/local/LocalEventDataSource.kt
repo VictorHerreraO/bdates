@@ -28,8 +28,8 @@ class LocalEventDataSource @Inject constructor(
 
     override suspend fun createEvent(event: Event): String {
         return event
-            .copy(id = randomUUID())
             .let(mapper::reverseMap)
+            .copy(id = randomUUID())
             .also {
                 dao.upsertAll(it)
             }.id
@@ -37,7 +37,7 @@ class LocalEventDataSource @Inject constructor(
 
     override suspend fun updateEvent(event: Event) {
         if (event.id.isNullOrEmpty()) {
-            return
+            throw IllegalArgumentException("id must not be empty")
         }
         dao.upsertAll(event.let(mapper::reverseMap))
     }
