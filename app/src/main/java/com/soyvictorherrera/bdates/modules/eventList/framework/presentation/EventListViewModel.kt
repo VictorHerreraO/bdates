@@ -37,7 +37,7 @@ class EventListViewModel @Inject constructor(
     val todayEvents: LiveData<List<TodayEventViewState>>
         get() = _todayEvents
 
-    private val _requestPermissionSignal = MutableLiveData(false)
+    private val _requestPermissionSignal = MutableLiveData(true)
     val requestPermissionSignal: LiveData<Boolean>
         get() = _requestPermissionSignal
 
