@@ -26,7 +26,7 @@ class EventListViewModel @Inject constructor(
     private val resourceManager: ResourceManagerContract,
     private val getDayEventList: GetDayEventListUseCaseContract,
     private val getNonDayEventList: GetNonDayEventListUseCaseContract,
-    private val filterEventListUseCase: FilterEventListUseCaseContract
+    private val filterEventListUseCase: FilterEventListUseCaseContract,
 ) : ViewModel() {
 
     private val _events = MutableLiveData<List<EventViewState>>()
@@ -36,6 +36,14 @@ class EventListViewModel @Inject constructor(
     private val _todayEvents = MutableLiveData<List<TodayEventViewState>>()
     val todayEvents: LiveData<List<TodayEventViewState>>
         get() = _todayEvents
+
+    private val _requestPermissionSignal = MutableLiveData(false)
+    val requestPermissionSignal: LiveData<Boolean>
+        get() = _requestPermissionSignal
+
+    private val _showMissingPermissionMessage = MutableLiveData(false)
+    val showMissingPermissionMessage: LiveData<Boolean>
+        get() = _showMissingPermissionMessage
 
     private val today: LocalDate = dateProvider.currentLocalDate
     private val longFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("EEEE, dd/MM")
@@ -58,6 +66,17 @@ class EventListViewModel @Inject constructor(
     fun onQueryTextChanged(query: String) {
         this.query = query
         processEventList(allEvents)
+    }
+
+    fun onNotificationPermissionStateCheck(isGranted: Boolean) {
+        val requiresPermission = !isGranted
+        _showMissingPermissionMessage.value = requiresPermission
+    }
+
+    fun onNotificationPermissionStateChanged(isGranted: Boolean) {
+        Timber.d("Was permission granted? $isGranted")
+        _requestPermissionSignal.value = false
+        _showMissingPermissionMessage.value = !isGranted
     }
 
     private fun processEventList(events: List<Event>) = viewModelScope.launch {
