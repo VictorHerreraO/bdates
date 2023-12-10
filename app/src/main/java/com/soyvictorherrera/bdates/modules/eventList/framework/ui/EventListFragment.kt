@@ -26,7 +26,6 @@ import com.soyvictorherrera.bdates.modules.permissions.PermissionDelegate
 import com.soyvictorherrera.bdates.modules.permissions.PermissionDelegateFactory
 import com.soyvictorherrera.bdates.modules.permissions.isPostNotificationPermissionGranted
 import dagger.hilt.android.AndroidEntryPoint
-import timber.log.Timber
 
 @AndroidEntryPoint
 class EventListFragment : Fragment() {
@@ -105,7 +104,6 @@ class EventListFragment : Fragment() {
             binding.layoutTodayEvents.isVisible = todayEvents.isNotEmpty()
         }
         requestPermissionSignal.observe(viewLifecycleOwner) { shouldRequestPermission ->
-            Timber.d("Should request permission? $shouldRequestPermission")
             if (shouldRequestPermission) {
                 permissionDelegate.requestNotificationPermission(
                     viewModel::onNotificationPermissionStateChanged

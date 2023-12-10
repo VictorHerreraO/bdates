@@ -17,7 +17,6 @@ import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
 import javax.inject.Inject
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import kotlin.properties.Delegates
 
 @HiltViewModel
@@ -74,7 +73,6 @@ class EventListViewModel @Inject constructor(
     }
 
     fun onNotificationPermissionStateChanged(isGranted: Boolean) {
-        Timber.d("Was permission granted? $isGranted")
         _requestPermissionSignal.value = false
         _showMissingPermissionMessage.value = !isGranted
     }
@@ -117,7 +115,6 @@ class EventListViewModel @Inject constructor(
                 }
             },
             onFailure = {
-                Timber.e(it)
                 emptyList()
             }
         ).let {
