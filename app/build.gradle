@@ -14,9 +14,9 @@ android {
     defaultConfig {
         applicationId "com.soyvictorherrera.bdates"
         minSdk 26
-        targetSdk 31
-        versionCode 101
-        versionName "1.1.0"
+        targetSdk 33
+        versionCode 103
+        versionName "1.2.1"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 

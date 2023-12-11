@@ -16,6 +16,8 @@
     <string name="notification_channel_description_event_reminders">Daily event reminders</string>
 
     <!-- Notifications -->
+    <string name="banner_notification_permission_not_granted_title">⛔️ Unable to show event notifications</string>
+    <string name="banner_notification_permission_not_granted_subtitle">Tap to enable on phone settings</string>
     <string name="notification_title_single_day_event">🍰 There is 1 birthday happening today!</string>
     <string name="notification_title_multiple_day_event">🍰 There are %d birthdays happening today!</string>
     <string name="notification_content_single_day_event">Today is %s\'s birthday. Make sure to say hi 👋</string>
