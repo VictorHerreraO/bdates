@@ -1,14 +1,18 @@
 package com.soyvictorherrera.bdates.modules.eventList.framework.ui
 
 import android.app.Activity
+import android.content.Intent
 import android.content.res.Configuration
+import android.net.Uri
 import android.os.Bundle
+import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import androidx.core.content.ContextCompat
+import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResultListener
@@ -23,6 +27,9 @@ import com.soyvictorherrera.bdates.core.navigation.NavigationEvent
 import com.soyvictorherrera.bdates.core.navigation.consume
 import com.soyvictorherrera.bdates.databinding.FragmentEventListBinding
 import com.soyvictorherrera.bdates.modules.eventList.framework.presentation.EventListViewModel
+import com.soyvictorherrera.bdates.modules.permissions.PermissionDelegate
+import com.soyvictorherrera.bdates.modules.permissions.PermissionDelegateFactory
+import com.soyvictorherrera.bdates.modules.permissions.isPostNotificationPermissionGranted
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -31,9 +38,11 @@ class EventListFragment : Fragment() {
     private var _binding: FragmentEventListBinding? = null
     private val binding: FragmentEventListBinding
         get() = _binding!!
+
     private val viewModel: EventListViewModel by viewModels()
 
     private lateinit var adapter: EventListAdapter
+    private lateinit var permissionDelegate: PermissionDelegate
     private lateinit var todayAdapter: TodayEventListAdapter
 
     private var onScrollListener: RecyclerView.OnScrollListener? = null
@@ -44,6 +53,7 @@ class EventListFragment : Fragment() {
         savedInstanceState: Bundle?,
     ): View {
         _binding = FragmentEventListBinding.inflate(inflater, container, false)
+        permissionDelegate = PermissionDelegateFactory.create { requireActivity() }
         return binding.root
     }
 
@@ -52,6 +62,7 @@ class EventListFragment : Fragment() {
         savedInstanceState: Bundle?,
     ) {
         initRecyclerView()
+        bindViewModel()
         setupListeners()
         setupResultListener()
     }
@@ -60,6 +71,13 @@ class EventListFragment : Fragment() {
         _binding = null
         onScrollListener = null
         super.onDestroyView()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        viewModel.onNotificationPermissionStateCheck(
+            requireContext().isPostNotificationPermissionGranted
+        )
     }
 
     private fun initRecyclerView() = with(binding) {
@@ -100,7 +118,22 @@ class EventListFragment : Fragment() {
         }
     }
 
-    private fun setupListeners() = with(binding) {
+    private fun bindViewModel() = with(viewModel) {
+        events.observe(viewLifecycleOwner, adapter::submitList)
+        todayEvents.observe(viewLifecycleOwner) { todayEvents ->
+            todayAdapter.submitList(todayEvents)
+            binding.layoutTodayEvents.isVisible = todayEvents.isNotEmpty()
+        }
+        requestPermissionSignal.observe(viewLifecycleOwner) { shouldRequestPermission ->
+            if (shouldRequestPermission) {
+                permissionDelegate.requestNotificationPermission(
+                    viewModel::onNotificationPermissionStateChanged
+                )
+            }
+        }
+        showMissingPermissionMessage.observe(viewLifecycleOwner) { showMessage ->
+            binding.layoutWarningBanner.root.isVisible = showMessage
+        }
         viewModel.navigation.observe(viewLifecycleOwner) { event ->
             event.consume {
                 when (it) {
@@ -117,12 +150,9 @@ class EventListFragment : Fragment() {
                 }
             }
         }
-        viewModel.events.observe(viewLifecycleOwner, adapter::submitList)
-        viewModel.todayEvents.observe(viewLifecycleOwner) {
-            todayAdapter.submitList(it)
-            layoutTodayEvents.visibility = if (it.isEmpty()) View.GONE else View.VISIBLE
-        }
+    }
 
+    private fun setupListeners() = with(binding) {
         inputSearch.addTextChangedListener { text ->
             viewModel.onQueryTextChanged(text.toString())
         }
@@ -132,12 +162,23 @@ class EventListFragment : Fragment() {
                     hideSoftKeyboard()
                     true
                 }
+
                 else -> false
             }
         }
         btnAddEvent.setOnClickListener {
             viewModel.onAddEventClick()
         }
+        layoutWarningBanner.root.setOnClickListener {
+            openAppSettings()
+        }
+    }
+
+    private fun openAppSettings() {
+        val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
+            data = Uri.fromParts("package", requireContext().packageName, null)
+        }
+        startActivity(intent)
     }
 
     private fun hideSoftKeyboard() {
