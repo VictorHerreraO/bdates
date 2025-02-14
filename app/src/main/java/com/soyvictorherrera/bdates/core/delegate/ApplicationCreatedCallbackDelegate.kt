@@ -1,13 +1,13 @@
 package com.soyvictorherrera.bdates.core.delegate
 
-import com.soyvictorherrera.bdates.BuildConfig
 import com.soyvictorherrera.bdates.core.coroutines.MainCoroutineScope
+import com.soyvictorherrera.bdates.modules.appinfo.domain.AppInfoProvider
 import com.soyvictorherrera.bdates.modules.circles.domain.CreateLocalCircleUseCaseContract
 import com.soyvictorherrera.bdates.modules.notifications.NotificationManagerContract
-import javax.inject.Inject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import javax.inject.Inject
 
 interface ApplicationCreatedCallbackDelegateContract {
     fun onApplicationCreated()
@@ -15,6 +15,7 @@ interface ApplicationCreatedCallbackDelegateContract {
 
 class ApplicationCreatedCallbackDelegate @Inject constructor(
     @MainCoroutineScope private val coroutineScope: CoroutineScope,
+    private val appInfoProvider: AppInfoProvider,
     private val createLocalCircle: CreateLocalCircleUseCaseContract,
     private val notificationManager: NotificationManagerContract,
 ) : ApplicationCreatedCallbackDelegateContract {
@@ -26,7 +27,7 @@ class ApplicationCreatedCallbackDelegate @Inject constructor(
     }
 
     private fun setupLogging() {
-        if (BuildConfig.DEBUG) {
+        if (appInfoProvider.isDebugBuild) {
             Timber.plant(Timber.DebugTree())
         }
     }
