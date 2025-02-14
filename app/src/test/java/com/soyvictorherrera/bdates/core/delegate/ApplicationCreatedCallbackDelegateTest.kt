@@ -1,7 +1,7 @@
 package com.soyvictorherrera.bdates.core.delegate
 
-import androidx.viewbinding.BuildConfig
 import com.google.common.truth.Truth.assertThat
+import com.soyvictorherrera.bdates.modules.appinfo.domain.AppInfoProvider
 import com.soyvictorherrera.bdates.modules.circles.domain.CreateLocalCircleUseCaseContract
 import com.soyvictorherrera.bdates.modules.notifications.NotificationManagerContract
 import com.soyvictorherrera.bdates.util.TimberTestRule
@@ -26,6 +26,8 @@ class ApplicationCreatedCallbackDelegateTest {
     @get:Rule
     val timberRule = TimberTestRule()
 
+    private lateinit var mockAppInfo: AppInfoProvider
+
     private lateinit var createLocalCircle: CreateLocalCircleUseCaseContract
 
     private lateinit var notificationManager: NotificationManagerContract
@@ -37,6 +39,9 @@ class ApplicationCreatedCallbackDelegateTest {
 
     @Before
     fun setUp() {
+        mockAppInfo = mockk {
+            every { isDebugBuild } returns true
+        }
         createLocalCircle = mockk {
             coEvery { execute() } just runs
         }
@@ -45,6 +50,7 @@ class ApplicationCreatedCallbackDelegateTest {
         }
         subjectUnderTest = ApplicationCreatedCallbackDelegate(
             coroutineScope = testScope,
+            appInfoProvider = mockAppInfo,
             createLocalCircle = createLocalCircle,
             notificationManager = notificationManager
         )
@@ -52,13 +58,23 @@ class ApplicationCreatedCallbackDelegateTest {
 
     @Test
     fun `on application created setups timber debug tree when in debug build`() {
-        if (!BuildConfig.DEBUG) return
         assertThat(Timber.forest()).isEmpty()
 
         subjectUnderTest.onApplicationCreated()
 
         assertThat(Timber.forest()).hasSize(1)
         assertThat(Timber.forest().first()).isInstanceOf(Timber.DebugTree::class.java)
+    }
+
+    @Test
+    fun `on application created skips timber setup when not in debug build`() {
+        every { mockAppInfo.isDebugBuild } returns false
+
+        assertThat(Timber.forest()).isEmpty()
+
+        subjectUnderTest.onApplicationCreated()
+
+        assertThat(Timber.forest()).hasSize(0)
     }
 
     @Test
