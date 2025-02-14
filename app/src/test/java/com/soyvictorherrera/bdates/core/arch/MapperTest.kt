@@ -1,6 +1,6 @@
 package com.soyvictorherrera.bdates.core.arch
 
-import com.google.common.truth.Truth.*
+import com.google.common.truth.Truth.assertThat
 import org.junit.Before
 import org.junit.Test
 

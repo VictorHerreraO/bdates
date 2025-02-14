@@ -4,17 +4,15 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
-import com.soyvictorherrera.bdates.R
 import com.soyvictorherrera.bdates.modules.eventList.framework.presentation.EventViewState
 
-class EventListAdapter : ListAdapter<EventViewState, EventListHolder>(EventDiffUtil) {
+class EventListAdapter(
+    private val onItemClick: (String) -> Unit,
+) : ListAdapter<EventViewState, EventListHolder>(EventDiffUtil) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): EventListHolder {
-        return EventListHolder(
-            itemView = LayoutInflater.from(parent.context).inflate(
-                R.layout.item_event,
-                parent,
-                false
-            )
+        return EventListHolder.inflate(
+            parent = parent,
+            onItemClick = onItemClick
         )
     }
 

@@ -3,10 +3,8 @@ package com.soyvictorherrera.bdates.modules.eventList.domain.usecase
 import com.google.common.truth.Truth.assertThat
 import com.soyvictorherrera.bdates.core.date.DateProviderContract
 import com.soyvictorherrera.bdates.modules.eventList.data.repository.EventRepositoryContract
-import com.soyvictorherrera.bdates.modules.eventList.domain.model.Event
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.flowOf
+import com.soyvictorherrera.bdates.test.data.event
+import java.time.LocalDate
 import kotlinx.coroutines.runBlocking
 import org.junit.Before
 import org.junit.Test
@@ -14,7 +12,6 @@ import org.junit.runner.RunWith
 import org.mockito.Mock
 import org.mockito.junit.MockitoJUnitRunner
 import org.mockito.kotlin.whenever
-import java.time.LocalDate
 
 @RunWith(MockitoJUnitRunner::class)
 class GetEventListUseCaseTest {
@@ -42,11 +39,7 @@ class GetEventListUseCaseTest {
     @Test
     fun get_event_list_calculates_current_year_occurrence(): Unit = runBlocking {
         val eventDate = today.plusMonths(1)
-        val event = Event(
-            id = "event-id",
-            name = "event name",
-            dayOfMonth = eventDate.dayOfMonth,
-            monthOfYear = eventDate.monthValue,
+        val event = event(withDate = eventDate).copy(
             year = null
         )
         val expectedEvent = event.copy(
@@ -54,10 +47,9 @@ class GetEventListUseCaseTest {
             nextOccurrence = eventDate
         )
         val expectedList = listOf(event)
-        val expectedFlow = flowOf(expectedList)
-        whenever(mockEvents.getEventList()).thenReturn(expectedFlow)
+        whenever(mockEvents.getEventList()).thenReturn(expectedList)
 
-        val result = useCase.execute().first()
+        val result = useCase.execute()
 
         assertThat(result).isNotNull()
         assertThat(result).isNotEmpty()
@@ -69,11 +61,7 @@ class GetEventListUseCaseTest {
     fun get_event_list_calculates_next_year_occurrence(): Unit = runBlocking {
         // Make the event happen on the past so next occurrence should be  a year later
         val eventDate = today.minusMonths(1)
-        val event = Event(
-            id = "event-id",
-            name = "event name",
-            dayOfMonth = eventDate.dayOfMonth,
-            monthOfYear = eventDate.monthValue,
+        val event = event(withDate = eventDate).copy(
             year = null
         )
         val expectedEvent = event.copy(
@@ -81,10 +69,9 @@ class GetEventListUseCaseTest {
             nextOccurrence = eventDate.plusYears(1)
         )
         val expectedList = listOf(event)
-        val expectedFlow = flowOf(expectedList)
-        whenever(mockEvents.getEventList()).thenReturn(expectedFlow)
+        whenever(mockEvents.getEventList()).thenReturn(expectedList)
 
-        val result = useCase.execute().first()
+        val result = useCase.execute()
 
         assertThat(result).isNotNull()
         assertThat(result).isNotEmpty()
@@ -94,9 +81,8 @@ class GetEventListUseCaseTest {
 
     @Test(expected = RuntimeException::class)
     fun get_event_list_error_propagates(): Unit = runBlocking {
-        val expectedFlow = flow<List<Event>> { throw RuntimeException() }
-        whenever(mockEvents.getEventList()).thenReturn(expectedFlow)
+        whenever(mockEvents.getEventList()).thenThrow(RuntimeException::class.java)
 
-        useCase.execute().first()
+        useCase.execute()
     }
 }

@@ -8,6 +8,7 @@
     <string name="time_unit_days">días</string>
     <string name="event_birthday_title">Cumpleaños</string>
     <string name="event_birthday_description">• Cumple %d</string>
+    <string name="add_event">Agregar evento</string>
 
     <!-- Notification channels -->
     <string name="notification_channel_name_event_reminders">Recordatorios de eventos</string>
@@ -29,4 +30,15 @@
 
     <!--Date Formats-->
     <string name="date_format_day" translatable="false">EEEE d</string>
+
+    <!-- Add events -->
+    <string name="add_event_title_create">Nuevo cumpleaños 🎉</string>
+    <string name="add_event_title_edit">Editar celebración</string>
+    <string name="add_event_name">¿Quién cumple años?</string>
+    <string name="add_event_date">Cumple el día</string>
+    <string name="add_event_year">Año de nacimiento</string>
+    <string name="add_event_year_optional">No quiero agregar el año</string>
+    <string name="add_event_save_event">Crear evento</string>
+    <string name="add_event_save_changes">Guardar cambios</string>
+    <string name="add_event_delete_event">Eliminar evento</string>
 </resources>

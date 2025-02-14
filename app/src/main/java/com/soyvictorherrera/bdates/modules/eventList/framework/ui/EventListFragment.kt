@@ -15,11 +15,16 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.setFragmentResultListener
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.soyvictorherrera.bdates.NavGraphDirections
 import com.soyvictorherrera.bdates.R
+import com.soyvictorherrera.bdates.core.navigation.NavigationEvent
+import com.soyvictorherrera.bdates.core.navigation.consume
 import com.soyvictorherrera.bdates.databinding.FragmentEventListBinding
 import com.soyvictorherrera.bdates.modules.eventList.framework.presentation.EventListViewModel
 import com.soyvictorherrera.bdates.modules.permissions.PermissionDelegate
@@ -40,6 +45,8 @@ class EventListFragment : Fragment() {
     private lateinit var permissionDelegate: PermissionDelegate
     private lateinit var todayAdapter: TodayEventListAdapter
 
+    private var onScrollListener: RecyclerView.OnScrollListener? = null
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -57,6 +64,13 @@ class EventListFragment : Fragment() {
         initRecyclerView()
         bindViewModel()
         setupListeners()
+        setupResultListener()
+    }
+
+    override fun onDestroyView() {
+        _binding = null
+        onScrollListener = null
+        super.onDestroyView()
     }
 
     override fun onResume() {
@@ -68,12 +82,19 @@ class EventListFragment : Fragment() {
 
     private fun initRecyclerView() = with(binding) {
         val orientation = resources.configuration.orientation
+        // Setup all events recycler view
         LinearLayoutManager(requireActivity()).also {
             recyclerEvents.layoutManager = it
         }
-        adapter = EventListAdapter().also {
+        adapter = EventListAdapter(onItemClick = {
+            viewModel.onEventClick(it)
+        }).also {
             recyclerEvents.adapter = it
         }
+        onScrollListener = FabScrollBehavior(btnAddEvent).also {
+            recyclerEvents.addOnScrollListener(it)
+        }
+        // Setup today events recycler view
         LinearLayoutManager(
             requireContext(),
             if (orientation == Configuration.ORIENTATION_PORTRAIT) RecyclerView.HORIZONTAL
@@ -113,6 +134,22 @@ class EventListFragment : Fragment() {
         showMissingPermissionMessage.observe(viewLifecycleOwner) { showMessage ->
             binding.layoutWarningBanner.root.isVisible = showMessage
         }
+        viewModel.navigation.observe(viewLifecycleOwner) { event ->
+            event.consume {
+                when (it) {
+                    is NavigationEvent.EventBottomSheet -> {
+                        NavGraphDirections.actionCreateEventBottomSheet(
+                            eventId = it.eventId
+                        ).let {
+                            findNavController().navigate(it)
+                        }
+                    }
+                    is NavigationEvent.NavigateBack -> {
+                        /* no-op */
+                    }
+                }
+            }
+        }
     }
 
     private fun setupListeners() = with(binding) {
@@ -128,6 +165,9 @@ class EventListFragment : Fragment() {
 
                 else -> false
             }
+        }
+        btnAddEvent.setOnClickListener {
+            viewModel.onAddEventClick()
         }
         layoutWarningBanner.root.setOnClickListener {
             openAppSettings()
@@ -146,6 +186,16 @@ class EventListFragment : Fragment() {
             it.currentFocus?.let { view ->
                 (it.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager)
                     .hideSoftInputFromWindow(view.windowToken, 0)
+            }
+        }
+    }
+
+    private fun setupResultListener() {
+        setFragmentResultListener(REQUEST_KEY_ADD_EVENT) { _, bundle ->
+            bundle.getBoolean(RESULT_KEY_ADD_EVENT).let { created ->
+                if (created) {
+                    viewModel.refresh()
+                }
             }
         }
     }

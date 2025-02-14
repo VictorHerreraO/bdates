@@ -4,7 +4,6 @@ import com.soyvictorherrera.bdates.core.arch.UseCase
 import com.soyvictorherrera.bdates.core.date.DateProviderContract
 import com.soyvictorherrera.bdates.modules.eventList.domain.model.Event
 import javax.inject.Inject
-import kotlinx.coroutines.flow.first
 
 /**
  * Get the list of events happening today
@@ -17,13 +16,12 @@ interface GetDayEventListUseCaseContract : UseCase<Unit, List<Event>> {
 
 class GetDayEventListUseCase @Inject constructor(
     dateProvider: DateProviderContract,
-    private val getEventListUseCase: GetEventListUseCaseContract
+    private val getEventListUseCase: GetEventListUseCaseContract,
 ) : GetDayEventListUseCaseContract {
     private val today = dateProvider.currentLocalDate
 
     override suspend fun execute(): List<Event> {
         return getEventListUseCase.execute()
-            .first()
             .filter { event ->
                 event.currentYearOccurrence == today
             }

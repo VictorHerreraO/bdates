@@ -1,6 +1,7 @@
 package com.soyvictorherrera.bdates.modules.eventList.data.datasource
 
 import com.google.common.truth.Truth.assertThat
+import com.soyvictorherrera.bdates.modules.eventList.data.datasource.assets.forEach
 import org.json.JSONArray
 import org.json.JSONObject
 import org.junit.Before

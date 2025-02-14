@@ -9,6 +9,7 @@
     <string name="time_unit_days">days</string>
     <string name="event_birthday_title">Birthday</string>
     <string name="event_birthday_description">• Turns %d</string>
+    <string name="add_event">Add Event</string>
 
     <!-- Notification channels -->
     <string name="notification_channel_name_event_reminders">Event reminders</string>
@@ -26,4 +27,15 @@
     <string name="notification_title_multiple_upcoming_event">%d upcoming events</string>
     <string name="notification_content_single_upcoming_event">" 📆 %s's birthday is happening on %s."</string>
     <string name="notification_content_multiple_upcoming_event">📆 %s and %s others birthdays are happening on %s</string>
+
+    <!-- Add events -->
+    <string name="add_event_title_create">New birthday 🎉</string>
+    <string name="add_event_title_edit">Edit celebration</string>
+    <string name="add_event_name">Buddy name</string>
+    <string name="add_event_date">Birthday date</string>
+    <string name="add_event_year">Year</string>
+    <string name="add_event_year_optional">Don\'t add a year</string>
+    <string name="add_event_save_event">Create event</string>
+    <string name="add_event_save_changes">Save changes</string>
+    <string name="add_event_delete_event">Delete event</string>
 </resources>

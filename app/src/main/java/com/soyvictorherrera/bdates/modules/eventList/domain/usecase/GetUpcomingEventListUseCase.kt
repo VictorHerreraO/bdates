@@ -4,7 +4,6 @@ import com.soyvictorherrera.bdates.core.arch.UseCase
 import com.soyvictorherrera.bdates.core.date.DateProviderContract
 import com.soyvictorherrera.bdates.modules.eventList.domain.model.Event
 import javax.inject.Inject
-import kotlinx.coroutines.flow.first
 
 const val ONE_WEEK = 1L
 
@@ -16,14 +15,13 @@ interface GetUpcomingEventListUseCaseContract : UseCase<Unit, List<Event>> {
 
 class GetUpcomingEventListUseCase @Inject constructor(
     private val dateProvider: DateProviderContract,
-    private val getEventListUse: GetEventListUseCaseContract
+    private val getEventListUse: GetEventListUseCaseContract,
 ) : GetUpcomingEventListUseCaseContract {
     override suspend fun execute(): List<Event> {
         val today = dateProvider.currentLocalDate
         val oneWeekLater = today.plusWeeks(ONE_WEEK)
 
         return getEventListUse.execute()
-            .first()
             .filter {
                 it.nextOccurrence == oneWeekLater
             }

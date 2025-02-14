@@ -3,10 +3,16 @@ package com.soyvictorherrera.bdates.modules.eventList.di
 import android.app.Application
 import android.content.res.AssetManager
 import com.soyvictorherrera.bdates.core.arch.Mapper
-import com.soyvictorherrera.bdates.modules.eventList.data.datasource.AssetFileManager
-import com.soyvictorherrera.bdates.modules.eventList.data.datasource.AssetFileManagerContract
-import com.soyvictorherrera.bdates.modules.eventList.data.datasource.EventDataSourceContract
-import com.soyvictorherrera.bdates.modules.eventList.data.datasource.EventDatasource
+import com.soyvictorherrera.bdates.core.persistence.AppDatabase
+import com.soyvictorherrera.bdates.modules.eventList.data.datasource.assets.AssetEventDatasource
+import com.soyvictorherrera.bdates.modules.eventList.data.datasource.assets.AssetEventDatasourceContract
+import com.soyvictorherrera.bdates.modules.eventList.data.datasource.assets.AssetFileManager
+import com.soyvictorherrera.bdates.modules.eventList.data.datasource.assets.AssetFileManagerContract
+import com.soyvictorherrera.bdates.modules.eventList.data.datasource.local.EventDao
+import com.soyvictorherrera.bdates.modules.eventList.data.datasource.local.EventEntity
+import com.soyvictorherrera.bdates.modules.eventList.data.datasource.local.LocalEventDataSource
+import com.soyvictorherrera.bdates.modules.eventList.data.datasource.local.LocalEventDataSourceContract
+import com.soyvictorherrera.bdates.modules.eventList.data.mapper.EventEntityToModelMapper
 import com.soyvictorherrera.bdates.modules.eventList.data.mapper.JsonToEventMapper
 import com.soyvictorherrera.bdates.modules.eventList.data.repository.EventRepository
 import com.soyvictorherrera.bdates.modules.eventList.data.repository.EventRepositoryContract
@@ -34,43 +40,48 @@ abstract class EventListModule {
 
     @Binds
     abstract fun bindGetEventListUseCase(
-        getEventListUseCase: GetEventListUseCase
+        getEventListUseCase: GetEventListUseCase,
     ): GetEventListUseCaseContract
 
     @Binds
     abstract fun bindFilterEventListUseCase(
-        filterEventListUseCase: FilterEventListUseCase
+        filterEventListUseCase: FilterEventListUseCase,
     ): FilterEventListUseCaseContract
 
     @Binds
     abstract fun bindAssetFileManager(
-        assetFileManager: AssetFileManager
+        assetFileManager: AssetFileManager,
     ): AssetFileManagerContract
 
     @Binds
-    abstract fun bindEventDataSourceContract(
-        eventDatasource: EventDatasource
-    ): EventDataSourceContract
+    abstract fun bindAssetEventDatasourceContract(
+        assetEventDatasource: AssetEventDatasource,
+    ): AssetEventDatasourceContract
 
     @Binds
     abstract fun bindEventRepositoryContract(
-        eventRepository: EventRepository
+        eventRepository: EventRepository,
     ): EventRepositoryContract
 
     @Binds
     abstract fun bindGetDayEventListUseCaseContract(
-        getDayEventListUseCase: GetDayEventListUseCase
+        getDayEventListUseCase: GetDayEventListUseCase,
     ): GetDayEventListUseCaseContract
 
     @Binds
     abstract fun bindGetNonDayEventListUseCaseContract(
-        getNonDayEventListUseCase: GetNonDayEventListUseCase
+        getNonDayEventListUseCase: GetNonDayEventListUseCase,
     ): GetNonDayEventListUseCaseContract
 
     @Binds
     abstract fun bindGetUpcomingEventListUseCaseContract(
-        getUpcomingEventListUseCase: GetUpcomingEventListUseCase
+        getUpcomingEventListUseCase: GetUpcomingEventListUseCase,
     ): GetUpcomingEventListUseCaseContract
+
+    @Binds
+    abstract fun bindLocalEventDataSourceContract(
+        localEventDataSource: LocalEventDataSource,
+    ): LocalEventDataSourceContract
 
     companion object {
         @Provides
@@ -79,8 +90,18 @@ abstract class EventListModule {
         }
 
         @Provides
-        fun bindJsonToEventMapper(): Mapper<JSONObject, Event> {
+        fun provideJsonToEventMapper(): Mapper<JSONObject, Event> {
             return JsonToEventMapper
+        }
+
+        @Provides
+        fun provideEventDao(appDatabase: AppDatabase): EventDao {
+            return appDatabase.eventDao()
+        }
+
+        @Provides
+        fun provideEventEntityToModelMapper(): Mapper<EventEntity, Event> {
+            return EventEntityToModelMapper
         }
     }
 

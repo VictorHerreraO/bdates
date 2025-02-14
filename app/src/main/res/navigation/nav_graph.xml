@@ -10,4 +10,19 @@
         android:name="com.soyvictorherrera.bdates.modules.eventList.framework.ui.EventListFragment"
         android:label="EventListFragment"
         tools:layout="@layout/fragment_event_list" />
+
+    <dialog
+        android:id="@+id/addEventBottomSheet"
+        android:name="com.soyvictorherrera.bdates.modules.eventList.framework.ui.AddEventBottomSheet"
+        android:label="AddEventBottomSheet">
+        <argument
+            android:name="eventId"
+            android:defaultValue="@null"
+            app:argType="string"
+            app:nullable="true" />
+    </dialog>
+
+    <action
+        android:id="@+id/actionCreateEventBottomSheet"
+        app:destination="@+id/addEventBottomSheet" />
 </navigation>

@@ -1,9 +1,8 @@
 package com.soyvictorherrera.bdates.modules.eventList.domain.usecase
 
 import com.soyvictorherrera.bdates.core.date.DateProviderContract
-import com.soyvictorherrera.bdates.modules.eventList.domain.model.Event
+import com.soyvictorherrera.bdates.test.data.event
 import java.time.LocalDate
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.*
 import org.junit.Before
@@ -37,32 +36,21 @@ class GetUpcomingEventListUseCaseTest {
 
     @Test
     fun `assert event list contains expected event`() = runBlocking {
-        val tomorrowEvent = today.plusDays(1).run {
-            Event(
-                id = toString(),
-                name = "today event",
-                dayOfMonth = dayOfMonth,
-                monthOfYear = monthValue,
-                year = year,
-                currentYearOccurrence = this,
-                nextOccurrence = this,
-            )
-        }
-        val upcomingEvent = today.plusWeeks(1).run {
-            Event(
-                id = toString(),
-                name = "next week event",
-                dayOfMonth = dayOfMonth,
-                monthOfYear = monthValue,
-                year = year,
-                currentYearOccurrence = this,
-                nextOccurrence = this,
-            )
-        }
+        val tomorrow = today.plusDays(1)
+        val tomorrowEvent = event(withDate = tomorrow).copy(
+            id = tomorrow.toString(),
+            currentYearOccurrence = tomorrow,
+            nextOccurrence = tomorrow,
+        )
+        val nextWeek = today.plusWeeks(1)
+        val upcomingEvent = event(withDate = nextWeek).copy(
+            id = nextWeek.toString(),
+            currentYearOccurrence = nextWeek,
+            nextOccurrence = nextWeek,
+        )
         val eventList = listOf(tomorrowEvent, upcomingEvent)
-        val eventFlow = flowOf(eventList)
 
-        whenever(mockGetEventList.execute()).thenReturn(eventFlow)
+        whenever(mockGetEventList.execute()).thenReturn(eventList)
 
         val result = subjectUnderTest.execute()
 
@@ -72,32 +60,21 @@ class GetUpcomingEventListUseCaseTest {
 
     @Test
     fun `assert event list is empty`() = runBlocking {
-        val tomorrowEvent = today.plusDays(1).run {
-            Event(
-                id = toString(),
-                name = "today event",
-                dayOfMonth = dayOfMonth,
-                monthOfYear = monthValue,
-                year = year,
-                currentYearOccurrence = this,
-                nextOccurrence = this,
-            )
-        }
-        val dayAfterTomorrowEvent = today.plusDays(2).run {
-            Event(
-                id = toString(),
-                name = "day after tomorrow event",
-                dayOfMonth = dayOfMonth,
-                monthOfYear = monthValue,
-                year = year,
-                currentYearOccurrence = this,
-                nextOccurrence = this,
-            )
-        }
+        val tomorrow = today.plusDays(1)
+        val tomorrowEvent = event(withDate = tomorrow).copy(
+            id = tomorrow.toString(),
+            currentYearOccurrence = tomorrow,
+            nextOccurrence = tomorrow,
+        )
+        val dayAfterTomorrow = today.plusDays(2)
+        val dayAfterTomorrowEvent = event(withDate = dayAfterTomorrow).copy(
+            id = dayAfterTomorrow.toString(),
+            currentYearOccurrence = dayAfterTomorrow,
+            nextOccurrence = dayAfterTomorrow,
+        )
         val eventList = listOf(tomorrowEvent, dayAfterTomorrowEvent)
-        val eventFlow = flowOf(eventList)
 
-        whenever(mockGetEventList.execute()).thenReturn(eventFlow)
+        whenever(mockGetEventList.execute()).thenReturn(eventList)
 
         val result = subjectUnderTest.execute()
 
@@ -106,32 +83,18 @@ class GetUpcomingEventListUseCaseTest {
 
     @Test
     fun `assert event list contains all events`() = runBlocking {
-        val upcomingEvent1 = today.plusWeeks(1).run {
-            Event(
-                id = toString(),
-                name = "next week event 1",
-                dayOfMonth = dayOfMonth,
-                monthOfYear = monthValue,
-                year = year,
-                currentYearOccurrence = this,
-                nextOccurrence = this,
-            )
-        }
-        val upcomingEvent2 = today.plusWeeks(1).run {
-            Event(
-                id = toString(),
-                name = "next week event 2",
-                dayOfMonth = dayOfMonth,
-                monthOfYear = monthValue,
-                year = year,
-                currentYearOccurrence = this,
-                nextOccurrence = this,
-            )
-        }
+        val upcomingDate = today.plusWeeks(1)
+        val upcomingEvent1 = event().copy(
+            currentYearOccurrence = upcomingDate,
+            nextOccurrence = upcomingDate,
+        )
+        val upcomingEvent2 = event().copy(
+            currentYearOccurrence = upcomingDate,
+            nextOccurrence = upcomingDate,
+        )
         val eventList = listOf(upcomingEvent1, upcomingEvent2)
-        val eventFlow = flowOf(eventList)
 
-        whenever(mockGetEventList.execute()).thenReturn(eventFlow)
+        whenever(mockGetEventList.execute()).thenReturn(eventList)
 
         val result = subjectUnderTest.execute()
 

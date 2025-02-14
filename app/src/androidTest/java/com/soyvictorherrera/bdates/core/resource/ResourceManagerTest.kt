@@ -2,7 +2,7 @@ package com.soyvictorherrera.bdates.core.resource
 
 import androidx.test.platform.app.InstrumentationRegistry
 import com.google.common.truth.Truth.assertThat
-import com.soyvictorherrera.bdates.debug.test.R
+import com.soyvictorherrera.bdates.test.R
 import org.junit.Before
 import org.junit.Test
 

@@ -4,5 +4,5 @@ data class TodayEventViewState(
     val id: String,
     val friendAge: String?,
     val friendName: String,
-    val eventType: String
+    val eventType: String,
 )

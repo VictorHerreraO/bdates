@@ -75,7 +75,7 @@ class JsonToEventMapperTest {
     private fun getInputJson(
         eventId: String,
         eventName: String,
-        eventDate: String
+        eventDate: String,
     ) = JSONObject()
         .put("id", eventId)
         .put("nombre", eventName)

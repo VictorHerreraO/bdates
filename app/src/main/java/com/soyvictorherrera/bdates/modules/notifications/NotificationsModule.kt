@@ -2,6 +2,8 @@ package com.soyvictorherrera.bdates.modules.notifications
 
 import android.app.Application
 import android.content.Context
+import com.soyvictorherrera.bdates.modules.notifications.data.preferences.NotificationPreferences
+import com.soyvictorherrera.bdates.modules.notifications.data.preferences.NotificationPreferencesContract
 import com.soyvictorherrera.bdates.modules.notifications.delegate.DayNotificationDelegate
 import com.soyvictorherrera.bdates.modules.notifications.delegate.DayNotificationDelegateContract
 import com.soyvictorherrera.bdates.modules.notifications.delegate.UpcomingEventNotificationDelegate
@@ -19,24 +21,30 @@ abstract class NotificationsModule {
     @Binds
     @Singleton
     abstract fun bindContext(
-        application: Application
+        application: Application,
     ): Context
 
     @Binds
     @Singleton
     abstract fun bindNotificationManagerContract(
-        notificationManager: NotificationManager
+        notificationManager: NotificationManager,
     ): NotificationManagerContract
 
     @Binds
     @Singleton
     abstract fun bindDayNotificationDelegateContract(
-        dayNotificationDelegate: DayNotificationDelegate
+        dayNotificationDelegate: DayNotificationDelegate,
     ): DayNotificationDelegateContract
 
     @Binds
     @Singleton
     abstract fun bindUpcomingEventNotificationDelegateContract(
-        upcomingEventNotificationDelegate: UpcomingEventNotificationDelegate
+        upcomingEventNotificationDelegate: UpcomingEventNotificationDelegate,
     ): UpcomingEventNotificationDelegateContract
+
+    @Binds
+    @Singleton
+    abstract fun bindNotificationPreferencesContract(
+        notificationPreferences: NotificationPreferences,
+    ): NotificationPreferencesContract
 }

@@ -7,7 +7,7 @@ import javax.inject.Inject
 
 class DateProvider @Inject constructor(
     private val clock: Clock,
-    private val formatters: DateFormattersContract
+    private val formatters: DateFormattersContract,
 ) : DateProviderContract {
     override val currentLocalDate: LocalDate
         get() = LocalDate.now(clock)

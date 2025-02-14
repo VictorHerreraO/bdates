@@ -27,14 +27,14 @@ class TodayEventListAdapter :
 object TodayEventDiffUtil : DiffUtil.ItemCallback<TodayEventViewState>() {
     override fun areItemsTheSame(
         oldItem: TodayEventViewState,
-        newItem: TodayEventViewState
+        newItem: TodayEventViewState,
     ): Boolean {
         return oldItem.id == newItem.id
     }
 
     override fun areContentsTheSame(
         oldItem: TodayEventViewState,
-        newItem: TodayEventViewState
+        newItem: TodayEventViewState,
     ): Boolean {
         return oldItem == newItem
     }
