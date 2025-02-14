@@ -1,0 +1,26 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/background_banner"
+    android:clickable="true"
+    android:foreground="?selectableItemBackground"
+    android:orientation="vertical"
+    android:paddingHorizontal="@dimen/dimen_16"
+    android:paddingVertical="@dimen/dimen_8">
+
+    <TextView
+        android:id="@+id/lbl_banner_title"
+        style="@style/TextAppearance.MaterialComponents.Body1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/banner_notification_permission_not_granted_title"
+        android:textColor="@color/black" />
+
+    <TextView
+        android:id="@+id/lbl_banner_subtitle"
+        style="@style/TextAppearance.MaterialComponents.Caption"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text="@string/banner_notification_permission_not_granted_subtitle"
+        android:textColor="@color/black" />
+</LinearLayout>

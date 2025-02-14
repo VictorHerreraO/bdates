@@ -19,7 +19,10 @@
     <string name="notification_channel_name_event_reminders">Recordatorios de eventos</string>
     <string name="notification_channel_description_event_reminders">Recordatorios diarios sobre eventos</string>
 
-    <!-- Notifications -->
+    <!-- Notifications -->️
+    <string name="banner_notification_permission_not_granted_title">⛔️ No es posible mostrar notificaciones de eventos</string>
+    <string name="banner_notification_permission_not_granted_subtitle">Toca para habilitarlas en la configuración del teléfono</string>
+
     <string name="notification_title_single_day_event">🍰 ¡Hay un cumpleaños que celebrar el día de hoy!</string>
     <string name="notification_title_multiple_day_event">🍰 ¡Hay %d cumpleaños que celebrar el día de hoy!</string>
     <string name="notification_content_single_day_event">Hoy es cumpleaños de %s. Asegúrate de saludar 👋</string>

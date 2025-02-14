@@ -9,6 +9,10 @@ export interface CirclesRepository {
     circleId: string,
     count: EventCount,
   ): Promise<void>
+
+  updateCircleUpdateDate(
+    circleId: string,
+  ): Promise<void>
 }
 
 export enum EventCount {

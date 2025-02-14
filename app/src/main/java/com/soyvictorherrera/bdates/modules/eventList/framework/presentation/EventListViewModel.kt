@@ -24,6 +24,8 @@ import timber.log.Timber
 import java.time.LocalDate
 import java.time.temporal.ChronoUnit
 import javax.inject.Inject
+import kotlinx.coroutines.launch
+import timber.log.Timber
 import kotlin.properties.Delegates
 
 @HiltViewModel
@@ -60,6 +62,15 @@ class EventListViewModel @Inject constructor(
 
     private val today: LocalDate
         get() = dateProvider.currentLocalDate
+    private val _requestPermissionSignal = MutableLiveData(true)
+    val requestPermissionSignal: LiveData<Boolean>
+        get() = _requestPermissionSignal
+
+    private val _showMissingPermissionMessage = MutableLiveData(false)
+    val showMissingPermissionMessage: LiveData<Boolean>
+        get() = _showMissingPermissionMessage
+
+    private val longFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("EEEE, dd/MM")
 
     private var allEvents by Delegates.observable(emptyList<Event>()) { _, _, list ->
         processEventList(list)
@@ -114,6 +125,16 @@ class EventListViewModel @Inject constructor(
         _navigation.value = NavigationEvent.AddEventBottomSheet()
     }
 
+    fun onNotificationPermissionStateCheck(isGranted: Boolean) {
+        val requiresPermission = !isGranted
+        _showMissingPermissionMessage.value = requiresPermission
+    }
+
+    fun onNotificationPermissionStateChanged(isGranted: Boolean) {
+        _requestPermissionSignal.value = false
+        _showMissingPermissionMessage.value = !isGranted
+    }
+
     private fun processEventList(events: List<Event>) = viewModelScope.launch {
         filterEventListUseCase.execute(
             FilterEventListArgs(
@@ -151,7 +172,6 @@ class EventListViewModel @Inject constructor(
                 }
             },
             onFailure = {
-                Timber.e(it)
                 emptyList()
             }
         ).let {
