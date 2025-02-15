@@ -138,7 +138,7 @@ class EventListFragment : Fragment() {
             }
         }
         showMissingPermissionMessage.observe(viewLifecycleOwner) { showMessage ->
-            binding.layoutWarningBanner.root.isVisible = showMessage
+            binding.layoutUpcomingEvents.layoutWarningBanner.root.isVisible = showMessage
         }
         navigation.observe(viewLifecycleOwner) { consumable ->
             consumable.consume { event ->
@@ -169,7 +169,9 @@ class EventListFragment : Fragment() {
             adapter.submitList(it)
             with(binding.layoutUpcomingEvents) {
                 val showEmptyIcon = it.isEmpty() && inputSearch.text.isEmpty()
+                lblUpcomingEventsTitle.isGone = showEmptyIcon
                 swipeLayout.isGone = showEmptyIcon
+                inputSearch.isGone = showEmptyIcon
                 layoutEventListEmpty.root.isVisible = showEmptyIcon
             }
         }
@@ -205,7 +207,7 @@ class EventListFragment : Fragment() {
         layoutUpcomingEvents.swipeLayout.setOnRefreshListener {
             viewModel.refresh()
         }
-        layoutWarningBanner.root.setOnClickListener {
+        layoutUpcomingEvents.layoutWarningBanner.root.setOnClickListener {
             openAppSettings()
         }
     }

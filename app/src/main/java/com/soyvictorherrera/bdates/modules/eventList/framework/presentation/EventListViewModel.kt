@@ -24,8 +24,6 @@ import timber.log.Timber
 import java.time.LocalDate
 import java.time.temporal.ChronoUnit
 import javax.inject.Inject
-import kotlinx.coroutines.launch
-import timber.log.Timber
 import kotlin.properties.Delegates
 
 @HiltViewModel
@@ -69,8 +67,6 @@ class EventListViewModel @Inject constructor(
     private val _showMissingPermissionMessage = MutableLiveData(false)
     val showMissingPermissionMessage: LiveData<Boolean>
         get() = _showMissingPermissionMessage
-
-    private val longFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("EEEE, dd/MM")
 
     private var allEvents by Delegates.observable(emptyList<Event>()) { _, _, list ->
         processEventList(list)

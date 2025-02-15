@@ -7,7 +7,18 @@
     android:orientation="vertical"
     android:paddingTop="@dimen/dimen_16">
 
+    <include
+        android:id="@+id/layout_warning_banner"
+        layout="@layout/item_banner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/dimen_16"
+        android:layout_marginHorizontal="@dimen/dimen_16"
+        android:visibility="gone"
+        tools:visibility="visible" />
+
     <TextView
+        android:id="@+id/lbl_upcoming_events_title"
         style="@style/TextAppearance.MaterialComponents.Headline5"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -33,7 +44,7 @@
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/swipe_layout"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dimen_0"
+        android:layout_height="0dp"
         android:layout_marginTop="@dimen/dimen_8"
         android:layout_weight="1">
 

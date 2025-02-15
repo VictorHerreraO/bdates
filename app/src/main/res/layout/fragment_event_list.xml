@@ -38,6 +38,8 @@
                 android:clipToPadding="false"
                 android:paddingStart="@dimen/dimen_16"
                 android:paddingEnd="@dimen/dimen_0"
+                tools:orientation="horizontal"
+                tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 tools:listitem="@layout/item_event_birth_day" />
         </LinearLayout>
 
@@ -47,21 +49,6 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1" />
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="@dimen/dimen_16"
-            android:text="@string/title_upcoming_events" />
-
-        <include
-            android:id="@+id/layout_warning_banner"
-            layout="@layout/item_banner"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="@dimen/dimen_16"
-            android:visibility="gone"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:visibility="visible" />
     </LinearLayout>
 
     <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
