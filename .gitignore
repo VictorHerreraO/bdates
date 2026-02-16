@@ -90,3 +90,6 @@ app/src/release/assets/events.json
 .idea
 functions/functions/.runtimeconfig.json
 functions/functions/env.json
+
+# AI Agent TMP files
+.tasks/
