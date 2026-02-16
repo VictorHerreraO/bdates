@@ -4,5 +4,5 @@ data class Circle(
     val id: String?,
     val name: String,
     val description: String?,
-    val isLocalOnly: Boolean,
+    val isDefaultCircle: Boolean,
 )

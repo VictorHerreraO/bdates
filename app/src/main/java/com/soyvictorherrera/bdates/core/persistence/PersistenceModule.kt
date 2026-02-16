@@ -26,7 +26,32 @@ abstract class PersistenceModule {
                 application,
                 AppDatabase::class.java,
                 APP_DATABASE_NAME
-            ).build()
+            )
+            .addCallback(object : androidx.room.RoomDatabase.Callback() {
+                override fun onCreate(db: androidx.sqlite.db.SupportSQLiteDatabase) {
+                    super.onCreate(db)
+                    // Insert default circle on fresh install
+                    db.execSQL("""
+                        INSERT INTO circles (id, name, description, is_default_circle)
+                        VALUES ('device-local', 'Device local circle', '', 1)
+                    """)
+                }
+            })
+            .addMigrations(MIGRATION_1_2)
+            .build()
+        }
+
+        private val MIGRATION_1_2 = object : androidx.room.migration.Migration(1, 2) {
+            override fun migrate(database: androidx.sqlite.db.SupportSQLiteDatabase) {
+                // Rename column
+                database.execSQL("ALTER TABLE circles RENAME COLUMN local_only TO is_default_circle")
+                
+                // Insert default circle if none exists
+                database.execSQL("""
+                    INSERT OR IGNORE INTO circles (id, name, description, is_default_circle)
+                    VALUES ('device-local', 'Device local circle', '', 1)
+                """)
+            }
         }
 
         @Provides
