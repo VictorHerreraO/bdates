@@ -43,9 +43,18 @@ abstract class PersistenceModule {
 
         private val MIGRATION_1_2 = object : androidx.room.migration.Migration(1, 2) {
             override fun migrate(database: androidx.sqlite.db.SupportSQLiteDatabase) {
-                // Rename column
-                database.execSQL("ALTER TABLE circles RENAME COLUMN local_only TO is_default_circle")
+                // Create the new table
+                database.execSQL("CREATE TABLE IF NOT EXISTS `circles_new` (`id` TEXT NOT NULL, `name` TEXT NOT NULL, `description` TEXT, `is_default_circle` INTEGER NOT NULL, PRIMARY KEY(`id`))")
                 
+                // Copy the data
+                database.execSQL("INSERT INTO circles_new (id, name, description, is_default_circle) SELECT id, name, description, local_only FROM circles")
+                
+                // Remove the old table
+                database.execSQL("DROP TABLE circles")
+                
+                // Rename the new table to the table name
+                database.execSQL("ALTER TABLE circles_new RENAME TO circles")
+
                 // Insert default circle if none exists
                 database.execSQL("""
                     INSERT OR IGNORE INTO circles (id, name, description, is_default_circle)
