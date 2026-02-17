@@ -91,6 +91,6 @@ app/src/release/assets/events.json
 functions/functions/.runtimeconfig.json
 functions/functions/env.json
 
-# AI Agent TMP files
+# AI Agent temporary files
 .tasks/
 *.ai.md

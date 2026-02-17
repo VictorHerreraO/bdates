@@ -47,7 +47,7 @@ class EventListViewModel @Inject constructor(
     val showMissingPermissionMessage: StateFlow<Boolean> = _showMissingPermissionMessage.asStateFlow()
 
     private val today: LocalDate = dateProvider.currentLocalDate
-    private val longFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("EEEE, dd/MM")
+    private val longFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("EEEE, d/MM")
 
     private var allEvents by Delegates.observable(emptyList<Event>()) { _, _, list ->
         processEventList(list)
