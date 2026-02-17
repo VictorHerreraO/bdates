@@ -68,19 +68,7 @@ class EventListViewModelTest {
         coEvery { getDayEventList.execute() } returns (emptyList())
         coEvery { filterEventListUseCase.execute(any()) } returns Result.success(events)
 
-        // Re-init to trigger data load with mocked responses if needed, 
-        // but getData() is called in init block so mocks need to be ready before instantiation.
-        // In this test setup, instantiation happens in @Before, so getData() runs there.
-        // However, we are defining mocks inside the test (after instantiation).
-        // This is a race condition in the original test too if getData returns immediately?
-        // No, getData uses viewModelScope.launch.
-        
-        // Since we mock responses inside the test but creating the VM in @Before,
-        // the VM init block executes before these specific mocks are set?
-        // Actually, the mocks are created in class scope, but stubbed in test.
-        // So the initial getData() call might hit unstubbed mocks if it runs immediately.
-        // But since it's a coroutine launched on the dispatcher, and we use runTest/MainCoroutineRule,
-        // we can control execution.
+
         
         // Use a new instance for this test to ensure mocks are ready
         subjectUnderTest = EventListViewModel(
@@ -136,9 +124,7 @@ class EventListViewModelTest {
         subjectUnderTest.onQueryTextChanged(expectedQuery)
         advanceUntilIdle()
 
-        // One during init (from @Before) + one from onQueryTextChanged
-        // Since we don't know if init finished before this test started (it depends on when we stub),
-        // let's assume we want to verify the *last* call or just that it was called with the query.
+
         
         coVerify { filterEventListUseCase.execute(any()) }
         assertThat(slot.captured.query).isEqualTo(expectedQuery)
