@@ -52,15 +52,6 @@ android {
     }
 }
 
-configurations.configureEach {
-    resolutionStrategy.eachDependency { DependencyResolveDetails details ->
-        if (details.requested.group == 'org.jetbrains.kotlin' && details.requested.name.startsWith('kotlin-stdlib')) {
-            details.useVersion '2.0.21'
-            details.because 'Force Kotlin stdlib to match compiler version'
-        }
-    }
-}
-
 room {
     schemaDirectory("$projectDir/schemas")
 }
@@ -82,12 +73,12 @@ dependencies {
     implementation 'androidx.compose.ui:ui-tooling-preview'
 
     // Coroutines
-    def coroutines_version = "1.8.1"
+    def coroutines_version = "1.9.0"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutines_version"
     testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutines_version"
 
     // Hilt
-    def hilt_version = "2.52"
+    def hilt_version = "2.59.1"
     implementation "com.google.dagger:hilt-android:$hilt_version"
     ksp "com.google.dagger:hilt-compiler:$hilt_version"
 
@@ -97,7 +88,7 @@ dependencies {
     implementation "androidx.navigation:navigation-ui-ktx:$nav_version"
 
     // Room
-    def room_version = "2.7.0"
+    def room_version = "2.8.4"
     implementation "androidx.room:room-runtime:$room_version"
     ksp "androidx.room:room-compiler:$room_version"
 
