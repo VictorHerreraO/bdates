@@ -17,7 +17,11 @@ import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResultListener
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
+import kotlinx.coroutines.launch
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -118,34 +122,48 @@ class EventListFragment : Fragment() {
         }
     }
 
-    private fun bindViewModel() = with(viewModel) {
-        events.observe(viewLifecycleOwner, adapter::submitList)
-        todayEvents.observe(viewLifecycleOwner) { todayEvents ->
-            todayAdapter.submitList(todayEvents)
-            binding.layoutTodayEvents.isVisible = todayEvents.isNotEmpty()
-        }
-        requestPermissionSignal.observe(viewLifecycleOwner) { shouldRequestPermission ->
-            if (shouldRequestPermission) {
-                permissionDelegate.requestNotificationPermission(
-                    viewModel::onNotificationPermissionStateChanged
-                )
-            }
-        }
-        showMissingPermissionMessage.observe(viewLifecycleOwner) { showMessage ->
-            binding.layoutWarningBanner.root.isVisible = showMessage
-        }
-        viewModel.navigation.observe(viewLifecycleOwner) { event ->
-            event.consume {
-                when (it) {
-                    is NavigationEvent.EventBottomSheet -> {
-                        NavGraphDirections.actionCreateEventBottomSheet(
-                            eventId = it.eventId
-                        ).let {
-                            findNavController().navigate(it)
+    private fun bindViewModel() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                launch {
+                    viewModel.events.collect { adapter.submitList(it) }
+                }
+                launch {
+                    viewModel.todayEvents.collect { todayEvents ->
+                        todayAdapter.submitList(todayEvents)
+                        binding.layoutTodayEvents.isVisible = todayEvents.isNotEmpty()
+                    }
+                }
+                launch {
+                    viewModel.requestPermissionSignal.collect { shouldRequestPermission ->
+                        if (shouldRequestPermission) {
+                            permissionDelegate.requestNotificationPermission(
+                                viewModel::onNotificationPermissionStateChanged
+                            )
                         }
                     }
-                    is NavigationEvent.NavigateBack -> {
-                        /* no-op */
+                }
+                launch {
+                    viewModel.showMissingPermissionMessage.collect { showMessage ->
+                        binding.layoutWarningBanner.root.isVisible = showMessage
+                    }
+                }
+                launch {
+                    viewModel.navigation.collect { event ->
+                        event?.consume {
+                            when (it) {
+                                is NavigationEvent.EventBottomSheet -> {
+                                    NavGraphDirections.actionCreateEventBottomSheet(
+                                        eventId = it.eventId
+                                    ).let { directions ->
+                                        findNavController().navigate(directions)
+                                    }
+                                }
+                                is NavigationEvent.NavigateBack -> {
+                                    /* no-op */
+                                }
+                            }
+                        }
                     }
                 }
             }
