@@ -1,7 +1,5 @@
 package com.soyvictorherrera.bdates.modules.eventList.framework.presentation
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.soyvictorherrera.bdates.core.date.DateProviderContract
@@ -17,6 +15,10 @@ import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
 import javax.inject.Inject
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlin.properties.Delegates
 
@@ -29,25 +31,20 @@ class EventListViewModel @Inject constructor(
     private val filterEventListUseCase: FilterEventListUseCaseContract,
 ) : ViewModel() {
 
-    private val _navigation = MutableLiveData<NavigationEvent>()
-    val navigation: LiveData<NavigationEvent>
-        get() = _navigation
+    private val _navigation = MutableStateFlow<NavigationEvent?>(null)
+    val navigation: StateFlow<NavigationEvent?> = _navigation.asStateFlow()
 
-    private val _events = MutableLiveData<List<EventViewState>>()
-    val events: LiveData<List<EventViewState>>
-        get() = _events
+    private val _events = MutableStateFlow<List<EventViewState>>(emptyList())
+    val events: StateFlow<List<EventViewState>> = _events.asStateFlow()
 
-    private val _todayEvents = MutableLiveData<List<TodayEventViewState>>()
-    val todayEvents: LiveData<List<TodayEventViewState>>
-        get() = _todayEvents
+    private val _todayEvents = MutableStateFlow<List<TodayEventViewState>>(emptyList())
+    val todayEvents: StateFlow<List<TodayEventViewState>> = _todayEvents.asStateFlow()
 
-    private val _requestPermissionSignal = MutableLiveData(true)
-    val requestPermissionSignal: LiveData<Boolean>
-        get() = _requestPermissionSignal
+    private val _requestPermissionSignal = MutableStateFlow(true)
+    val requestPermissionSignal: StateFlow<Boolean> = _requestPermissionSignal.asStateFlow()
 
-    private val _showMissingPermissionMessage = MutableLiveData(false)
-    val showMissingPermissionMessage: LiveData<Boolean>
-        get() = _showMissingPermissionMessage
+    private val _showMissingPermissionMessage = MutableStateFlow(false)
+    val showMissingPermissionMessage: StateFlow<Boolean> = _showMissingPermissionMessage.asStateFlow()
 
     private val today: LocalDate = dateProvider.currentLocalDate
     private val longFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("EEEE, dd/MM")
@@ -134,8 +131,8 @@ class EventListViewModel @Inject constructor(
             onFailure = {
                 emptyList()
             }
-        ).let {
-            _events.value = it
+        ).let { result ->
+            _events.update { result }
         }
     }
 
@@ -149,11 +146,10 @@ class EventListViewModel @Inject constructor(
                 friendName = event.name,
                 eventType = resourceManager.getString("event_birthday_title")
             )
-        }.let {
-            _todayEvents.value = it
+        }.let { result ->
+            _todayEvents.update { result }
         }
     }
 
     fun refresh() = getData()
-
 }
