@@ -93,3 +93,4 @@ functions/functions/env.json
 
 # AI Agent TMP files
 .tasks/
+*.ai.md
