@@ -6,6 +6,8 @@ import androidx.lifecycle.viewModelScope
 import com.soyvictorherrera.bdates.core.date.DateProviderContract
 import com.soyvictorherrera.bdates.core.navigation.NavigationEvent
 import com.soyvictorherrera.bdates.modules.circles.data.preferences.CirclePreferencesContract
+import com.soyvictorherrera.bdates.modules.circles.data.repository.CircleRepositoryContract
+import com.soyvictorherrera.bdates.modules.circles.domain.model.Circle
 import com.soyvictorherrera.bdates.modules.eventList.data.repository.EventRepositoryContract
 import com.soyvictorherrera.bdates.modules.eventList.domain.model.Event
 import com.soyvictorherrera.bdates.modules.eventList.framework.ui.AddEventBottomSheetArgs
@@ -26,6 +28,7 @@ class AddEventViewModel @Inject constructor(
     private val dateProvider: DateProviderContract,
     private val eventRepository: EventRepositoryContract,
     private val circlePreferences: CirclePreferencesContract,
+    private val circleRepository: CircleRepositoryContract,
 ) : ViewModel() {
 
     private val _navigation = MutableStateFlow<NavigationEvent?>(null)
@@ -94,23 +97,45 @@ class AddEventViewModel @Inject constructor(
     }
 
     fun onActionClick() {
-        val localCircleId = circlePreferences.localCircleId ?: return
-        val event = _state.value.run {
-            Event(
-                id = eventId,
-                circleId = currentEvent?.circleId ?: localCircleId,
-                name = eventName.trim(),
-                dayOfMonth = selectedDate.dayOfMonth,
-                monthOfYear = selectedDate.monthValue,
-                year = selectedDate.year.takeIf { isYearDisabled.not() }
-            )
-        }
-
-        _state.update {
-            it.copy(isLoading = true)
+        if (!state.value.isSaveEnabled) {
+            return
         }
 
         viewModelScope.launch {
+            _state.update { it.copy(isLoading = true) }
+
+            val localCircleId = circlePreferences.localCircleId
+                ?: circleRepository.getCircles().find { it.name == "Device local circle" }?.id
+                ?: circleRepository.createCircle(
+                    Circle(
+                        id = null,
+                        name = "Device local circle",
+                        description = null,
+                        isDefaultCircle = true
+                    )
+                ).also { circleId ->
+                    circlePreferences.localCircleId = circleId
+                }
+
+            if (localCircleId == null) {
+                _state.update { it.copy(isLoading = false) }
+                return@launch
+            }
+
+            // Save the resolved ID for future use
+            circlePreferences.localCircleId = localCircleId
+
+            val event = _state.value.run {
+                Event(
+                    id = eventId,
+                    circleId = currentEvent?.circleId ?: localCircleId,
+                    name = eventName.trim(),
+                    dayOfMonth = selectedDate.dayOfMonth,
+                    monthOfYear = selectedDate.monthValue,
+                    year = selectedDate.year.takeIf { isYearDisabled.not() }
+                )
+            }
+
             eventRepository.runCatching {
                 if (event.id.isNullOrEmpty()) {
                     createEvent(event)
@@ -120,6 +145,7 @@ class AddEventViewModel @Inject constructor(
             }.onSuccess {
                 _navigation.value = NavigationEvent.NavigateBack()
             }.onFailure {
+                _state.update { it.copy(isLoading = false) }
                 Timber.e(it, "Unable to save event")
             }
         }
