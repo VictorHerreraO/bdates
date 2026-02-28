@@ -4,9 +4,9 @@ import androidx.lifecycle.SavedStateHandle
 import com.google.common.truth.Truth.assertThat
 import com.soyvictorherrera.bdates.core.date.DateProviderContract
 import com.soyvictorherrera.bdates.core.navigation.NavigationEvent
-import com.soyvictorherrera.bdates.modules.circles.data.preferences.CirclePreferencesContract
 import com.soyvictorherrera.bdates.modules.eventList.data.repository.EventRepositoryContract
 import com.soyvictorherrera.bdates.modules.eventList.domain.model.Event
+import com.soyvictorherrera.bdates.modules.eventList.domain.usecase.UpsertEventUseCaseContract
 import com.soyvictorherrera.bdates.test.data.event
 import com.soyvictorherrera.bdates.util.MainCoroutineRule
 import io.mockk.coEvery
@@ -33,7 +33,7 @@ class AddEventViewModelTest {
 
     private val dateProvider = mockk<DateProviderContract>()
     private val eventRepository = mockk<EventRepositoryContract>()
-    private val circlePreferences = mockk<CirclePreferencesContract>()
+    private val upsertEventUseCase = mockk<UpsertEventUseCaseContract>()
 
     private lateinit var subjectUnderTest: AddEventViewModel
 
@@ -47,7 +47,7 @@ class AddEventViewModelTest {
             stateHandle = SavedStateHandle(),
             dateProvider = dateProvider,
             eventRepository = eventRepository,
-            circlePreferences = circlePreferences
+            upsertEventUseCase = upsertEventUseCase
         )
     }
 
@@ -134,7 +134,7 @@ class AddEventViewModelTest {
     fun `assert state when no eventId is provided is CREATE`() {
         val stateHandle = SavedStateHandle()
         val subjectUnderTest = AddEventViewModel(
-            stateHandle, dateProvider, eventRepository, circlePreferences
+            stateHandle, dateProvider, eventRepository, upsertEventUseCase
         )
 
         val state = subjectUnderTest.state.value
@@ -147,7 +147,7 @@ class AddEventViewModelTest {
         val expectedId = "event-id"
         val stateHandle = SavedStateHandle(mapOf("eventId" to expectedId))
         val subjectUnderTest = AddEventViewModel(
-            stateHandle, dateProvider, eventRepository, circlePreferences
+            stateHandle, dateProvider, eventRepository, upsertEventUseCase
         )
 
         val state = subjectUnderTest.state.value
@@ -168,7 +168,7 @@ class AddEventViewModelTest {
         coEvery { eventRepository.getEvent(any()) } returns expectedEvent
 
         val subjectUnderTest = AddEventViewModel(
-            stateHandle, dateProvider, eventRepository, circlePreferences
+            stateHandle, dateProvider, eventRepository, upsertEventUseCase
         )
         advanceUntilIdle()
         val state = subjectUnderTest.state.value
@@ -181,13 +181,11 @@ class AddEventViewModelTest {
 
     @Test
     fun `verify on action click saves event`(): Unit = runTest {
-        val localCircleId = "circle-id"
-        val expectedId = "event-id"
         val initialNavigationValue = subjectUnderTest.navigation.value
 
-        every { circlePreferences.localCircleId } returns localCircleId
-        coEvery { eventRepository.createEvent(any()) } returns expectedId
+        coEvery { upsertEventUseCase.execute(any()) } just runs
 
+        subjectUnderTest.onEventNameChange("Test Event")
         subjectUnderTest.onActionClick()
         advanceUntilIdle()
 
@@ -195,7 +193,7 @@ class AddEventViewModelTest {
         assertThat(loadingState.isSaveEnabled).isFalse()
 
         val finalNavigationValue = subjectUnderTest.navigation.value
-        coVerify(exactly = 1) { eventRepository.createEvent(any()) }
+        coVerify(exactly = 1) { upsertEventUseCase.execute(any()) }
         assertThat(finalNavigationValue).isNotEqualTo(initialNavigationValue)
         assertThat(finalNavigationValue?.consumed).isFalse()
         assertThat(finalNavigationValue).isInstanceOf(NavigationEvent.NavigateBack::class.java)
@@ -205,18 +203,17 @@ class AddEventViewModelTest {
     fun `verify on action click updates event`(): Unit = runTest {
         val expectedEvent = event()
         val stateHandle = SavedStateHandle(mapOf("eventId" to expectedEvent.id))
-        val localCircleId = "local-circle-id"
         val initialNavigationValue = subjectUnderTest.navigation.value
 
         val slot = slot<Event>()
         coEvery { eventRepository.getEvent(any()) } returns expectedEvent
-        every { circlePreferences.localCircleId } returns localCircleId
-        coEvery { eventRepository.updateEvent(capture(slot)) } just runs
+        coEvery { upsertEventUseCase.execute(capture(slot)) } just runs
 
         val subjectUnderTest = AddEventViewModel(
-            stateHandle, dateProvider, eventRepository, circlePreferences
+            stateHandle, dateProvider, eventRepository, upsertEventUseCase
         )
         advanceUntilIdle()
+        subjectUnderTest.onEventNameChange("Test Event")
         subjectUnderTest.onActionClick()
         advanceUntilIdle()
 
@@ -224,7 +221,7 @@ class AddEventViewModelTest {
         assertThat(loadingState.isSaveEnabled).isFalse()
 
         val finalNavigationValue = subjectUnderTest.navigation.value
-        coVerify(exactly = 1) { eventRepository.updateEvent(any()) }
+        coVerify(exactly = 1) { upsertEventUseCase.execute(any()) }
         assertThat(slot.captured.id).isEqualTo(expectedEvent.id)
         assertThat(slot.captured.circleId).isEqualTo(expectedEvent.circleId)
         assertThat(finalNavigationValue).isNotEqualTo(initialNavigationValue)
@@ -237,7 +234,7 @@ class AddEventViewModelTest {
         val expectedEvent = event()
         val stateHandle = SavedStateHandle(mapOf("eventId" to expectedEvent.id))
         val subjectUnderTest = AddEventViewModel(
-            stateHandle, dateProvider, eventRepository, circlePreferences
+            stateHandle, dateProvider, eventRepository, upsertEventUseCase
         )
         val initialNavigationValue = subjectUnderTest.navigation.value
 

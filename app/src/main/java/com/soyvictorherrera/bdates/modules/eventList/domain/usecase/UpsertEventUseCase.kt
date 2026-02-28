@@ -27,9 +27,7 @@ class UpsertEventUseCase @Inject constructor(
                     description = null,
                     isDefaultCircle = true
                 )
-            ).also { circleId ->
-                circlePreferences.localCircleId = circleId
-            }
+            )
 
         if (localCircleId == null) {
             val exception = RuntimeException("Unable to resolve local circle ID")
