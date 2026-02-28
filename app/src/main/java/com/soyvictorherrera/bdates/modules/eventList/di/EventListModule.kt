@@ -27,6 +27,8 @@ import com.soyvictorherrera.bdates.modules.eventList.domain.usecase.GetNonDayEve
 import com.soyvictorherrera.bdates.modules.eventList.domain.usecase.GetNonDayEventListUseCaseContract
 import com.soyvictorherrera.bdates.modules.eventList.domain.usecase.GetUpcomingEventListUseCase
 import com.soyvictorherrera.bdates.modules.eventList.domain.usecase.GetUpcomingEventListUseCaseContract
+import com.soyvictorherrera.bdates.modules.eventList.domain.usecase.UpsertEventUseCase
+import com.soyvictorherrera.bdates.modules.eventList.domain.usecase.UpsertEventUseCaseContract
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
@@ -77,6 +79,11 @@ abstract class EventListModule {
     abstract fun bindGetUpcomingEventListUseCaseContract(
         getUpcomingEventListUseCase: GetUpcomingEventListUseCase,
     ): GetUpcomingEventListUseCaseContract
+
+    @Binds
+    abstract fun bindUpsertEventUseCaseContract(
+        upsertEventUseCase: UpsertEventUseCase,
+    ): UpsertEventUseCaseContract
 
     @Binds
     abstract fun bindLocalEventDataSourceContract(
