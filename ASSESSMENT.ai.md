@@ -61,8 +61,8 @@ The following items have been moved to the **Vault** column of the project board
 ### Sprint 1: Multi-Circle Foundation (In Progress)
 *Goal: Infrastructure to support more than one circle.*
 - [x] **#34 Task 1.1**: Refactor `CreateLocalCircleUseCase` to generic `CreateCircleUseCase`.
-- [ ] **#35 Task 1.2**: Update `CircleRepository` and `DAO` for CRUD (Update/Delete).
-- [ ] **#36 Task 1.3**: Unit tests for Multi-Circle domain logic.
+- [x] **#35 Task 1.2**: Update `CircleRepository` and `DAO` for CRUD (Update/Delete).
+- [x] **#36 Task 1.3**: Unit tests for Multi-Circle domain logic.
 
 ### Sprint 2: Circle Manager UI
 *Goal: CRUD interfaces for circle management.*
@@ -92,4 +92,4 @@ The following items have been moved to the **Vault** column of the project board
 - **UI Complexity:** Adding a "Circle Selector" to a small mobile screen requires careful UX design to maintain simplicity.
 
 ---
-*Last Updated: Sunday, February 15, 2026*
+*Last Updated: Friday, February 27, 2026*

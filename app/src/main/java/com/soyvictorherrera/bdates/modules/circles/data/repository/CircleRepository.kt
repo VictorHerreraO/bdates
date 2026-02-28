@@ -44,4 +44,8 @@ class CircleRepository @Inject constructor(
                 localDataSource.updateCircle(it)
             }
     }
+
+    override suspend fun deleteCircle(id: String) {
+        localDataSource.deleteCircle(id)
+    }
 }

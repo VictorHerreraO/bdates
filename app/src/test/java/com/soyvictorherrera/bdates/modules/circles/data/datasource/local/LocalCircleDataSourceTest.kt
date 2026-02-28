@@ -65,15 +65,15 @@ class LocalCircleDataSourceTest {
     }
 
     @Test
-    fun `assert update circle calls upsert`(): Unit = runTest {
+    fun `assert update circle calls update`(): Unit = runTest {
         val entity = circleEntity()
 
         val slot = slot<CircleEntity>()
-        coEvery { dao.upsertAll(capture(slot)) } just runs
+        coEvery { dao.update(capture(slot)) } just runs
 
         subjectUnderTest.updateCircle(entity)
 
-        coVerify(exactly = 1) { dao.upsertAll(any()) }
+        coVerify(exactly = 1) { dao.update(any()) }
         assertThat(slot.captured).isEqualTo(entity)
     }
 
@@ -82,5 +82,16 @@ class LocalCircleDataSourceTest {
         val entity = circleEntity().copy(id = "")
 
         subjectUnderTest.updateCircle(entity)
+    }
+
+    @Test
+    fun `assert delete circle calls deleteById`(): Unit = runTest {
+        val id = "id"
+
+        coEvery { dao.deleteById(any()) } just runs
+
+        subjectUnderTest.deleteCircle(id)
+
+        coVerify(exactly = 1) { dao.deleteById(id) }
     }
 }
