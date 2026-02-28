@@ -1,0 +1,1 @@
+Always use the `.github/pull_request_template.md` (or equivalent) when creating a new Pull Request for this repository, and make sure to populate its fields accurately.

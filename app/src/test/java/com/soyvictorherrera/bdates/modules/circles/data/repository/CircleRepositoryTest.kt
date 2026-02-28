@@ -71,6 +71,24 @@ class CircleRepositoryTest {
         coVerify(exactly = 1) { localDataSource.createCircle(any()) }
     }
 
+    @Test
+    fun `verify creating multiple circles calls data source multiple times`(): Unit = runTest {
+        val circle1 = circleModel().copy(id = "")
+        val circle2 = circleModel().copy(id = "")
+        val expectedId1 = "expected-id-1"
+        val expectedId2 = "expected-id-2"
+
+        every { localMapper.reverseMap(any()) } returns circleEntity()
+        coEvery { localDataSource.createCircle(any()) } returnsMany listOf(expectedId1, expectedId2)
+
+        val result1 = subjectUnderTest.createCircle(circle1)
+        val result2 = subjectUnderTest.createCircle(circle2)
+
+        assertThat(result1).isEqualTo(expectedId1)
+        assertThat(result2).isEqualTo(expectedId2)
+        coVerify(exactly = 2) { localDataSource.createCircle(any()) }
+    }
+
     @Test(expected = IllegalArgumentException::class)
     fun `expect IllegalArgumentException when creating circle with id`(): Unit = runTest {
         val circle = circleModel().copy(id = "circle-id")

@@ -1,0 +1,1 @@
+Never use the system `/tmp/` directory for temporary files, scripts, or markdown artifacts. Instead, use `.tasks/{task-id}/` inside the project workspace directory. Markdown files should have a `.ai.md` suffix. Always clean up the task folder when the task is complete.

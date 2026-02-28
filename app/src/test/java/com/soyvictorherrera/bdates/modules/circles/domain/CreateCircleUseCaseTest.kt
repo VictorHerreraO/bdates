@@ -75,4 +75,28 @@ class CreateCircleUseCaseTest {
 
         coVerify(exactly = 1) { circleRepository.createCircle(customCircle) }
     }
+
+    @Test
+    fun `verify executing use case multiple times creates multiple circles`(): Unit = runTest {
+        val circle1 = Circle(
+            id = null,
+            name = "Circle 1",
+            description = "First circle",
+            isDefaultCircle = false
+        )
+        val circle2 = Circle(
+            id = null,
+            name = "Circle 2",
+            description = "Second circle",
+            isDefaultCircle = false
+        )
+
+        coEvery { circleRepository.createCircle(any()) } returns "id-1" andThen "id-2"
+
+        subjectUnderTest.execute(circle1)
+        subjectUnderTest.execute(circle2)
+
+        coVerify(exactly = 1) { circleRepository.createCircle(circle1) }
+        coVerify(exactly = 1) { circleRepository.createCircle(circle2) }
+    }
 }

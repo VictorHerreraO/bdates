@@ -15,6 +15,8 @@ For more details, see [README.md](README.md).
 
 ## Important Documentation
 
+**Critical**: Always. activate the serena project before starting any work.
+
 ### Core Documentation
 - **[CONTRIBUTING.md](CONTRIBUTING.md)**: Branching strategy, commit conventions, and PR requirements
   - Protected branches: `main` (production) and `develop` (integration)
