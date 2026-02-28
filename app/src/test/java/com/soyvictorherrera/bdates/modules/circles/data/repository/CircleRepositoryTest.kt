@@ -96,4 +96,15 @@ class CircleRepositoryTest {
 
         subjectUnderTest.updateCircle(circle)
     }
+
+    @Test
+    fun `verify delete circle`(): Unit = runTest {
+        val id = "id"
+
+        coEvery { localDataSource.deleteCircle(any()) } just runs
+
+        subjectUnderTest.deleteCircle(id)
+
+        coVerify(exactly = 1) { localDataSource.deleteCircle(id) }
+    }
 }
