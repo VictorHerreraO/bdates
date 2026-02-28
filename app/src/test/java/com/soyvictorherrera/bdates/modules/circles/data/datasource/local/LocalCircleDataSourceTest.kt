@@ -65,6 +65,22 @@ class LocalCircleDataSourceTest {
     }
 
     @Test
+    fun `verify creating multiple circles generates unique ids for each`(): Unit = runTest {
+        val entity1 = circleEntity().copy(id = "")
+        val entity2 = circleEntity().copy(id = "")
+
+        coEvery { dao.upsertAll(any()) } just runs
+
+        val result1 = subjectUnderTest.createCircle(entity1)
+        val result2 = subjectUnderTest.createCircle(entity2)
+
+        coVerify(exactly = 2) { dao.upsertAll(any()) }
+        assertThat(result1).isNotEmpty()
+        assertThat(result2).isNotEmpty()
+        assertThat(result1).isNotEqualTo(result2)
+    }
+
+    @Test
     fun `assert update circle calls update`(): Unit = runTest {
         val entity = circleEntity()
 
