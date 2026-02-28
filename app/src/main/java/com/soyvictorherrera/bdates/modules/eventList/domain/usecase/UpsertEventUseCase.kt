@@ -19,7 +19,7 @@ class UpsertEventUseCase @Inject constructor(
 
     override suspend fun execute(params: Event) {
         val localCircleId = circlePreferences.localCircleId
-            ?: circleRepository.getCircles().find { it.name == "Device local circle" }?.id
+            ?: circleRepository.getCircles().find { it.isDefaultCircle }?.id
             ?: circleRepository.createCircle(
                 Circle(
                     id = null,
