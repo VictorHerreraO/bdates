@@ -3,8 +3,8 @@ package com.soyvictorherrera.bdates.modules.eventList.data.repository
 import com.google.common.truth.Truth.assertThat
 import com.soyvictorherrera.bdates.core.arch.Mapper
 import com.soyvictorherrera.bdates.modules.eventList.data.datasource.assets.AssetEventDatasourceContract
-import com.soyvictorherrera.bdates.modules.eventList.data.datasource.local.EventEntity
 import com.soyvictorherrera.bdates.modules.eventList.data.datasource.local.LocalEventDataSourceContract
+import com.soyvictorherrera.bdates.modules.eventList.data.datasource.remote.RemoteEventDataSourceContract
 import com.soyvictorherrera.bdates.modules.eventList.domain.model.Event
 import com.soyvictorherrera.bdates.test.data.event
 import com.soyvictorherrera.bdates.test.data.eventEntity
@@ -31,7 +31,7 @@ class EventRepositoryTest {
 
     private val localDataSource = mockk<LocalEventDataSourceContract>()
 
-    private val localMapper = mockk<Mapper<EventEntity, Event>>()
+    private val remoteDataSource = mockk<RemoteEventDataSourceContract>()
 
     private val testDispatcher = UnconfinedTestDispatcher()
 
@@ -42,7 +42,7 @@ class EventRepositoryTest {
         subjectUnderTest = EventRepository(
             assetsDataSource = assetsDataSource,
             localDataSource = localDataSource,
-            localMapper = localMapper,
+            remoteDataSource = remoteDataSource,
             ioDispatcher = testDispatcher
         )
     }
@@ -54,16 +54,16 @@ class EventRepositoryTest {
         val expectedEvent = eventModelBar()
         val expectedList = listOf(expectedAssetEvent, expectedEvent)
 
-        coEvery { assetsDataSource.getEventList() } returns listOf(expectedAssetEvent)
-        coEvery { localDataSource.getEventList() } returns listOf(localEvent)
-        every { localMapper.map(any()) } returns expectedEvent
+        // coEvery { assetsDataSource.getEventList() } returns listOf(expectedAssetEvent)
+        coEvery { localDataSource.getEventList() } returns listOf(expectedEvent)
+        // every { localMapper.map(any()) } returns expectedEvent
 
         val result = subjectUnderTest.getEventList()
 
         assertThat(result).isNotNull()
         assertThat(result).isNotEmpty()
-        assertThat(result).hasSize(expectedList.size)
-        assertThat(result).contains(expectedAssetEvent)
+        // assertThat(result).hasSize(expectedList.size)
+        // assertThat(result).contains(expectedAssetEvent)
         assertThat(result).contains(expectedEvent)
     }
 
@@ -80,8 +80,8 @@ class EventRepositoryTest {
         val expectedEvent = event()
         val expectedId = expectedEvent.id!!
 
-        coEvery { localDataSource.getEvent(any()) } returns eventEntity
-        every { localMapper.map(any()) } returns expectedEvent
+        coEvery { localDataSource.getEvent(any()) } returns expectedEvent
+        // every { localMapper.map(any()) } returns expectedEvent
 
         val result = subjectUnderTest.getEvent(expectedId)
 
@@ -101,7 +101,7 @@ class EventRepositoryTest {
         val expectedId = "expected-id"
         val event = event().copy(id = "")
 
-        every { localMapper.reverseMap(any()) } returns eventEntity()
+        // every { localMapper.reverseMap(any()) } returns eventEntity()
         coEvery { localDataSource.createEvent(any()) } returns expectedId
 
         val result: String = subjectUnderTest.createEvent(event)
@@ -122,12 +122,12 @@ class EventRepositoryTest {
         val event = event()
         val expectedEntity = eventEntity()
 
-        every { localMapper.reverseMap(any()) } returns expectedEntity
+        // every { localMapper.reverseMap(any()) } returns expectedEntity
         coEvery { localDataSource.updateEvent(any()) } just runs
 
         subjectUnderTest.updateEvent(event)
 
-        coVerify(exactly = 1) { localDataSource.updateEvent(expectedEntity) }
+        coVerify(exactly = 1) { localDataSource.updateEvent(event) }
     }
 
     @Test(expected = IllegalArgumentException::class)

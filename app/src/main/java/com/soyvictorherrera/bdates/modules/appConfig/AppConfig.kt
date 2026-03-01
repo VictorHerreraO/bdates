@@ -18,8 +18,7 @@ class AppConfig @Inject constructor(
     override val appVersionCode: Long = application
         .packageManager
         .getPackageInfoCompat(application.packageName)
-        .versionName
-        .asVersionCode()
+        .versionName?.asVersionCode() ?: 0L
 
     override val isDebug: Boolean = application
         .applicationInfo

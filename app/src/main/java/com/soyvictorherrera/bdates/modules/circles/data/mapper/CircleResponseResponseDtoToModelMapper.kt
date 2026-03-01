@@ -13,7 +13,8 @@ object CircleResponseResponseDtoToModelMapper : CircleResponseDtoToModelMapperCo
             name = name.orEmpty(),
             description = "",
             isLocalOnly = false,
-            updateDate = updatedDate
+            isDefaultCircle = false,
+            updateDate = updatedDate,
         )
     }
 }

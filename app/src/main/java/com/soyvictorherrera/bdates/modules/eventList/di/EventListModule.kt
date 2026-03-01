@@ -38,6 +38,8 @@ import com.soyvictorherrera.bdates.modules.eventList.domain.usecase.GetUpcomingE
 import com.soyvictorherrera.bdates.modules.eventList.domain.usecase.GetUpcomingEventListUseCaseContract
 import com.soyvictorherrera.bdates.modules.eventList.domain.usecase.UpdateEventsUseCase
 import com.soyvictorherrera.bdates.modules.eventList.domain.usecase.UpdateEventsUseCaseContract
+import com.soyvictorherrera.bdates.modules.eventList.domain.usecase.UpsertEventUseCase
+import com.soyvictorherrera.bdates.modules.eventList.domain.usecase.UpsertEventUseCaseContract
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
@@ -95,6 +97,11 @@ abstract class EventListModule {
     ): GetUpcomingEventListUseCaseContract
 
     @Binds
+    abstract fun bindUpsertEventUseCaseContract(
+        upsertEventUseCase: UpsertEventUseCase,
+    ): UpsertEventUseCaseContract
+
+    @Binds
     abstract fun bindUpdateEventsUseCaseContract(
         updateEventsUseCase: UpdateEventsUseCase,
     ): UpdateEventsUseCaseContract
@@ -118,7 +125,6 @@ abstract class EventListModule {
     abstract fun bindGetEventUseCaseContract(
         getEventUseCase: GetEventUseCase
     ): GetEventUseCaseContract
-    //endregion
 
     companion object {
         @Provides

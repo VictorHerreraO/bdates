@@ -23,4 +23,9 @@ interface CircleDataSourceContract<T> {
      */
     suspend fun updateCircle(circle: T)
 
+    /**
+     * Delete a circle by it's [id]
+     */
+    suspend fun deleteCircle(id: String)
+
 }

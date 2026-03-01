@@ -25,4 +25,9 @@ interface CircleRepositoryContract {
      */
     suspend fun updateCircle(circle: Circle)
 
+    /**
+     * Delete a circle by its [id]
+     */
+    suspend fun deleteCircle(id: String)
+
 }

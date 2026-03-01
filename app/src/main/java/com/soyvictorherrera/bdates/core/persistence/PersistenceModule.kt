@@ -26,7 +26,48 @@ abstract class PersistenceModule {
                 application,
                 AppDatabase::class.java,
                 APP_DATABASE_NAME
-            ).build()
+            )
+            .addCallback(object : androidx.room.RoomDatabase.Callback() {
+                override fun onCreate(db: androidx.sqlite.db.SupportSQLiteDatabase) {
+                    super.onCreate(db)
+                    // Insert default circle on fresh install
+                    db.execSQL("""
+                        INSERT INTO circles (id, name, description, is_default_circle, is_local_only, update_date)
+                        VALUES ('device-local', 'Device local circle', '', 1, 1, NULL)
+                    """)
+                }
+            })
+            .addMigrations(MIGRATION_1_2, MIGRATION_2_3)
+            .build()
+        }
+
+        private val MIGRATION_1_2 = object : androidx.room.migration.Migration(1, 2) {
+            override fun migrate(database: androidx.sqlite.db.SupportSQLiteDatabase) {
+                // Create the new table
+                database.execSQL("CREATE TABLE IF NOT EXISTS `circles_new` (`id` TEXT NOT NULL, `name` TEXT NOT NULL, `description` TEXT, `is_default_circle` INTEGER NOT NULL, PRIMARY KEY(`id`))")
+                
+                // Copy the data
+                database.execSQL("INSERT INTO circles_new (id, name, description, is_default_circle) SELECT id, name, description, local_only FROM circles")
+                
+                // Remove the old table
+                database.execSQL("DROP TABLE circles")
+                
+                // Rename the new table to the table name
+                database.execSQL("ALTER TABLE circles_new RENAME TO circles")
+
+                // Insert default circle if none exists
+                database.execSQL("""
+                    INSERT OR IGNORE INTO circles (id, name, description, is_default_circle)
+                    VALUES ('device-local', 'Device local circle', '', 1)
+                """)
+            }
+        }
+
+        private val MIGRATION_2_3 = object : androidx.room.migration.Migration(2, 3) {
+            override fun migrate(database: androidx.sqlite.db.SupportSQLiteDatabase) {
+                database.execSQL("ALTER TABLE circles ADD COLUMN is_local_only INTEGER NOT NULL DEFAULT 0")
+                database.execSQL("ALTER TABLE circles ADD COLUMN update_date INTEGER")
+            }
         }
 
         @Provides

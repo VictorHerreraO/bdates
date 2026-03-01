@@ -1,19 +1,16 @@
 package com.soyvictorherrera.bdates.core.delegate
 
 import com.google.common.truth.Truth.assertThat
-import com.soyvictorherrera.bdates.modules.appConfig.AppConfigContract
-import com.soyvictorherrera.bdates.modules.circles.domain.CreateLocalCircleUseCaseContract
+import com.soyvictorherrera.bdates.modules.appinfo.domain.AppInfoProvider
 import com.soyvictorherrera.bdates.modules.notifications.NotificationManagerContract
+import com.soyvictorherrera.bdates.modules.appConfig.AppConfigContract
 import com.soyvictorherrera.bdates.util.TimberTestRule
-import io.mockk.coEvery
-import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
 import io.mockk.runs
 import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.TestScope
 import org.junit.Before
 import org.junit.Rule
@@ -27,7 +24,7 @@ class ApplicationCreatedCallbackDelegateTest {
     @get:Rule
     val timberRule = TimberTestRule()
 
-    private lateinit var createLocalCircle: CreateLocalCircleUseCaseContract
+    private lateinit var mockAppInfo: AppInfoProvider
 
     private lateinit var notificationManager: NotificationManagerContract
 
@@ -39,8 +36,8 @@ class ApplicationCreatedCallbackDelegateTest {
 
     @Before
     fun setUp() {
-        createLocalCircle = mockk {
-            coEvery { execute() } just runs
+        mockAppInfo = mockk {
+            every { isDebugBuild } returns true
         }
         notificationManager = mockk {
             every { setupDayEventsReminder() } just runs
@@ -50,7 +47,7 @@ class ApplicationCreatedCallbackDelegateTest {
         }
         subjectUnderTest = ApplicationCreatedCallbackDelegate(
             coroutineScope = testScope,
-            createLocalCircle = createLocalCircle,
+            appInfoProvider = mockAppInfo,
             notificationManager = notificationManager,
             appConfig = appConfig
         )
@@ -59,6 +56,7 @@ class ApplicationCreatedCallbackDelegateTest {
     @Test
     fun `on application created setups timber debug tree when in debug build`() {
         assertThat(Timber.forest()).isEmpty()
+        every { appConfig.isDebug } returns true
 
         subjectUnderTest.onApplicationCreated()
 
@@ -69,19 +67,11 @@ class ApplicationCreatedCallbackDelegateTest {
     @Test
     fun `on application created skips timber debug tree setup when not in debug build`() {
         assertThat(Timber.forest()).isEmpty()
+        every { appConfig.isDebug } returns false
 
         subjectUnderTest.onApplicationCreated()
 
         assertThat(Timber.forest()).isEmpty()
-    }
-
-    @Test
-    fun `on application created calls create local circle`() {
-        subjectUnderTest.onApplicationCreated()
-
-        testScope.launch {
-            coVerify(exactly = 1) { createLocalCircle.execute() }
-        }
     }
 
     @Test

@@ -15,8 +15,9 @@ import com.soyvictorherrera.bdates.modules.circles.data.preferences.CirclePrefer
 import com.soyvictorherrera.bdates.modules.circles.data.preferences.CirclePreferencesContract
 import com.soyvictorherrera.bdates.modules.circles.data.repository.CircleRepository
 import com.soyvictorherrera.bdates.modules.circles.data.repository.CircleRepositoryContract
-import com.soyvictorherrera.bdates.modules.circles.domain.CreateLocalCircleUseCase
-import com.soyvictorherrera.bdates.modules.circles.domain.CreateLocalCircleUseCaseContract
+import com.soyvictorherrera.bdates.modules.circles.domain.CreateCircleUseCase
+import com.soyvictorherrera.bdates.modules.circles.domain.CreateCircleUseCaseContract
+import com.soyvictorherrera.bdates.modules.circles.domain.model.Circle
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
@@ -52,9 +53,9 @@ abstract class CirclesModule {
 
     //region Use cases
     @Binds
-    abstract fun bindCreateLocalCircleUseCaseContract(
-        createLocalCircleUseCase: CreateLocalCircleUseCase,
-    ): CreateLocalCircleUseCaseContract
+    abstract fun bindCreateCircleUseCaseContract(
+        createCircleUseCase: CreateCircleUseCase,
+    ): CreateCircleUseCaseContract
     //endregion
 
     companion object {
