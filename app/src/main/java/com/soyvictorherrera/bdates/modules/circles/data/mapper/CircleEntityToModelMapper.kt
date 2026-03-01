@@ -13,6 +13,8 @@ object CircleEntityToModelMapper : CircleEntityToModelMapperContract {
             name = name,
             description = description,
             isDefaultCircle = isDefaultCircle,
+            isLocalOnly = isLocalOnly,
+            updateDate = updateDate,
         )
     }
 
@@ -22,6 +24,8 @@ object CircleEntityToModelMapper : CircleEntityToModelMapperContract {
             name = name,
             description = description,
             isDefaultCircle = isDefaultCircle,
+            isLocalOnly = isLocalOnly,
+            updateDate = updateDate,
         )
     }
 }

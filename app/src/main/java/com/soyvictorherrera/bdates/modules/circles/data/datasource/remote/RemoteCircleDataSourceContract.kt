@@ -30,4 +30,8 @@ class RemoteCircleDataSource @Inject constructor(
     override suspend fun updateCircle(circle: Circle) {
         TODO("Not yet implemented")
     }
+
+    override suspend fun deleteCircle(id: String) {
+        TODO("Not yet implemented")
+    }
 }

@@ -33,7 +33,7 @@ class LocalCircleDataSource @Inject constructor(
         if (circle.id.isNullOrEmpty()) {
             throw IllegalArgumentException("id must not be empty")
         }
-        dao.update(circle)
+        dao.update(mapper.reverseMap(circle))
     }
 
     override suspend fun deleteCircle(id: String) {
