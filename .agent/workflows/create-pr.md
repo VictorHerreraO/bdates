@@ -57,3 +57,4 @@ After creation, verify that:
 
 > [!IMPORTANT]
 > Never push directly to `develop` or `main`. Always use this PR workflow.
+> Never create temporary files outside of the current working directory. Prefer to use `.tasks/` folders for that.
