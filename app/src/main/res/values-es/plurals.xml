@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <plurals name="notification_title_day_event">
+        <item quantity="one">🍰 ¡Hay un cumpleaños que celebrar el día de hoy!</item>
+        <item quantity="other">🍰 ¡Hay %d cumpleaños que celebrar el día de hoy!</item>
+    </plurals>
+
+    <plurals name="notification_content_day_event">
+        <item quantity="one">Hoy es cumpleaños de %s. Asegúrate de saludar 👋</item>
+        <item quantity="other">Hoy es cumpleaños de %s y %d más. Asegúrate de saludar 👋</item>
+    </plurals>
+
+    <plurals name="notification_title_upcoming_event">
+        <item quantity="one">1 evento está próximo</item>
+        <item quantity="other">Hay %d eventos próximos</item>
+    </plurals>
+
+    <plurals name="notification_content_upcoming_event">
+        <item quantity="one">📆 Será cumpleaños de %s el %s.</item>
+        <item quantity="other">📆 Será cumpleaños de %s y otros %s el %s</item>
+    </plurals>
+
+    <plurals name="preview_event_remaining_time">
+        <item quantity="one">Falta %1$s día</item>
+        <item quantity="other">Faltan %1$s días</item>
+    </plurals>
+</resources>

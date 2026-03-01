@@ -57,3 +57,4 @@ After creation, verify that:
 
 > [!IMPORTANT]
 > Never push directly to `develop` or `main`. Always use this PR workflow.
+> Never create files outside of the current working directory. Not even temporary files.

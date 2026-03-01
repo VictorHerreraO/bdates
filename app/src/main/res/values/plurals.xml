@@ -1,22 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <plurals name="notification_title_day_event" translatable="false">
-        <item quantity="one">@string/notification_title_single_day_event</item>
-        <item quantity="other">@string/notification_title_multiple_day_event</item>
+    <plurals name="notification_title_day_event">
+        <item quantity="one">🍰 There is 1 birthday happening today!</item>
+        <item quantity="other">🍰 There are %d birthdays happening today!</item>
     </plurals>
 
-    <plurals name="notification_content_day_event" translatable="false">
-        <item quantity="one">@string/notification_content_single_day_event</item>
-        <item quantity="other">@string/notification_content_multiple_day_event</item>
+    <plurals name="notification_content_day_event">
+        <item quantity="one">Today is %s\'s birthday. Make sure to say hi 👋</item>
+        <item quantity="other">Today is %s and %d others birthday. Make sure to say hi 👋</item>
     </plurals>
 
-    <plurals name="notification_title_upcoming_event" translatable="false">
-        <item quantity="one">@string/notification_title_single_upcoming_event</item>
-        <item quantity="other">@string/notification_title_multiple_upcoming_event</item>
+    <plurals name="notification_title_upcoming_event">
+        <item quantity="one">1 upcoming event</item>
+        <item quantity="other">%d upcoming events</item>
     </plurals>
 
-    <plurals name="notification_content_upcoming_event" translatable="false">
-        <item quantity="one">@string/notification_content_single_upcoming_event</item>
-        <item quantity="other">@string/notification_content_multiple_upcoming_event</item>
+    <plurals name="notification_content_upcoming_event">
+        <item quantity="one">📆 %s\'s birthday is happening on %s.</item>
+        <item quantity="other">📆 %s and %s others birthdays are happening on %s</item>
+    </plurals>
+
+    <plurals name="preview_event_remaining_time">
+        <item quantity="one">%1$s day remaining</item>
+        <item quantity="other">%1$s days remaining</item>
     </plurals>
 </resources>
