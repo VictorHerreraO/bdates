@@ -7,12 +7,16 @@ fun circleModel() = Circle(
     id = "circle-foo",
     name = "Foo",
     description = "Foo description",
-    isDefaultCircle = false
+    isDefaultCircle = false,
+    isLocalOnly = false,
+    updateDate = null,
 )
 
 fun circleEntity() = CircleEntity(
     id = "circle-foo",
     name = "Foo",
     description = "Foo description",
-    isDefaultCircle = false
+    isDefaultCircle = false,
+    isLocalOnly = false,
+    updateDate = null,
 )

@@ -3,6 +3,7 @@ package com.soyvictorherrera.bdates.core.delegate
 import com.google.common.truth.Truth.assertThat
 import com.soyvictorherrera.bdates.modules.appinfo.domain.AppInfoProvider
 import com.soyvictorherrera.bdates.modules.notifications.NotificationManagerContract
+import com.soyvictorherrera.bdates.modules.appConfig.AppConfigContract
 import com.soyvictorherrera.bdates.util.TimberTestRule
 import io.mockk.every
 import io.mockk.just
@@ -47,13 +48,15 @@ class ApplicationCreatedCallbackDelegateTest {
         subjectUnderTest = ApplicationCreatedCallbackDelegate(
             coroutineScope = testScope,
             appInfoProvider = mockAppInfo,
-            notificationManager = notificationManager
+            notificationManager = notificationManager,
+            appConfig = appConfig
         )
     }
 
     @Test
     fun `on application created setups timber debug tree when in debug build`() {
         assertThat(Timber.forest()).isEmpty()
+        every { appConfig.isDebug } returns true
 
         subjectUnderTest.onApplicationCreated()
 
@@ -64,6 +67,7 @@ class ApplicationCreatedCallbackDelegateTest {
     @Test
     fun `on application created skips timber debug tree setup when not in debug build`() {
         assertThat(Timber.forest()).isEmpty()
+        every { appConfig.isDebug } returns false
 
         subjectUnderTest.onApplicationCreated()
 

@@ -37,6 +37,7 @@ class CircleRepositoryTest {
 
         coEvery { remoteDataSource.getCircles() } returns listOf(expected)
         coEvery { localDataSource.getCircles() } returns listOf(expected)
+        coEvery { localDataSource.updateCircle(any()) } just runs
 
         val result = subjectUnderTest.getCircles()
 
@@ -79,7 +80,7 @@ class CircleRepositoryTest {
         val expectedId1 = "expected-id-1"
         val expectedId2 = "expected-id-2"
 
-        every { localMapper.reverseMap(any()) } returns circleEntity()
+        // Obsolete mapper logic removed
         coEvery { localDataSource.createCircle(any()) } returnsMany listOf(expectedId1, expectedId2)
 
         val result1 = subjectUnderTest.createCircle(circle1)
