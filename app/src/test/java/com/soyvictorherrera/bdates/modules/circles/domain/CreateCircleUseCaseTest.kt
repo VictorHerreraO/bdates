@@ -32,7 +32,9 @@ class CreateCircleUseCaseTest {
             id = null,
             name = "Test Circle",
             description = "Test description",
-            isDefaultCircle = false
+            isDefaultCircle = false,
+            isLocalOnly = false,
+            updateDate = null
         )
 
         coEvery { circleRepository.createCircle(any()) } returns expectedId
@@ -49,7 +51,9 @@ class CreateCircleUseCaseTest {
             id = null,
             name = "Device local circle",
             description = "",
-            isDefaultCircle = true
+            isDefaultCircle = true,
+            isLocalOnly = true,
+            updateDate = null
         )
 
         coEvery { circleRepository.createCircle(any()) } returns expectedId
@@ -66,7 +70,9 @@ class CreateCircleUseCaseTest {
             id = null,
             name = "Family",
             description = "Family members",
-            isDefaultCircle = false
+            isDefaultCircle = false,
+            isLocalOnly = false,
+            updateDate = null
         )
 
         coEvery { circleRepository.createCircle(any()) } returns expectedId
@@ -82,13 +88,17 @@ class CreateCircleUseCaseTest {
             id = null,
             name = "Circle 1",
             description = "First circle",
-            isDefaultCircle = false
+            isDefaultCircle = false,
+            isLocalOnly = false,
+            updateDate = null
         )
         val circle2 = Circle(
             id = null,
             name = "Circle 2",
             description = "Second circle",
-            isDefaultCircle = false
+            isDefaultCircle = false,
+            isLocalOnly = false,
+            updateDate = null
         )
 
         coEvery { circleRepository.createCircle(any()) } returns "id-1" andThen "id-2"

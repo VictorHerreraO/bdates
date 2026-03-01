@@ -22,7 +22,20 @@
             app:nullable="true" />
     </dialog>
 
+    <dialog
+        android:id="@+id/previewEventBottomSheet"
+        android:name="com.soyvictorherrera.bdates.modules.eventList.framework.ui.PreviewEventBottomSheet"
+        android:label="PreviewEventBottomSheet">
+        <argument
+            android:name="eventId"
+            app:argType="string" />
+    </dialog>
+
     <action
         android:id="@+id/actionCreateEventBottomSheet"
         app:destination="@+id/addEventBottomSheet" />
+
+    <action
+        android:id="@+id/actionPreviewEventBottomSheet"
+        app:destination="@+id/previewEventBottomSheet" />
 </navigation>

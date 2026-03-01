@@ -11,7 +11,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
+import androidx.annotation.StringRes
 import androidx.core.content.ContextCompat
+import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
@@ -25,11 +27,14 @@ import kotlinx.coroutines.launch
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.snackbar.Snackbar
 import com.soyvictorherrera.bdates.NavGraphDirections
 import com.soyvictorherrera.bdates.R
-import com.soyvictorherrera.bdates.core.navigation.NavigationEvent
-import com.soyvictorherrera.bdates.core.navigation.consume
+import com.soyvictorherrera.bdates.core.event.NavigationEvent
+import com.soyvictorherrera.bdates.core.event.consume
+import com.soyvictorherrera.bdates.core.event.consumeValue
 import com.soyvictorherrera.bdates.databinding.FragmentEventListBinding
+import com.soyvictorherrera.bdates.modules.eventList.framework.presentation.Error
 import com.soyvictorherrera.bdates.modules.eventList.framework.presentation.EventListViewModel
 import com.soyvictorherrera.bdates.modules.permissions.PermissionDelegate
 import com.soyvictorherrera.bdates.modules.permissions.PermissionDelegateFactory
@@ -66,9 +71,9 @@ class EventListFragment : Fragment() {
         savedInstanceState: Bundle?,
     ) {
         initRecyclerView()
-        bindViewModel()
         setupListeners()
         setupResultListener()
+        bindViewModel()
     }
 
     override fun onDestroyView() {
@@ -88,15 +93,15 @@ class EventListFragment : Fragment() {
         val orientation = resources.configuration.orientation
         // Setup all events recycler view
         LinearLayoutManager(requireActivity()).also {
-            recyclerEvents.layoutManager = it
+            layoutUpcomingEvents.recyclerEvents.layoutManager = it
         }
         adapter = EventListAdapter(onItemClick = {
             viewModel.onEventClick(it)
         }).also {
-            recyclerEvents.adapter = it
+            layoutUpcomingEvents.recyclerEvents.adapter = it
         }
         onScrollListener = FabScrollBehavior(btnAddEvent).also {
-            recyclerEvents.addOnScrollListener(it)
+            layoutUpcomingEvents.recyclerEvents.addOnScrollListener(it)
         }
         // Setup today events recycler view
         LinearLayoutManager(
@@ -126,12 +131,31 @@ class EventListFragment : Fragment() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 launch {
-                    viewModel.events.collect { adapter.submitList(it) }
+                    viewModel.events.collect { eventList ->
+                        adapter.submitList(eventList)
+                        with(binding.layoutUpcomingEvents) {
+                            val showEmptyIcon = eventList.isEmpty() && inputSearch.text.isEmpty()
+                            lblUpcomingEventsTitle.isGone = showEmptyIcon
+                            swipeLayout.isGone = showEmptyIcon
+                            inputSearch.isGone = showEmptyIcon
+                            layoutEventListEmpty.root.isVisible = showEmptyIcon
+                        }
+                    }
                 }
                 launch {
                     viewModel.todayEvents.collect { todayEvents ->
                         todayAdapter.submitList(todayEvents)
                         binding.layoutTodayEvents.isVisible = todayEvents.isNotEmpty()
+                    }
+                }
+                launch {
+                    viewModel.isRefreshing.collect {
+                        binding.layoutUpcomingEvents.swipeLayout.isRefreshing = it
+                    }
+                }
+                launch {
+                    viewModel.errorMessage.collect {
+                        it?.consumeValue(::showSnackBar)
                     }
                 }
                 launch {
@@ -145,22 +169,29 @@ class EventListFragment : Fragment() {
                 }
                 launch {
                     viewModel.showMissingPermissionMessage.collect { showMessage ->
-                        binding.layoutWarningBanner.root.isVisible = showMessage
+                        binding.layoutUpcomingEvents.layoutWarningBanner.root.isVisible = showMessage
                     }
                 }
                 launch {
                     viewModel.navigation.collect { event ->
                         event?.consume {
                             when (it) {
-                                is NavigationEvent.EventBottomSheet -> {
+                                is NavigationEvent.AddEventBottomSheet -> {
                                     NavGraphDirections.actionCreateEventBottomSheet(
                                         eventId = it.eventId
                                     ).let { directions ->
                                         findNavController().navigate(directions)
                                     }
                                 }
+                                is NavigationEvent.PreviewEventBottomSheet -> {
+                                    NavGraphDirections.actionPreviewEventBottomSheet(
+                                        eventId = it.eventId
+                                    ).let { directions ->
+                                        findNavController().navigate(directions)
+                                    }
+                                }
                                 is NavigationEvent.NavigateBack -> {
-                                    /* no-op */
+                                    findNavController().popBackStack()
                                 }
                             }
                         }
@@ -171,10 +202,10 @@ class EventListFragment : Fragment() {
     }
 
     private fun setupListeners() = with(binding) {
-        inputSearch.addTextChangedListener { text ->
+        layoutUpcomingEvents.inputSearch.addTextChangedListener { text ->
             viewModel.onQueryTextChanged(text.toString())
         }
-        inputSearch.setOnEditorActionListener { _, actionId, _ ->
+        layoutUpcomingEvents.inputSearch.setOnEditorActionListener { _, actionId, _ ->
             return@setOnEditorActionListener when (actionId) {
                 EditorInfo.IME_ACTION_SEARCH -> {
                     hideSoftKeyboard()
@@ -187,7 +218,10 @@ class EventListFragment : Fragment() {
         btnAddEvent.setOnClickListener {
             viewModel.onAddEventClick()
         }
-        layoutWarningBanner.root.setOnClickListener {
+        layoutUpcomingEvents.swipeLayout.setOnRefreshListener {
+            viewModel.refresh()
+        }
+        layoutUpcomingEvents.layoutWarningBanner.root.setOnClickListener {
             openAppSettings()
         }
     }
@@ -218,4 +252,19 @@ class EventListFragment : Fragment() {
         }
     }
 
+    private fun showSnackBar(error: Error): Unit = with(binding) {
+        Snackbar.make(
+            layoutRoot,
+            error.getMessage(),
+            Snackbar.LENGTH_SHORT
+        ).apply {
+            anchorView = btnAddEvent
+        }.show()
+    }
+
+}
+
+@StringRes
+private fun Error.getMessage(): Int = when (this) {
+    Error.UnableToRefresh -> R.string.event_list_error_fetch_list
 }

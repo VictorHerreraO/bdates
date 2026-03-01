@@ -32,12 +32,12 @@ abstract class PersistenceModule {
                     super.onCreate(db)
                     // Insert default circle on fresh install
                     db.execSQL("""
-                        INSERT INTO circles (id, name, description, is_default_circle)
-                        VALUES ('device-local', 'Device local circle', '', 1)
+                        INSERT INTO circles (id, name, description, is_default_circle, is_local_only, update_date)
+                        VALUES ('device-local', 'Device local circle', '', 1, 1, NULL)
                     """)
                 }
             })
-            .addMigrations(MIGRATION_1_2)
+            .addMigrations(MIGRATION_1_2, MIGRATION_2_3)
             .build()
         }
 
@@ -60,6 +60,13 @@ abstract class PersistenceModule {
                     INSERT OR IGNORE INTO circles (id, name, description, is_default_circle)
                     VALUES ('device-local', 'Device local circle', '', 1)
                 """)
+            }
+        }
+
+        private val MIGRATION_2_3 = object : androidx.room.migration.Migration(2, 3) {
+            override fun migrate(database: androidx.sqlite.db.SupportSQLiteDatabase) {
+                database.execSQL("ALTER TABLE circles ADD COLUMN is_local_only INTEGER NOT NULL DEFAULT 0")
+                database.execSQL("ALTER TABLE circles ADD COLUMN update_date INTEGER")
             }
         }
 

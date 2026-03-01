@@ -1,0 +1,21 @@
+package com.soyvictorherrera.bdates.modules.eventList.framework.presentation
+
+data class PreviewEventViewState(
+    val ordinalAge: String?,
+    val eventName: String,
+    val eventDate: String,
+    val eventType: String,
+    val isEditable: Boolean,
+    val circleName: String? = null,
+    val isLoading: Boolean,
+    val remainingDays: String,
+    val isError: Boolean = false,
+    val error: PreviewEventError? = null,
+) {
+    val isSuccess: Boolean
+        get() = !isLoading && !isError
+}
+
+enum class PreviewEventError {
+    ERROR_LOADING
+}

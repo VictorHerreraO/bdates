@@ -1,5 +1,6 @@
 package com.soyvictorherrera.bdates.modules.circles.data.repository
 
+import com.soyvictorherrera.bdates.core.network.Resource
 import com.soyvictorherrera.bdates.modules.circles.domain.model.Circle
 
 interface CircleRepositoryContract {
@@ -7,7 +8,7 @@ interface CircleRepositoryContract {
     /**
      * Get a list of all the user circles
      */
-    suspend fun getCircles(): List<Circle>
+    suspend fun getCircles(): Resource<List<Circle>>
 
     /**
      * Get a circle by its [id]

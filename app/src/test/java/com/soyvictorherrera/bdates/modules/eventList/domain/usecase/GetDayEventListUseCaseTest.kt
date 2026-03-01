@@ -1,5 +1,6 @@
 package com.soyvictorherrera.bdates.modules.eventList.domain.usecase
 
+import com.soyvictorherrera.bdates.core.arch.execute
 import com.soyvictorherrera.bdates.core.date.DateProviderContract
 import com.soyvictorherrera.bdates.modules.eventList.domain.model.Event
 import com.soyvictorherrera.bdates.test.data.event

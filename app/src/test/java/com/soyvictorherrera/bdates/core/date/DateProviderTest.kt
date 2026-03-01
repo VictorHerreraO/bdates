@@ -1,6 +1,9 @@
 package com.soyvictorherrera.bdates.core.date
 
 import com.google.common.truth.Truth.assertThat
+import com.soyvictorherrera.bdates.core.resource.ResourceManagerContract
+import io.mockk.every
+import io.mockk.mockk
 import java.time.Clock
 import java.time.LocalDateTime
 import java.time.ZoneId
@@ -8,18 +11,13 @@ import java.time.format.DateTimeFormatter
 import java.util.*
 import org.junit.Before
 import org.junit.Test
-import org.junit.runner.RunWith
-import org.mockito.Mock
-import org.mockito.junit.MockitoJUnitRunner
-import org.mockito.kotlin.whenever
 
-@RunWith(MockitoJUnitRunner::class)
 class DateProviderTest {
-
-    @Mock
-    private lateinit var mockFormatters: DateFormattersContract
-
     private lateinit var subjectUnderTest: DateProvider
+
+    private val mockFormatters: DateFormattersContract = mockk()
+
+    private val mockResources: ResourceManagerContract = mockk()
 
     private val today = LocalDateTime.of(
         2023, 7, 1, 12, 0
@@ -33,7 +31,8 @@ class DateProviderTest {
     fun setUp() {
         subjectUnderTest = DateProvider(
             clock = testClock,
-            formatters = mockFormatters
+            formatters = mockFormatters,
+            resourceManager = mockResources
         )
     }
 
@@ -61,7 +60,7 @@ class DateProviderTest {
         val date = today.toLocalDate()
         val expectedOutput = "Saturday 1"
 
-        whenever(mockFormatters.dayFormatter).thenReturn(dayFormatter)
+        every { mockFormatters.dayFormatter } returns dayFormatter
 
         val result = subjectUnderTest.formatDateAsDay(date)
 

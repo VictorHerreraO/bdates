@@ -1,9 +1,12 @@
 package com.soyvictorherrera.bdates.modules.circles.data.datasource.local
 
 import com.google.common.truth.Truth.assertThat
+import com.soyvictorherrera.bdates.modules.circles.data.mapper.CircleEntityToModelMapperContract
 import com.soyvictorherrera.bdates.test.data.circleEntity
+import com.soyvictorherrera.bdates.test.data.circleModel
 import io.mockk.coEvery
 import io.mockk.coVerify
+import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
 import io.mockk.runs
@@ -15,21 +18,26 @@ import org.junit.Test
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class LocalCircleDataSourceTest {
-
-    private val dao = mockk<CircleDao>()
-
     lateinit var subjectUnderTest: LocalCircleDataSource
+
+    private val dao: CircleDao = mockk()
+
+    private val mapper: CircleEntityToModelMapperContract = mockk()
 
     @Before
     fun setup() {
-        subjectUnderTest = LocalCircleDataSource(dao)
+        subjectUnderTest = LocalCircleDataSource(
+            dao = dao,
+            mapper = mapper
+        )
     }
 
     @Test
     fun `assert get circles list`(): Unit = runTest {
-        val expected = circleEntity()
+        val expected = circleModel()
 
-        coEvery { dao.getAll() } returns listOf(expected)
+        coEvery { dao.getAll() } returns listOf(circleEntity())
+        coEvery { mapper.map(any()) } returns expected
 
         val result = subjectUnderTest.getCircles()
 
@@ -40,9 +48,10 @@ class LocalCircleDataSourceTest {
     @Test
     fun `assert get circle by id`(): Unit = runTest {
         val expectedId = "expected-id"
-        val expected = circleEntity().copy(id = expectedId)
+        val expected = circleModel().copy(id = expectedId)
 
-        coEvery { dao.getById(any()) } returns expected
+        coEvery { dao.getById(any()) } returns circleEntity()
+        every { mapper.map(any()) } returns expected
 
         val result = subjectUnderTest.getCircle(expectedId)
 
@@ -52,11 +61,12 @@ class LocalCircleDataSourceTest {
     @Test
     fun `assert create circle generates id and upserts`(): Unit = runTest {
         val entity = circleEntity().copy(id = "")
+        every { mapper.reverseMap(any()) } returns entity
 
         val slot = slot<CircleEntity>()
         coEvery { dao.upsertAll(capture(slot)) } just runs
 
-        val result = subjectUnderTest.createCircle(entity)
+        val result = subjectUnderTest.createCircle(circleModel())
 
         coVerify(exactly = 1) { dao.upsertAll(any()) }
         assertThat(slot.captured).isNotEqualTo(entity)
@@ -69,10 +79,11 @@ class LocalCircleDataSourceTest {
         val entity1 = circleEntity().copy(id = "")
         val entity2 = circleEntity().copy(id = "")
 
+        every { mapper.reverseMap(any()) } returns circleEntity()
         coEvery { dao.upsertAll(any()) } just runs
 
-        val result1 = subjectUnderTest.createCircle(entity1)
-        val result2 = subjectUnderTest.createCircle(entity2)
+        val result1 = subjectUnderTest.createCircle(circleModel())
+        val result2 = subjectUnderTest.createCircle(circleModel())
 
         coVerify(exactly = 2) { dao.upsertAll(any()) }
         assertThat(result1).isNotEmpty()
@@ -83,11 +94,12 @@ class LocalCircleDataSourceTest {
     @Test
     fun `assert update circle calls update`(): Unit = runTest {
         val entity = circleEntity()
+        every { mapper.reverseMap(any()) } returns entity
 
         val slot = slot<CircleEntity>()
         coEvery { dao.update(capture(slot)) } just runs
 
-        subjectUnderTest.updateCircle(entity)
+        subjectUnderTest.updateCircle(circleModel())
 
         coVerify(exactly = 1) { dao.update(any()) }
         assertThat(slot.captured).isEqualTo(entity)
@@ -95,9 +107,9 @@ class LocalCircleDataSourceTest {
 
     @Test(expected = IllegalArgumentException::class)
     fun `expect IllegalArgumentException when updating circle with no id`(): Unit = runTest {
-        val entity = circleEntity().copy(id = "")
+        val model = circleModel().copy(id = "")
 
-        subjectUnderTest.updateCircle(entity)
+        subjectUnderTest.updateCircle(model)
     }
 
     @Test

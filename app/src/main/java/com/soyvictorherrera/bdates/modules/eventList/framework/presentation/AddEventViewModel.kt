@@ -4,19 +4,23 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.soyvictorherrera.bdates.core.date.DateProviderContract
-import com.soyvictorherrera.bdates.core.navigation.NavigationEvent
+import com.soyvictorherrera.bdates.core.event.NavigationEvent
+import com.soyvictorherrera.bdates.core.event.asConsumableEvent
+import com.soyvictorherrera.bdates.core.event.consume
+import com.soyvictorherrera.bdates.core.event.consumeValue
 import com.soyvictorherrera.bdates.modules.eventList.data.repository.EventRepositoryContract
 import com.soyvictorherrera.bdates.modules.eventList.domain.model.Event
 import com.soyvictorherrera.bdates.modules.eventList.domain.usecase.UpsertEventUseCaseContract
 import com.soyvictorherrera.bdates.modules.eventList.framework.ui.AddEventBottomSheetArgs
 import dagger.hilt.android.lifecycle.HiltViewModel
-import java.time.LocalDate
-import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import java.time.LocalDate
+import javax.inject.Inject
 
 private const val INITIAL_YEAR_RANGE = 1901
 
@@ -45,14 +49,19 @@ class AddEventViewModel @Inject constructor(
                 EditMode.EDIT
             },
             isYearDisabled = false,
-            isLoading = false,
-            validYearRange = INITIAL_YEAR_RANGE..dateProvider.currentLocalDate.year
+            isLoading = true,
+            isSaving = false,
+            validYearRange = INITIAL_YEAR_RANGE..dateProvider.currentLocalDate.year,
         )
     )
-    val state: StateFlow<AddEventViewState> = _state
+    val state: StateFlow<AddEventViewState> = _state.asStateFlow()
 
     init {
-        eventId?.let(::loadEvent)
+        if (eventId != null) {
+            loadEvent(eventId)
+        } else {
+            _state.update { it.copy(isLoading = false) }
+        }
     }
 
     fun onEventNameChange(eventName: String) {
@@ -124,13 +133,24 @@ class AddEventViewModel @Inject constructor(
 
     fun onDeleteClick() {
         eventId ?: return
+
+        _state.update {
+            it.copy(isDeleting = true)
+        }
+
         viewModelScope.launch {
             eventRepository.runCatching {
                 deleteEvent(eventId)
             }.onSuccess {
                 _navigation.value = NavigationEvent.NavigateBack()
-            }.onFailure {
-                Timber.e(it, "Unable to delete event")
+            }.onFailure { throwable ->
+                Timber.e(throwable, "Unable to delete event")
+                _state.update {
+                    it.copy(
+                        isDeleting = false,
+                        error = AddEventError.ERROR_DELETING_EVENT.asConsumableEvent()
+                    )
+                }
             }
         }
     }
@@ -150,11 +170,19 @@ class AddEventViewModel @Inject constructor(
                             event.dayOfMonth
                         ),
                         selectedYear = event.year,
-                        isYearDisabled = event.year == null
+                        isYearDisabled = event.year == null,
+                        isLoading = false
                     )
                 }
-            }.onFailure {
-                Timber.e(it, "Unable to load event :(")
+            }.onFailure { throwable ->
+                Timber.e(throwable, "Unable to load event :(")
+                _state.update {
+                    it.copy(
+                        isLoading = false,
+                        isError = true,
+                        error = AddEventError.ERROR_LOADING.asConsumableEvent()
+                    )
+                }
             }
         }
     }

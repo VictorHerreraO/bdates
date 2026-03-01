@@ -6,23 +6,31 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.SnackbarHost
+import androidx.compose.material.SnackbarHostState
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.platform.rememberNestedScrollInteropConnection
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.soyvictorherrera.bdates.core.compose.modifier.clearFocusOnTap
 import com.soyvictorherrera.bdates.core.compose.theme.BdatesTheme
 import com.soyvictorherrera.bdates.core.compose.theme.BottomSheetContentShape
 import com.soyvictorherrera.bdates.core.compose.theme.BottomSheetDialogShape
@@ -33,51 +41,65 @@ fun BottomSheet(
     title: String,
     onBottomSheetDismiss: () -> Unit,
     modifier: Modifier = Modifier,
+    hasActions: Boolean = false,
     actions: (@Composable RowScope.() -> Unit)? = null,
+    snackbarHostState: SnackbarHostState = remember { SnackbarHostState() },
     content: @Composable () -> Unit,
 ) = Surface(
     shape = BottomSheetDialogShape,
     color = MaterialTheme.colors.background,
+    elevation = LocalSizes.current.dimen_2
 ) {
-    Column(
-        modifier = Modifier.fillMaxWidth()
-    ) {
-        val elevation = LocalSizes.current.dimen_2
+    Box {
+        Column(
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            val renderActions = hasActions && actions != null
+            val scrollModifier = Modifier
+                .nestedScroll(rememberNestedScrollInteropConnection())
+                .verticalScroll(state = rememberScrollState())
+                .clearFocusOnTap()
 
-        BottomSheetTopBar(
-            title = title,
-            onDismissClick = onBottomSheetDismiss,
-            elevation = elevation
-        )
+            BottomSheetTopBar(
+                title = title,
+                onDismissClick = onBottomSheetDismiss,
+            )
 
-        Column(modifier = modifier) {
-            Surface(
-                elevation = elevation,
-                shape = if (actions != null) {
-                    BottomSheetContentShape
-                } else {
-                    RectangleShape
-                }
+            Column(
+                modifier = modifier.then(scrollModifier)
             ) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(LocalSizes.current.dimen_32)
+                Surface(
+                    shape = if (renderActions) {
+                        BottomSheetContentShape
+                    } else {
+                        RectangleShape
+                    }
                 ) {
-                    content()
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(LocalSizes.current.dimen_32)
+                    ) {
+                        content()
+                    }
                 }
-            }
 
-            actions?.let {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(LocalSizes.current.dimen_32),
-                    content = it
-                )
+                if (renderActions && actions != null) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(LocalSizes.current.dimen_32),
+                        content = actions
+                    )
+                }
             }
         }
+
+        SnackbarHost(
+            hostState = snackbarHostState,
+            Modifier.align(Alignment.BottomCenter)
+        )
     }
 }
 
@@ -109,9 +131,10 @@ private fun BottomSheetWithActionsPreview() {
         BottomSheet(
             title = "Bottom sheet",
             onBottomSheetDismiss = {},
+            hasActions = true,
             actions = {
                 Button(
-                    onClick = { /*TODO*/ },
+                    onClick = {},
                     colors = ButtonDefaults.buttonColors(
                         backgroundColor = MaterialTheme.colors.secondary
                     )

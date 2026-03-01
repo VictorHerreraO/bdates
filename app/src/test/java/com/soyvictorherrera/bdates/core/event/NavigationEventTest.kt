@@ -1,4 +1,4 @@
-package com.soyvictorherrera.bdates.core.navigation
+package com.soyvictorherrera.bdates.core.event
 
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue

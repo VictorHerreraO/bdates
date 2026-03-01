@@ -1,5 +1,7 @@
 package com.soyvictorherrera.bdates.modules.eventList.domain.usecase
 
+import com.soyvictorherrera.bdates.core.event.NavigationEvent
+import com.soyvictorherrera.bdates.core.network.Resource
 import com.soyvictorherrera.bdates.modules.circles.data.preferences.CirclePreferencesContract
 import com.soyvictorherrera.bdates.modules.circles.data.repository.CircleRepositoryContract
 import com.soyvictorherrera.bdates.modules.circles.domain.model.Circle
@@ -62,9 +64,16 @@ class UpsertEventUseCaseTest {
         val event = Event(id = null, circleId = "", name = "Test", dayOfMonth = 1, monthOfYear = 1, year = null)
 
         every { circlePreferences.localCircleId } returns null
-        coEvery { circleRepository.getCircles() } returns listOf(
-            Circle(id = expectedCircleId, name = "Device local circle", description = "", isDefaultCircle = true)
-        )
+        coEvery { circleRepository.getCircles() } returns Resource.Success(listOf(
+            Circle(
+                id = expectedCircleId,
+                name = "Device local circle",
+                description = "",
+                isDefaultCircle = true,
+                isLocalOnly = true,
+                updateDate = null
+            )
+        ))
         coEvery { eventRepository.createEvent(any()) } returns expectedEventId
 
         subjectUnderTest.execute(event)
@@ -83,7 +92,7 @@ class UpsertEventUseCaseTest {
         val event = Event(id = null, circleId = "", name = "Test", dayOfMonth = 1, monthOfYear = 1, year = null)
 
         every { circlePreferences.localCircleId } returns null
-        coEvery { circleRepository.getCircles() } returns emptyList()
+        coEvery { circleRepository.getCircles() } returns Resource.Success(emptyList())
         coEvery { circleRepository.createCircle(any()) } returns expectedCircleId
         coEvery { eventRepository.createEvent(any()) } returns expectedEventId
 

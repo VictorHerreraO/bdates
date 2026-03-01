@@ -2,15 +2,23 @@ package com.soyvictorherrera.bdates.modules.eventList.framework.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.soyvictorherrera.bdates.core.arch.execute
 import com.soyvictorherrera.bdates.core.date.DateProviderContract
-import com.soyvictorherrera.bdates.core.navigation.NavigationEvent
+import com.soyvictorherrera.bdates.core.event.ConsumableEvent
+import com.soyvictorherrera.bdates.core.event.NavigationEvent
+import com.soyvictorherrera.bdates.core.network.onError
+import com.soyvictorherrera.bdates.core.network.onSuccess
 import com.soyvictorherrera.bdates.core.resource.ResourceManagerContract
 import com.soyvictorherrera.bdates.modules.eventList.domain.model.Event
+import com.soyvictorherrera.bdates.modules.eventList.domain.model.nextOccurrenceAge
 import com.soyvictorherrera.bdates.modules.eventList.domain.usecase.FilterEventListArgs
 import com.soyvictorherrera.bdates.modules.eventList.domain.usecase.FilterEventListUseCaseContract
 import com.soyvictorherrera.bdates.modules.eventList.domain.usecase.GetDayEventListUseCaseContract
 import com.soyvictorherrera.bdates.modules.eventList.domain.usecase.GetNonDayEventListUseCaseContract
+import com.soyvictorherrera.bdates.modules.eventList.domain.usecase.UpdateEventsUseCaseContract
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.launch
+import timber.log.Timber
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
@@ -24,11 +32,12 @@ import kotlin.properties.Delegates
 
 @HiltViewModel
 class EventListViewModel @Inject constructor(
-    dateProvider: DateProviderContract,
+    private val dateProvider: DateProviderContract,
     private val resourceManager: ResourceManagerContract,
     private val getDayEventList: GetDayEventListUseCaseContract,
     private val getNonDayEventList: GetNonDayEventListUseCaseContract,
     private val filterEventListUseCase: FilterEventListUseCaseContract,
+    private val updateEventList: UpdateEventsUseCaseContract,
 ) : ViewModel() {
 
     private val _navigation = MutableStateFlow<NavigationEvent?>(null)
@@ -39,6 +48,12 @@ class EventListViewModel @Inject constructor(
 
     private val _todayEvents = MutableStateFlow<List<TodayEventViewState>>(emptyList())
     val todayEvents: StateFlow<List<TodayEventViewState>> = _todayEvents.asStateFlow()
+
+    private val _isRefreshing = MutableStateFlow(false)
+    val isRefreshing: StateFlow<Boolean> = _isRefreshing.asStateFlow()
+
+    private val _errorMessage = MutableStateFlow<ConsumableEvent<Error>?>(null)
+    val errorMessage: StateFlow<ConsumableEvent<Error>?> = _errorMessage.asStateFlow()
 
     private val _requestPermissionSignal = MutableStateFlow(true)
     val requestPermissionSignal: StateFlow<Boolean> = _requestPermissionSignal.asStateFlow()
@@ -59,12 +74,33 @@ class EventListViewModel @Inject constructor(
 
     init {
         getData()
+        refreshData()
     }
 
-    private fun getData() {
+    private fun getData(): Unit = with(viewModelScope) {
+        launch {
+            dayEvents = getDayEventList.execute()
+        }
+        launch {
+            allEvents = getNonDayEventList.execute()
+        }
+    }
+
+    private fun refreshData() {
         viewModelScope.launch {
-            this@EventListViewModel.dayEvents = getDayEventList.execute()
-            this@EventListViewModel.allEvents = getNonDayEventList.execute()
+            _isRefreshing.value = true
+
+            updateEventList.execute()
+                .onSuccess {
+                    Timber.d("Success")
+                    getData()
+                }
+                .onError { _, cause ->
+                    Timber.d(cause, "Show refresh error")
+                    _errorMessage.value = ConsumableEvent(Error.UnableToRefresh)
+                }
+
+            _isRefreshing.value = false
         }
     }
 
@@ -74,11 +110,11 @@ class EventListViewModel @Inject constructor(
     }
 
     fun onEventClick(eventId: String) {
-        _navigation.value = NavigationEvent.EventBottomSheet(eventId = eventId)
+        _navigation.value = NavigationEvent.PreviewEventBottomSheet(eventId = eventId)
     }
 
     fun onAddEventClick() {
-        _navigation.value = NavigationEvent.EventBottomSheet()
+        _navigation.value = NavigationEvent.AddEventBottomSheet()
     }
 
     fun onNotificationPermissionStateCheck(isGranted: Boolean) {
@@ -116,9 +152,8 @@ class EventListViewModel @Inject constructor(
                         },
                         name = event.name,
                         description = nextOccurrence.let { date ->
-                            val formatted = date.format(longFormatter)
-                            return@let event.year?.let { birthYear ->
-                                val yearsOld = nextOccurrence.year.minus(birthYear)
+                            val formatted = dateProvider.formatDateAsDayAndMonth(date)
+                            return@let event.nextOccurrenceAge?.let { yearsOld ->
                                 "$formatted " + resourceManager.getString(
                                     identifier = "event_birthday_description",
                                     yearsOld
@@ -152,4 +187,8 @@ class EventListViewModel @Inject constructor(
     }
 
     fun refresh() = getData()
+}
+
+sealed class Error {
+    object UnableToRefresh : Error()
 }

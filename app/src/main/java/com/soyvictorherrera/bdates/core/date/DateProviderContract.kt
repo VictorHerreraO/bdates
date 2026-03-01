@@ -13,4 +13,11 @@ interface DateProviderContract {
      * Saturday 15
      */
     fun formatDateAsDay(date: LocalDate): String
+
+    /**
+     * Formats the given [date] into a human readable day name and day of month:
+     *
+     * Saturday 03/15
+     */
+    fun formatDateAsDayAndMonth(date: LocalDate): String
 }
