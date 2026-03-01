@@ -1,6 +1,7 @@
 package com.soyvictorherrera.bdates.modules.eventList.domain.usecase
 
 import com.soyvictorherrera.bdates.core.arch.UseCase
+import com.soyvictorherrera.bdates.core.network.Resource
 import com.soyvictorherrera.bdates.modules.circles.data.preferences.CirclePreferencesContract
 import com.soyvictorherrera.bdates.modules.circles.data.repository.CircleRepositoryContract
 import com.soyvictorherrera.bdates.modules.circles.domain.model.Circle
@@ -19,13 +20,15 @@ class UpsertEventUseCase @Inject constructor(
 
     override suspend fun execute(params: Event) {
         val localCircleId = circlePreferences.localCircleId
-            ?: circleRepository.getCircles().find { it.isDefaultCircle }?.id
+            ?: (circleRepository.getCircles() as? Resource.Success)?.data?.find { it.isDefaultCircle }?.id
             ?: circleRepository.createCircle(
                 Circle(
                     id = null,
                     name = "Device local circle",
                     description = null,
-                    isDefaultCircle = true
+                    isLocalOnly = true,
+                    isDefaultCircle = true,
+                    updateDate = null,
                 )
             )
 

@@ -36,14 +36,6 @@ import com.soyvictorherrera.bdates.modules.eventList.domain.usecase.GetNonDayEve
 import com.soyvictorherrera.bdates.modules.eventList.domain.usecase.GetNonDayEventListUseCaseContract
 import com.soyvictorherrera.bdates.modules.eventList.domain.usecase.GetUpcomingEventListUseCase
 import com.soyvictorherrera.bdates.modules.eventList.domain.usecase.GetUpcomingEventListUseCaseContract
-import com.soyvictorherrera.bdates.modules.eventList.domain.usecase.CalculateEventOccurrenceUseCase
-import com.soyvictorherrera.bdates.modules.eventList.domain.usecase.CalculateEventOccurrenceUseCaseContract
-import com.soyvictorherrera.bdates.modules.eventList.domain.usecase.FilterEventListUseCase
-import com.soyvictorherrera.bdates.modules.eventList.domain.usecase.FilterEventListUseCaseContract
-import com.soyvictorherrera.bdates.modules.eventList.domain.usecase.GetEventListUseCase
-import com.soyvictorherrera.bdates.modules.eventList.domain.usecase.GetEventListUseCaseContract
-import com.soyvictorherrera.bdates.modules.eventList.domain.usecase.GetEventUseCase
-import com.soyvictorherrera.bdates.modules.eventList.domain.usecase.GetEventUseCaseContract
 import com.soyvictorherrera.bdates.modules.eventList.domain.usecase.UpdateEventsUseCase
 import com.soyvictorherrera.bdates.modules.eventList.domain.usecase.UpdateEventsUseCaseContract
 import com.soyvictorherrera.bdates.modules.eventList.domain.usecase.UpsertEventUseCase

@@ -131,10 +131,10 @@ class EventListFragment : Fragment() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 launch {
-                    viewModel.events.collect { 
-                        adapter.submitList(it)
+                    viewModel.events.collect { eventList ->
+                        adapter.submitList(eventList)
                         with(binding.layoutUpcomingEvents) {
-                            val showEmptyIcon = it.isEmpty() && inputSearch.text.isEmpty()
+                            val showEmptyIcon = eventList.isEmpty() && inputSearch.text.isEmpty()
                             lblUpcomingEventsTitle.isGone = showEmptyIcon
                             swipeLayout.isGone = showEmptyIcon
                             inputSearch.isGone = showEmptyIcon
@@ -169,7 +169,7 @@ class EventListFragment : Fragment() {
                 }
                 launch {
                     viewModel.showMissingPermissionMessage.collect { showMessage ->
-                        binding.layoutWarningBanner.root.isVisible = showMessage
+                        binding.layoutUpcomingEvents.layoutWarningBanner.root.isVisible = showMessage
                     }
                 }
                 launch {
