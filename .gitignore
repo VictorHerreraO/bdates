@@ -94,3 +94,6 @@ functions/functions/env.json
 # AI Agent temporary files
 .tasks/
 *.ai.md
+
+# Screenshots
+screenshots/

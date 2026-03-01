@@ -1,67 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Cumpleaños</string>
+    <string name="app_name">Birthdays</string>
 
     <!-- Event list -->
-    <string name="title_today_occasions">Hoy celebramos</string>
-    <string name="title_today_occasions_break_line">Hoy celebramos</string>
-    <string name="title_upcoming_events">Se viene lo bueno</string>
-    <string name="hint_search_event_by_name">Busca un cumpleaños por nombre</string>
-    <string name="time_unit_day">día</string>
-    <string name="time_unit_days">días</string>
-    <string name="event_birthday_title">Cumpleaños</string>
-    <string name="event_birthday_description">• Cumple %d</string>
-    <string name="add_event">Agregar evento</string>
-    <string name="event_list_no_events_title">No hay eventos que mostrar</string>
-    <string name="event_list_no_events_description">Agrega nuevos eventos para recibir recordatorios</string>
-    <string name="event_list_error_fetch_list">No fue posible actualizar la lista de eventos</string>
+    <string name="title_today_occasions">Today\'s occasions</string>
+    <string name="title_today_occasions_break_line">Today\'s\noccasions</string>
+    <string name="title_upcoming_events">Upcoming big days</string>
+    <string name="hint_search_event_by_name">Search a birthday by name</string>
+    <string name="time_unit_day">day</string>
+    <string name="time_unit_days">days</string>
+    <string name="event_birthday_title">Birthday</string>
+    <string name="event_birthday_description">• Turns %d</string>
+    <string name="add_event">Add Event</string>
+    <string name="event_list_no_events_title">No events to show</string>
+    <string name="event_list_no_events_description">Try adding new events to get reminders</string>
+    <string name="event_list_error_fetch_list">Unable to update event list</string>
 
     <!-- Notification channels -->
-    <string name="notification_channel_name_event_reminders">Recordatorios de eventos</string>
-    <string name="notification_channel_description_event_reminders">Recordatorios diarios sobre eventos</string>
+    <string name="notification_channel_name_event_reminders">Event reminders</string>
+    <string name="notification_channel_description_event_reminders">Daily event reminders</string>
 
-    <!-- Notifications -->️
-    <string name="banner_notification_permission_not_granted_title">⛔️ No es posible mostrar notificaciones de eventos</string>
-    <string name="banner_notification_permission_not_granted_subtitle">Toca para habilitarlas en la configuración del teléfono</string>
-
-    <string name="notification_title_single_day_event">🍰 ¡Hay un cumpleaños que celebrar el día de hoy!</string>
-    <string name="notification_title_multiple_day_event">🍰 ¡Hay %d cumpleaños que celebrar el día de hoy!</string>
-    <string name="notification_content_single_day_event">Hoy es cumpleaños de %s. Asegúrate de saludar 👋</string>
-    <string name="notification_content_multiple_day_event">Hoy es cumpleaños de %s y %d más. Asegúrate de saludar 👋</string>
-
-    <string name="notification_title_single_upcoming_event">1 evento está próximo</string>
-    <string name="notification_title_multiple_upcoming_event">Hay %d eventos próximos</string>
-    <string name="notification_content_single_upcoming_event" formatted="false">📆 Será cumpleaños de %s el %s.</string>
-    <string name="notification_content_multiple_upcoming_event" formatted="false">📆 Será cumpleaños de %s y otros %s el %s</string>
+    <!-- Notifications -->
+    <string name="banner_notification_permission_not_granted_title">⛔️ Unable to show event notifications</string>
+    <string name="banner_notification_permission_not_granted_subtitle">Tap to enable on phone settings</string>
 
     <!--Date Formats-->
     <string name="date_format_day" translatable="false">EEEE d</string>
 
     <!-- Add events -->
-    <string name="add_event_title_create">Nuevo cumpleaños 🎉</string>
-    <string name="add_event_title_edit">Editar celebración</string>
-    <string name="add_event_name">¿Quién cumple años?</string>
-    <string name="add_event_date">Cumple el día</string>
-    <string name="add_event_year">Año de nacimiento</string>
-    <string name="add_event_year_optional">No quiero agregar el año</string>
-    <string name="add_event_save_event">Crear evento</string>
-    <string name="add_event_save_changes">Guardar cambios</string>
-    <string name="add_event_delete_event">Eliminar evento</string>
+    <string name="add_event_title_create">New birthday 🎉</string>
+    <string name="add_event_title_edit">Edit celebration</string>
+    <string name="add_event_name">Buddy name</string>
+    <string name="add_event_date">Birthday date</string>
+    <string name="add_event_year">Year</string>
+    <string name="add_event_year_optional">Don\'t add a year</string>
+    <string name="add_event_save_event">Create event</string>
+    <string name="add_event_save_changes">Save changes</string>
+    <string name="add_event_delete_event">Delete event</string>
     <string name="add_event_error_loading">@string/preview_event_error_loading</string>
-    <string name="add_event_error_saving">Lo sentimos, los cambios no se pudieron guardar</string>
+    <string name="add_event_error_saving">Sorry, changes couldn\'t be saved</string>
     <string name="add_event_error_deleting">@string/add_event_error_saving</string>
 
     <!-- Preview events -->
     <string name="preview_event_date_w_remaining_days_subtitle">%1$s • %2$s</string>
     <string name="preview_event_no_age_title" translatable="false">🎉</string>
     <string name="preview_event_type_birthday" translatable="false">@string/event_birthday_title</string>
-    <string name="preview_event_title_birthday">Cumpleaños de %1$s</string>
-    <string name="preview_event_title_birthday_w_age">%2$s cumpleaños de %1$s</string>
-    <string name="preview_event_error_loading">No fue posible cargar el evento</string>
-    <plurals name="preview_event_remaining_time">
-        <item quantity="one">Falta %1$s día</item>
-        <item quantity="other">Faltan %1$s días</item>
-    </plurals>
+    <string name="preview_event_title_birthday">%1$s\'s birthday</string>
+    <string name="preview_event_title_birthday_w_age">%1$s\'s %2$s birthday</string>
+    <string name="preview_event_error_loading">Unable to load the event</string>
 
     <!-- Localized date formatter -->
-    <string name="date_format_long_day_with_month">EEEE, dd/MM</string>
+    <string name="date_format_long_day_with_month">EEEE, MM/dd</string>
 </resources>
