@@ -10,7 +10,7 @@ import com.soyvictorherrera.bdates.modules.eventList.data.datasource.local.Event
 const val APP_DATABASE_NAME = "app_database.db"
 
 @Database(
-    version = 1,
+    version = 2,
     entities = [
         CircleEntity::class,
         EventEntity::class,

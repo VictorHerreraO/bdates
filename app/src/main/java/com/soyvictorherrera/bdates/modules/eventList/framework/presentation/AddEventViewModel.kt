@@ -5,10 +5,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.soyvictorherrera.bdates.core.date.DateProviderContract
 import com.soyvictorherrera.bdates.core.event.NavigationEvent
-import com.soyvictorherrera.bdates.core.event.asConsumableEvent
-import com.soyvictorherrera.bdates.modules.circles.data.preferences.CirclePreferencesContract
 import com.soyvictorherrera.bdates.modules.eventList.data.repository.EventRepositoryContract
 import com.soyvictorherrera.bdates.modules.eventList.domain.model.Event
+import com.soyvictorherrera.bdates.modules.eventList.domain.usecase.UpsertEventUseCaseContract
 import com.soyvictorherrera.bdates.modules.eventList.framework.ui.AddEventBottomSheetArgs
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -27,7 +26,7 @@ class AddEventViewModel @Inject constructor(
     stateHandle: SavedStateHandle,
     private val dateProvider: DateProviderContract,
     private val eventRepository: EventRepositoryContract,
-    private val circlePreferences: CirclePreferencesContract,
+    private val upsertEventUseCase: UpsertEventUseCaseContract,
 ) : ViewModel() {
 
     private val _navigation = MutableStateFlow<NavigationEvent?>(null)
@@ -101,39 +100,30 @@ class AddEventViewModel @Inject constructor(
     }
 
     fun onActionClick() {
-        val localCircleId = circlePreferences.localCircleId ?: return
-        val event = _state.value.run {
-            Event(
-                id = eventId,
-                circleId = currentEvent?.circleId ?: localCircleId,
-                name = eventName.trim(),
-                dayOfMonth = selectedDate.dayOfMonth,
-                monthOfYear = selectedDate.monthValue,
-                year = selectedDate.year.takeIf { isYearDisabled.not() }
-            )
-        }
-
-        _state.update {
-            it.copy(isSaving = true)
+        if (!state.value.isSaveEnabled) {
+            return
         }
 
         viewModelScope.launch {
-            eventRepository.runCatching {
-                if (event.id.isNullOrEmpty()) {
-                    createEvent(event)
-                } else {
-                    updateEvent(event)
-                }
+            _state.update { it.copy(isLoading = true) }
+
+            val event = _state.value.run {
+                Event(
+                    id = eventId,
+                    circleId = currentEvent?.circleId ?: "",
+                    name = eventName.trim(),
+                    dayOfMonth = selectedDate.dayOfMonth,
+                    monthOfYear = selectedDate.monthValue,
+                    year = selectedDate.year.takeIf { isYearDisabled.not() }
+                )
+            }
+
+            upsertEventUseCase.runCatching {
+                execute(event)
             }.onSuccess {
                 _navigation.value = NavigationEvent.NavigateBack()
-            }.onFailure { throwable ->
-                Timber.e(throwable, "Unable to save event")
-                _state.update {
-                    it.copy(
-                        isSaving = false,
-                        error = AddEventError.ERROR_SAVING_EVENT.asConsumableEvent()
-                    )
-                }
+            }.onFailure {
+                _state.update { it.copy(isLoading = false) }
             }
         }
     }

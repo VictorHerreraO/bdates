@@ -30,8 +30,8 @@
 
     <string name="notification_title_single_upcoming_event">1 evento está próximo</string>
     <string name="notification_title_multiple_upcoming_event">Hay %d eventos próximos</string>
-    <string name="notification_content_single_upcoming_event">📆 Será cumpleaños de %s el %s.</string>
-    <string name="notification_content_multiple_upcoming_event">📆 Será cumpleaños de %s y otros %s el %s</string>
+    <string name="notification_content_single_upcoming_event" formatted="false">📆 Será cumpleaños de %s el %s.</string>
+    <string name="notification_content_multiple_upcoming_event" formatted="false">📆 Será cumpleaños de %s y otros %s el %s</string>
 
     <!--Date Formats-->
     <string name="date_format_day" translatable="false">EEEE d</string>
