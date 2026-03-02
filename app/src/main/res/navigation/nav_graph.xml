@@ -3,7 +3,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/eventListFragment">
+    app:startDestination="@id/circleListFragment">
+
+    <fragment
+        android:id="@+id/circleListFragment"
+        android:name="com.soyvictorherrera.bdates.modules.circles.framework.presentation.CircleListFragment"
+        android:label="CircleListFragment" />
 
     <fragment
         android:id="@+id/eventListFragment"
