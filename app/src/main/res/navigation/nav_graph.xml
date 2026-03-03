@@ -6,6 +6,11 @@
     app:startDestination="@id/eventListFragment">
 
     <fragment
+        android:id="@+id/circleListFragment"
+        android:name="com.soyvictorherrera.bdates.modules.circles.framework.presentation.CircleListFragment"
+        android:label="CircleListFragment" />
+
+    <fragment
         android:id="@+id/eventListFragment"
         android:name="com.soyvictorherrera.bdates.modules.eventList.framework.ui.EventListFragment"
         android:label="EventListFragment"

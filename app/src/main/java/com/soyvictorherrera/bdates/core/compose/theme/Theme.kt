@@ -4,6 +4,9 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.darkColors
 import androidx.compose.material.lightColors
+import androidx.compose.material3.darkColorScheme
+import androidx.compose.material3.lightColorScheme
+import androidx.compose.material3.MaterialTheme as Material3Theme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 
@@ -29,15 +32,30 @@ private val LightColorPalette = lightColors(
     onBackground = White,
     onSurface = Black,
     onError = White
+)
 
-    /* Other default colors to override
-    background = Color.White,
-    surface = Color.White,
-    onPrimary = Color.White,
-    onSecondary = Color.Black,
-    onBackground = Color.Black,
-    onSurface = Color.Black,
-    */
+private val LightColorScheme = lightColorScheme(
+    primary = Bossanova,
+    onPrimary = White,
+    secondary = Tradewind,
+    onSecondary = White,
+    background = Bossanova,
+    surface = White,
+    onBackground = White,
+    onSurface = Black,
+    tertiary = Bossanova
+)
+
+private val DarkColorScheme = darkColorScheme(
+    primary = Bossanova,
+    onPrimary = White,
+    secondary = Tradewind,
+    onSecondary = White,
+    background = Color(0xFF121212),
+    surface = Cod_Gray,
+    onBackground = White,
+    onSurface = White,
+    tertiary = White
 )
 
 @Composable
@@ -51,10 +69,20 @@ fun BdatesTheme(
         LightColorPalette
     }
 
+    val colorScheme = if (darkTheme) {
+        DarkColorScheme
+    } else {
+        LightColorScheme
+    }
+
     MaterialTheme(
         colors = colors,
         typography = Typography,
-        shapes = Shapes,
-        content = content
-    )
+        shapes = Shapes
+    ) {
+        Material3Theme(
+            colorScheme = colorScheme,
+            content = content
+        )
+    }
 }

@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Circle list -->
+    <string name="title_my_circles">My Circles</string>
+    <string name="add_circle">Add Circle</string>
+    <string name="cd_add_circle">Add Circle</string>
+
     <string name="app_name">Birthdays</string>
 
     <!-- Event list -->
