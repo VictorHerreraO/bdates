@@ -9,3 +9,7 @@
 - DB: Room (SQLite with KTX)
 - Async: Coroutines
 - Architecture: Clean Architecture (Domain, Data, Framework layers), Modular.
+
+## Project rules
+
+- Always read [AGENTS](AGENTS.md) file when working on this project.

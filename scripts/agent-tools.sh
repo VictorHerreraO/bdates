@@ -185,39 +185,74 @@ function reset_all() {
 }
 
 # Main routing
-case "$1" in
+cmd="$1"
+shift
+
+case "$cmd" in
     theme)
-        set_theme "$2"
+        if [[ "$1" == "--help" || "$1" == "-h" ]]; then
+            show_help theme
+        else
+            set_theme "$1"
+        fi
         ;;
     density)
-        set_density "$2"
+        if [[ "$1" == "--help" || "$1" == "-h" ]]; then
+            show_help density
+        else
+            set_density "$1"
+        fi
         ;;
     size)
-        set_size "$2"
+        if [[ "$1" == "--help" || "$1" == "-h" ]]; then
+            show_help size
+        else
+            set_size "$1"
+        fi
         ;;
     rotation)
-        set_rotation "$2"
+        if [[ "$1" == "--help" || "$1" == "-h" ]]; then
+            show_help rotation
+        else
+            set_rotation "$1"
+        fi
         ;;
     locale)
-        set_locale "$2"
+        if [[ "$1" == "--help" || "$1" == "-h" ]]; then
+            show_help locale
+        else
+            set_locale "$1"
+        fi
         ;;
     font-size)
-        set_font_size "$2"
+        if [[ "$1" == "--help" || "$1" == "-h" ]]; then
+            show_help font-size
+        else
+            set_font_size "$1"
+        fi
         ;;
     navigation)
-        set_navigation "$2"
+        if [[ "$1" == "--help" || "$1" == "-h" ]]; then
+            show_help navigation
+        else
+            set_navigation "$1"
+        fi
         ;;
     reset)
-        reset_all
+        if [[ "$1" == "--help" || "$1" == "-h" ]]; then
+            show_help reset
+        else
+            reset_all
+        fi
         ;;
     help|--help|-h)
-        show_help "$2"
+        show_help "$1"
         ;;
     *)
-        if [ -z "$1" ]; then
+        if [ -z "$cmd" ]; then
             show_help
         else
-            echo "Unknown command: $1"
+            echo "Unknown command: $cmd"
             show_help
             exit 1
         fi

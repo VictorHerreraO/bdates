@@ -30,7 +30,14 @@ fun CircleListScreen(
     onMenuClick: (Circle) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val layoutDirection = androidx.compose.ui.platform.LocalLayoutDirection.current
+    val configuration = androidx.compose.ui.platform.LocalConfiguration.current
+    val isLandscape = configuration.orientation == android.content.res.Configuration.ORIENTATION_LANDSCAPE
+    
+    val fabPosition = if (isLandscape) {
+        FabPosition.End
+    } else {
+        FabPosition.Center
+    }
 
     Surface(
         modifier = modifier.fillMaxSize(),
@@ -39,15 +46,13 @@ fun CircleListScreen(
         Scaffold(
             modifier = Modifier.fillMaxSize(),
             containerColor = androidx.compose.ui.graphics.Color.Transparent,
-            floatingActionButtonPosition = FabPosition.Center,
+            floatingActionButtonPosition = fabPosition,
             floatingActionButton = {
-                ExtendedFloatingActionButton(
+                com.soyvictorherrera.bdates.core.compose.widget.AppExtendedFloatingActionButton(
+                    text = stringResource(R.string.add_circle),
+                    icon = Icons.Filled.Add,
                     onClick = onAddCircleClick,
-                    icon = { Icon(Icons.Filled.Add, contentDescription = "Add Circle") },
-                    text = { Text(text = "ADD CIRCLE") },
-                    containerColor = Tradewind,
-                    contentColor = MaterialTheme.colorScheme.onSecondary,
-                    shape = androidx.compose.foundation.shape.RoundedCornerShape(50),
+                    contentDescription = stringResource(R.string.cd_add_circle),
                     modifier = Modifier.padding(bottom = 16.dp) 
                 )
             }
@@ -55,12 +60,7 @@ fun CircleListScreen(
             Surface(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(
-                        top = innerPadding.calculateTopPadding(),
-                        bottom = innerPadding.calculateBottomPadding(),
-                        start = innerPadding.calculateStartPadding(layoutDirection),
-                        end = innerPadding.calculateEndPadding(layoutDirection)
-                    ),
+                    .padding(innerPadding),
                 color = MaterialTheme.colorScheme.surface,
                 shape = androidx.compose.foundation.shape.RoundedCornerShape(
                     topStart = LocalSizes.current.dimen_24, 
@@ -73,7 +73,7 @@ fun CircleListScreen(
                         .padding(top = LocalSizes.current.dimen_16)
                 ) {
                     Text(
-                        text = "My Circles",
+                        text = stringResource(R.string.title_my_circles),
                         style = MaterialTheme.typography.headlineSmall,
                         color = MaterialTheme.colorScheme.tertiary,
                         fontWeight = androidx.compose.ui.text.font.FontWeight.Bold,
