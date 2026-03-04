@@ -6,4 +6,5 @@ data class EventViewState(
     val remainingTimeUnit: String,
     val name: String,
     val description: String,
+    val eventEmoji: String,
 )

@@ -43,7 +43,9 @@ private val LightColorScheme = lightColorScheme(
     surface = White,
     onBackground = White,
     onSurface = Black,
-    tertiary = Bossanova
+    tertiary = Bossanova,
+    surfaceVariant = Gallery,
+    onSurfaceVariant = Black
 )
 
 private val DarkColorScheme = darkColorScheme(
@@ -55,7 +57,9 @@ private val DarkColorScheme = darkColorScheme(
     surface = Cod_Gray,
     onBackground = White,
     onSurface = White,
-    tertiary = White
+    tertiary = White,
+    surfaceVariant = Color(0xFF2C2C2C),
+    onSurfaceVariant = White
 )
 
 @Composable

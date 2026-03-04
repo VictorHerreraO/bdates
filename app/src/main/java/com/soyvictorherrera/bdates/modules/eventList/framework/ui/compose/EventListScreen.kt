@@ -5,10 +5,16 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.clickable
+import androidx.compose.ui.draw.clip
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -19,6 +25,7 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -31,6 +38,9 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.graphics.Color
+import com.soyvictorherrera.bdates.core.compose.theme.Gallery
+import com.soyvictorherrera.bdates.core.compose.theme.Paradiso
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -42,6 +52,9 @@ import com.soyvictorherrera.bdates.modules.eventList.framework.presentation.Even
 import com.soyvictorherrera.bdates.modules.eventList.framework.presentation.EventListState
 import com.soyvictorherrera.bdates.modules.eventList.framework.presentation.EventViewState
 import com.soyvictorherrera.bdates.modules.eventList.framework.presentation.TodayEventViewState
+import com.soyvictorherrera.bdates.core.compose.theme.Rajah
+import androidx.compose.foundation.layout.Row
+import androidx.compose.ui.Alignment
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -69,7 +82,7 @@ fun EventListScreen(
             floatingActionButtonPosition = FabPosition.End,
             floatingActionButton = {
                 AppExtendedFloatingActionButton(
-                    text = stringResource(R.string.add_event),
+                    text = stringResource(R.string.add_event).uppercase(),
                     icon = Icons.Filled.Add,
                     onClick = { onAction(EventListAction.AddEventClick) },
                     contentDescription = stringResource(R.string.add_event),
@@ -78,37 +91,35 @@ fun EventListScreen(
             },
             snackbarHost = { SnackbarHost(snackbarHostState) },
         ) { innerPadding ->
-            Surface(
+            Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(innerPadding),
-                color = MaterialTheme.colorScheme.surface,
-                shape = RoundedCornerShape(topStart = LocalSizes.current.dimen_24, topEnd = LocalSizes.current.dimen_24),
+                    .padding(top = innerPadding.calculateTopPadding())
             ) {
-                Column(modifier = Modifier.fillMaxSize()) {
-                    // Permission warning banner
-                    if (state.showMissingPermissionMessage) {
-                        PermissionWarningBanner(
-                            onBannerClick = { onAction(EventListAction.OpenAppSettings) },
-                            modifier = Modifier.fillMaxWidth(),
-                        )
-                    }
+                // Today's birthdays section
+                if (state.showTodayEvents) {
+                    TodayEventListSection(
+                        events = state.todayEvents,
+                        modifier = Modifier.fillMaxWidth(),
+                    )
+                }
 
-                    // Today's birthdays section
-                    if (state.showTodayEvents) {
-                        TodayEventListSection(
-                            events = state.todayEvents,
-                            modifier = Modifier.fillMaxWidth(),
-                        )
-                    }
-
+                Surface(
+                    modifier = Modifier.fillMaxSize(),
+                    color = MaterialTheme.colorScheme.surface,
+                    shape = RoundedCornerShape(
+                        topStart = 32.dp,
+                        topEnd = 32.dp
+                    ),
+                ) {
                     // Upcoming events section
                     UpcomingEventsSection(
                         state = state,
                         onAction = onAction,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .weight(1f),
+                        modifier = Modifier.fillMaxWidth(),
+                        contentPadding = PaddingValues(
+                            bottom = 88.dp + innerPadding.calculateBottomPadding()
+                        ),
                     )
                 }
             }
@@ -124,9 +135,9 @@ private fun TodayEventListSection(
     Column(modifier = modifier.padding(top = LocalSizes.current.dimen_16)) {
         Text(
             text = stringResource(R.string.title_today_occasions),
-            style = MaterialTheme.typography.titleMedium,
-            fontWeight = FontWeight.Bold,
-            color = MaterialTheme.colorScheme.tertiary,
+            style = MaterialTheme.typography.headlineSmall,
+            fontWeight = FontWeight.ExtraBold,
+            color = MaterialTheme.colorScheme.onPrimary,
             modifier = Modifier.padding(horizontal = LocalSizes.current.dimen_16),
         )
         LazyRow(
@@ -146,30 +157,39 @@ private fun UpcomingEventsSection(
     state: EventListState,
     onAction: (EventListAction) -> Unit,
     modifier: Modifier = Modifier,
+    contentPadding: PaddingValues = PaddingValues(0.dp),
 ) {
     Column(modifier = modifier) {
+        if (state.showMissingPermissionMessage) {
+            PermissionWarningBanner(
+                onBannerClick = { onAction(EventListAction.OpenAppSettings) },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = LocalSizes.current.dimen_16)
+                    .padding(top = 16.dp)
+            )
+        }
+
         Text(
             text = stringResource(R.string.title_upcoming_events),
-            style = MaterialTheme.typography.titleMedium,
-            fontWeight = FontWeight.Bold,
-            color = MaterialTheme.colorScheme.tertiary,
+            style = MaterialTheme.typography.headlineSmall,
+            fontWeight = FontWeight.ExtraBold,
+            color = MaterialTheme.colorScheme.onSurface,
             modifier = Modifier.padding(
                 start = LocalSizes.current.dimen_16,
                 end = LocalSizes.current.dimen_16,
-                top = LocalSizes.current.dimen_16,
+                top = 24.dp, // Slightly more padding for the larger radius
+                bottom = 4.dp
             ),
         )
 
         // Search field
-        OutlinedTextField(
-            value = state.query,
-            onValueChange = { onAction(EventListAction.ChangeQuery(it)) },
-            leadingIcon = { Icon(Icons.Default.Search, contentDescription = null) },
-            placeholder = { Text(stringResource(R.string.hint_search_event_by_name)) },
-            singleLine = true,
+        SearchBar(
+            query = state.query,
+            onQueryChange = { onAction(EventListAction.ChangeQuery(it)) },
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = LocalSizes.current.dimen_16, vertical = 8.dp),
+                .padding(horizontal = LocalSizes.current.dimen_16, vertical = 4.dp)
         )
 
         if (state.showEmptyState) {
@@ -196,7 +216,7 @@ private fun UpcomingEventsSection(
             ) {
                 LazyColumn(
                     modifier = Modifier.fillMaxSize(),
-                    contentPadding = PaddingValues(bottom = 88.dp),
+                    contentPadding = contentPadding,
                 ) {
                     items(state.events, key = { it.id }) { event ->
                         UpcomingEventItem(
@@ -212,25 +232,82 @@ private fun UpcomingEventsSection(
 }
 
 @Composable
+private fun SearchBar(
+    query: String,
+    onQueryChange: (String) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    OutlinedTextField(
+        value = query,
+        onValueChange = onQueryChange,
+        modifier = modifier
+            .fillMaxWidth()
+            .height(56.dp),
+        placeholder = {
+            Text(
+                text = stringResource(R.string.hint_search_event_by_name),
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f)
+            )
+        },
+        leadingIcon = {
+            Icon(
+                imageVector = Icons.Default.Search,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f)
+            )
+        },
+        singleLine = true,
+        colors = OutlinedTextFieldDefaults.colors(
+            focusedContainerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f),
+            unfocusedContainerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f),
+            disabledContainerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f),
+            focusedTextColor = MaterialTheme.colorScheme.onSurface,
+            unfocusedTextColor = MaterialTheme.colorScheme.onSurface,
+            focusedBorderColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f),
+            unfocusedBorderColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f),
+            cursorColor = Paradiso
+        ),
+        shape = RoundedCornerShape(16.dp)
+    )
+}
+
+@Composable
 private fun PermissionWarningBanner(
     onBannerClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Surface(
-        modifier = modifier,
-        color = MaterialTheme.colorScheme.errorContainer,
+        onClick = onBannerClick,
+        modifier = modifier
+            .height(56.dp)
+            .clip(RoundedCornerShape(16.dp)),
+        color = Rajah,
+        shape = RoundedCornerShape(16.dp),
     ) {
-        TextButton(
-            onClick = onBannerClick,
+        Row(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 4.dp),
+                .padding(horizontal = 16.dp),
+            verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = stringResource(R.string.banner_notification_permission_not_granted_title),
-                color = MaterialTheme.colorScheme.onErrorContainer,
-                style = MaterialTheme.typography.bodySmall,
+                text = "⛔️",
+                modifier = Modifier.padding(end = 12.dp)
             )
+            Column {
+                Text(
+                    text = stringResource(R.string.banner_notification_permission_not_granted_title)
+                        .replace("⛔️ ", ""),
+                    color = Color.Black,
+                    style = MaterialTheme.typography.bodyMedium,
+                    fontWeight = FontWeight.Bold
+                )
+                Text(
+                    text = stringResource(R.string.banner_notification_permission_not_granted_subtitle),
+                    color = Color.Black,
+                    style = MaterialTheme.typography.labelSmall
+                )
+            }
         }
     }
 }
@@ -244,9 +321,9 @@ private fun PreviewEventListScreenWithData() {
         EventListScreen(
             state = EventListState(
                 events = listOf(
-                    EventViewState("1", "3", "days", "Dwight Schrute", "Friday, 03/06 • Turns 45"),
-                    EventViewState("2", "12", "days", "Jim Halpert", "Sunday, 03/15 • Turns 38"),
-                    EventViewState("3", "30", "days", "Pam Beesly", "Thursday, 04/02 • Turns 36"),
+                    EventViewState("1", "3", "days", "Dwight Schrute", "Friday, 03/06 • Turns 45", "🎂"),
+                    EventViewState("2", "12", "days", "Jim Halpert", "Sunday, 03/15 • Turns 38", "🎂"),
+                    EventViewState("3", "30", "days", "Pam Beesly", "Thursday, 04/02 • Turns 36", "🎂"),
                 ),
                 todayEvents = listOf(
                     TodayEventViewState("4", "41", "Michael Scott", "Birthday"),

@@ -142,7 +142,8 @@ class EventListViewModel @Inject constructor(
                                     yearsOld
                                 )
                             } ?: formatted
-                        }
+                        },
+                        eventEmoji = "🎂"
                     )
                 }
             },
