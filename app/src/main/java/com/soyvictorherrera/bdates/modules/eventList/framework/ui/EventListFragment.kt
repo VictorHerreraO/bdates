@@ -83,29 +83,33 @@ class EventListFragment : Fragment() {
     private fun observeNavigation() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.navigation.collect { event ->
-                    event?.consume {
-                        when (it) {
-                            is NavigationEvent.AddEventBottomSheet -> {
-                                NavGraphDirections.actionCreateEventBottomSheet(
-                                    eventId = it.eventId
-                                ).let { directions ->
-                                    findNavController().navigate(directions)
+                viewModel.uiState
+                    .map { it.navigationEvent }
+                    .distinctUntilChanged()
+                    .collect { event ->
+                        event?.consume {
+                            when (it) {
+                                is NavigationEvent.AddEventBottomSheet -> {
+                                    NavGraphDirections.actionCreateEventBottomSheet(
+                                        eventId = it.eventId
+                                    ).let { directions ->
+                                        findNavController().navigate(directions)
+                                    }
+                                }
+                                is NavigationEvent.PreviewEventBottomSheet -> {
+                                    NavGraphDirections.actionPreviewEventBottomSheet(
+                                        eventId = it.eventId
+                                    ).let { directions ->
+                                        findNavController().navigate(directions)
+                                    }
+                                }
+                                is NavigationEvent.NavigateBack -> {
+                                    findNavController().popBackStack()
                                 }
                             }
-                            is NavigationEvent.PreviewEventBottomSheet -> {
-                                NavGraphDirections.actionPreviewEventBottomSheet(
-                                    eventId = it.eventId
-                                ).let { directions ->
-                                    findNavController().navigate(directions)
-                                }
-                            }
-                            is NavigationEvent.NavigateBack -> {
-                                findNavController().popBackStack()
-                            }
+                            viewModel.onNavigationHandled()
                         }
                     }
-                }
             }
         }
     }

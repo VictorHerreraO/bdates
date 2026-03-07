@@ -21,6 +21,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -51,8 +52,11 @@ fun UpcomingEventItem(
     ) {
         // Joined Countdown and Emoji badges
         Surface(
-            modifier = Modifier.wrapContentSize(),
+            modifier = Modifier
+                .wrapContentSize()
+                .clip(RoundedCornerShape(8.dp)),
             color = Color.Transparent,
+            shape = RoundedCornerShape(8.dp),
         ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically
@@ -61,12 +65,6 @@ fun UpcomingEventItem(
                 Surface(
                     modifier = Modifier.size(56.dp),
                     color = MaterialTheme.colorScheme.secondary,
-                    shape = RoundedCornerShape(
-                        topStart = 8.dp,
-                        bottomStart = 8.dp,
-                        topEnd = 0.dp,
-                        bottomEnd = 0.dp
-                    ),
                 ) {
                     Column(
                         modifier = Modifier.padding(4.dp),
@@ -95,12 +93,6 @@ fun UpcomingEventItem(
                 Surface(
                     modifier = Modifier.size(56.dp),
                     color = MaterialTheme.colorScheme.surfaceVariant,
-                    shape = RoundedCornerShape(
-                        topStart = 0.dp,
-                        bottomStart = 0.dp,
-                        topEnd = 8.dp,
-                        bottomEnd = 8.dp
-                    ),
                 ) {
                     Box(
                         modifier = Modifier.fillMaxSize(),

@@ -37,9 +37,6 @@ class EventListViewModel @Inject constructor(
     private val updateEventList: UpdateEventsUseCaseContract,
 ) : ViewModel() {
 
-    private val _navigation = MutableStateFlow<NavigationEvent?>(null)
-    val navigation: StateFlow<NavigationEvent?> = _navigation.asStateFlow()
-
     private val _uiState = MutableStateFlow(EventListState())
     val uiState: StateFlow<EventListState> = _uiState.asStateFlow()
 
@@ -65,10 +62,10 @@ class EventListViewModel @Inject constructor(
                 processEventList(allEvents)
             }
             is EventListAction.EventClick -> {
-                _navigation.value = NavigationEvent.PreviewEventBottomSheet(eventId = action.eventId)
+                _uiState.update { it.copy(navigationEvent = NavigationEvent.PreviewEventBottomSheet(eventId = action.eventId)) }
             }
             is EventListAction.AddEventClick -> {
-                _navigation.value = NavigationEvent.AddEventBottomSheet()
+                _uiState.update { it.copy(navigationEvent = NavigationEvent.AddEventBottomSheet()) }
             }
             is EventListAction.NotificationPermissionStateCheck -> {
                 _uiState.update { it.copy(showMissingPermissionMessage = !action.isGranted) }
@@ -83,6 +80,10 @@ class EventListViewModel @Inject constructor(
             }
             is EventListAction.OpenAppSettings -> Unit // Handled by the Fragment/Screen
         }
+    }
+
+    fun onNavigationHandled() {
+        _uiState.update { it.copy(navigationEvent = null) }
     }
 
     private fun getData(): Unit = with(viewModelScope) {
