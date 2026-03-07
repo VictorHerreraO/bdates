@@ -9,8 +9,7 @@ import androidx.compose.material.IconButton
 import androidx.compose.material.LocalTextStyle
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
-import androidx.compose.material.TextField
-import androidx.compose.material.TextFieldDefaults
+import com.soyvictorherrera.bdates.core.compose.widget.BdatesTextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.rounded.KeyboardArrowRight
@@ -21,7 +20,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
@@ -52,7 +53,7 @@ fun YearSelector(
         modifier = Modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        TextField(
+        BdatesTextField(
             value = selectedYear?.toString().orEmpty(),
             onValueChange = { text ->
                 text.takeIf { it.matches(VALIDATION_REGEX) }
@@ -66,10 +67,6 @@ fun YearSelector(
             textStyle = LocalTextStyle.current.copy(textAlign = TextAlign.Center),
             enabled = enabled,
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-            colors = TextFieldDefaults.textFieldColors(
-                cursorColor = MaterialTheme.colors.secondary,
-                focusedIndicatorColor = MaterialTheme.colors.secondary
-            ),
             leadingIcon = {
                 val prevYearEnabled = enabled && selectedYear in validYearRange
                 IconButton(
