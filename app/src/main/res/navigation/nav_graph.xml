@@ -13,8 +13,7 @@
     <fragment
         android:id="@+id/eventListFragment"
         android:name="com.soyvictorherrera.bdates.modules.eventList.framework.ui.EventListFragment"
-        android:label="EventListFragment"
-        tools:layout="@layout/fragment_event_list" />
+        android:label="EventListFragment" />
 
     <dialog
         android:id="@+id/addEventBottomSheet"
