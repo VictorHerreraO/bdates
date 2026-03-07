@@ -24,7 +24,7 @@ class CircleRepository @Inject constructor(
                 localDataSource.getCircles().asSuccess()
             },
             onFailure = {
-                localDataSource.getCircles().asError(cause = it)
+                localDataSource.getCircles().asSuccess()
             }
         )
     }
