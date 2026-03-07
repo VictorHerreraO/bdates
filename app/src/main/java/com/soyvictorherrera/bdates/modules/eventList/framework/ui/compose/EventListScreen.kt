@@ -12,6 +12,10 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.clickable
 import androidx.compose.ui.draw.clip
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.statusBarsPadding
@@ -37,6 +41,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.graphics.Color
 import com.soyvictorherrera.bdates.core.compose.theme.Gallery
@@ -79,7 +84,7 @@ fun EventListScreen(
         Scaffold(
             modifier = Modifier.fillMaxSize(),
             containerColor = androidx.compose.ui.graphics.Color.Transparent,
-            floatingActionButtonPosition = FabPosition.End,
+            floatingActionButtonPosition = FabPosition.Center,
             floatingActionButton = {
                 AppExtendedFloatingActionButton(
                     text = stringResource(R.string.add_event).uppercase(),
@@ -159,52 +164,80 @@ private fun UpcomingEventsSection(
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues = PaddingValues(0.dp),
 ) {
-    Column(modifier = modifier) {
+    Column(
+        modifier = modifier.padding(top = 16.dp)
+    ) {
         if (state.showMissingPermissionMessage) {
             PermissionWarningBanner(
                 onBannerClick = { onAction(EventListAction.OpenAppSettings) },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = LocalSizes.current.dimen_16)
-                    .padding(top = 16.dp)
+                    .padding(16.dp)
             )
         }
 
-        Text(
-            text = stringResource(R.string.title_upcoming_events),
-            style = MaterialTheme.typography.headlineSmall,
-            fontWeight = FontWeight.ExtraBold,
-            color = MaterialTheme.colorScheme.onSurface,
-            modifier = Modifier.padding(
-                start = LocalSizes.current.dimen_16,
-                end = LocalSizes.current.dimen_16,
-                top = 24.dp, // Slightly more padding for the larger radius
-                bottom = 4.dp
-            ),
-        )
+        if (!state.showEmptyState) {
+            Text(
+                text = stringResource(R.string.title_upcoming_events),
+                style = MaterialTheme.typography.headlineSmall,
+                fontWeight = FontWeight.ExtraBold,
+                color = MaterialTheme.colorScheme.onSurface,
+                modifier = Modifier.padding(
+                    start = LocalSizes.current.dimen_16,
+                    end = LocalSizes.current.dimen_16,
+                    top = 24.dp, // Slightly more padding for the larger radius
+                    bottom = 4.dp
+                ),
+            )
 
-        // Search field
-        SearchBar(
-            query = state.query,
-            onQueryChange = { onAction(EventListAction.ChangeQuery(it)) },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = LocalSizes.current.dimen_16, vertical = 4.dp)
-        )
+            // Search field
+            SearchBar(
+                query = state.query,
+                onQueryChange = { onAction(EventListAction.ChangeQuery(it)) },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = LocalSizes.current.dimen_16, vertical = 4.dp)
+            )
+        }
 
         if (state.showEmptyState) {
             // Empty state
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .weight(1f)
-                    .padding(LocalSizes.current.dimen_16),
+                    .padding(top = 40.dp)
+                    .padding(horizontal = LocalSizes.current.dimen_16),
                 horizontalAlignment = androidx.compose.ui.Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center,
             ) {
+                Surface(
+                    shape = CircleShape,
+                    color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f),
+                    modifier = Modifier.size(120.dp)
+                ) {
+                    Image(
+                        painter = painterResource(id = R.drawable.vector_balloon),
+                        contentDescription = null,
+                        modifier = Modifier
+                            .padding(16.dp)
+                            .fillMaxSize(),
+                        alpha = 0.7f
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(32.dp))
+
                 Text(
                     text = stringResource(R.string.event_list_no_events_title),
                     style = MaterialTheme.typography.bodyLarge,
+                    fontWeight = FontWeight.Medium,
+                    color = MaterialTheme.colorScheme.onSurface,
+                )
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                Text(
+                    text = stringResource(R.string.event_list_no_events_description),
+                    style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
                 )
             }

@@ -40,7 +40,7 @@ private val LightColorScheme = lightColorScheme(
     secondary = Tradewind,
     onSecondary = White,
     background = Bossanova,
-    surface = White,
+    surface = Alabaster,
     onBackground = White,
     onSurface = Black,
     tertiary = Bossanova,
@@ -51,14 +51,14 @@ private val LightColorScheme = lightColorScheme(
 private val DarkColorScheme = darkColorScheme(
     primary = Bossanova,
     onPrimary = White,
-    secondary = Tradewind,
+    secondary = Paradiso,
     onSecondary = White,
     background = Color(0xFF121212),
-    surface = Cod_Gray,
+    surface = Color(0xFF121212),
     onBackground = White,
     onSurface = White,
     tertiary = White,
-    surfaceVariant = Color(0xFF2C2C2C),
+    surfaceVariant = Cod_Gray,
     onSurfaceVariant = White
 )
 

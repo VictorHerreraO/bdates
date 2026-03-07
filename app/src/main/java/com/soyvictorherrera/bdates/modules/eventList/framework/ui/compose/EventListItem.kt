@@ -59,7 +59,7 @@ fun UpcomingEventItem(
                 // Countdown part
                 Surface(
                     modifier = Modifier.size(56.dp),
-                    color = Tradewind,
+                    color = MaterialTheme.colorScheme.secondary,
                     shape = RoundedCornerShape(
                         topStart = 8.dp,
                         bottomStart = 8.dp,
@@ -74,13 +74,17 @@ fun UpcomingEventItem(
                     ) {
                         Text(
                             text = event.remainingTimeValue,
-                            style = MaterialTheme.typography.titleLarge,
+                            style = MaterialTheme.typography.titleMedium.copy(
+                                fontSize = 20.sp,
+                                fontWeight = FontWeight.Bold
+                            ),
                             color = White,
-                            fontWeight = FontWeight.Bold,
                         )
                         Text(
                             text = event.remainingTimeUnit.uppercase(),
-                            style = MaterialTheme.typography.labelSmall,
+                            style = MaterialTheme.typography.labelSmall.copy(
+                                fontSize = 10.sp
+                            ),
                             color = White,
                         )
                     }
