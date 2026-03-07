@@ -51,6 +51,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.soyvictorherrera.bdates.R
 import com.soyvictorherrera.bdates.core.compose.theme.BdatesTheme
+import com.soyvictorherrera.bdates.core.compose.theme.BottomSheetDialogShape
 import com.soyvictorherrera.bdates.core.compose.theme.LocalSizes
 import com.soyvictorherrera.bdates.core.compose.widget.AppExtendedFloatingActionButton
 import com.soyvictorherrera.bdates.modules.eventList.framework.presentation.EventListAction
@@ -112,10 +113,7 @@ fun EventListScreen(
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.surface,
-                    shape = RoundedCornerShape(
-                        topStart = 32.dp,
-                        topEnd = 32.dp
-                    ),
+                    shape = BottomSheetDialogShape,
                 ) {
                     // Upcoming events section
                     UpcomingEventsSection(
@@ -165,7 +163,7 @@ private fun UpcomingEventsSection(
     contentPadding: PaddingValues = PaddingValues(0.dp),
 ) {
     Column(
-        modifier = modifier.padding(top = 16.dp)
+        modifier = modifier.padding(top = 12.dp)
     ) {
         if (state.showMissingPermissionMessage) {
             PermissionWarningBanner(
@@ -301,7 +299,7 @@ private fun SearchBar(
             unfocusedBorderColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f),
             cursorColor = Paradiso
         ),
-        shape = RoundedCornerShape(16.dp)
+        shape = RoundedCornerShape(28.dp)
     )
 }
 

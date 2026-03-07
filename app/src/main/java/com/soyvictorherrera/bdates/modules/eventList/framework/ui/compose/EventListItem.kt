@@ -28,6 +28,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.soyvictorherrera.bdates.core.compose.theme.BdatesTheme
+import com.soyvictorherrera.bdates.core.compose.theme.BottomSheetDialogShape
 import com.soyvictorherrera.bdates.core.compose.theme.Dolphin
 import com.soyvictorherrera.bdates.core.compose.theme.Tradewind
 import com.soyvictorherrera.bdates.core.compose.theme.White
@@ -45,7 +46,7 @@ fun UpcomingEventItem(
             .fillMaxWidth()
             .defaultMinSize(minHeight = 72.dp)
             .clickable { onClick(event.id) }
-            .padding(horizontal = 16.dp, vertical = 8.dp),
+            .padding(horizontal = 16.dp, vertical = 6.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         // Joined Countdown and Emoji badges
@@ -143,12 +144,12 @@ fun TodayEventItem(
 ) {
     Surface(
         modifier = modifier.size(120.dp),
-        color = Dolphin,
-        shape = RoundedCornerShape(16.dp),
+        color = MaterialTheme.colorScheme.tertiaryContainer,
+        shape = RoundedCornerShape(28.dp),
         shadowElevation = 4.dp,
     ) {
         Column(
-            modifier = Modifier.padding(12.dp),
+            modifier = Modifier.padding(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center,
         ) {
@@ -157,13 +158,13 @@ fun TodayEventItem(
                     text = age,
                     fontSize = 34.sp,
                     fontWeight = FontWeight.Bold,
-                    color = com.soyvictorherrera.bdates.core.compose.theme.Rajah,
+                    color = MaterialTheme.colorScheme.tertiary,
                 )
             }
             Text(
                 text = event.friendName,
                 style = MaterialTheme.typography.bodyMedium,
-                color = White,
+                color = MaterialTheme.colorScheme.onTertiaryContainer,
                 fontWeight = FontWeight.Normal,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
@@ -174,7 +175,7 @@ fun TodayEventItem(
             Text(
                 text = event.eventType.uppercase(),
                 style = MaterialTheme.typography.labelSmall,
-                color = White.copy(alpha = 0.8f),
+                color = MaterialTheme.colorScheme.onTertiaryContainer.copy(alpha = 0.8f),
                 fontWeight = FontWeight.Normal,
                 textAlign = androidx.compose.ui.text.style.TextAlign.Center,
                 modifier = Modifier.fillMaxWidth(),

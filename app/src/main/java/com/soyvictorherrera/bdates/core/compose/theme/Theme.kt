@@ -43,7 +43,10 @@ private val LightColorScheme = lightColorScheme(
     surface = Alabaster,
     onBackground = White,
     onSurface = Black,
-    tertiary = Bossanova,
+    tertiary = Rajah,
+    onTertiary = Bossanova,
+    tertiaryContainer = Dolphin,
+    onTertiaryContainer = White,
     surfaceVariant = Gallery,
     onSurfaceVariant = Black
 )
@@ -57,7 +60,10 @@ private val DarkColorScheme = darkColorScheme(
     surface = Color(0xFF121212),
     onBackground = White,
     onSurface = White,
-    tertiary = White,
+    tertiary = Rajah,
+    onTertiary = White,
+    tertiaryContainer = Dolphin,
+    onTertiaryContainer = White,
     surfaceVariant = Cod_Gray,
     onSurfaceVariant = White
 )
