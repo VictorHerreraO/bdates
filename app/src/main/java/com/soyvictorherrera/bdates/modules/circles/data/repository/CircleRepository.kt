@@ -23,7 +23,8 @@ class CircleRepository @Inject constructor(
                 }
                 localDataSource.getCircles().asSuccess()
             },
-            onFailure = {
+            onFailure = { cause ->
+                timber.log.Timber.w(cause, "Remote fetch failed, falling back to local data")
                 localDataSource.getCircles().asSuccess()
             }
         )

@@ -78,6 +78,9 @@ class EventListViewModel @Inject constructor(
                     )
                 }
             }
+            is EventListAction.OnErrorShown -> {
+                _uiState.update { it.copy(errorMessage = null) }
+            }
             is EventListAction.OpenAppSettings -> Unit // Handled by the Fragment/Screen
         }
     }

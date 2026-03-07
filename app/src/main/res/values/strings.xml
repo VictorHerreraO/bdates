@@ -26,7 +26,7 @@
     <string name="notification_channel_description_event_reminders">Daily event reminders</string>
 
     <!-- Notifications -->
-    <string name="banner_notification_permission_not_granted_title">⛔️ Unable to show event notifications</string>
+    <string name="banner_notification_permission_not_granted_title">Unable to show event notifications</string>
     <string name="banner_notification_permission_not_granted_subtitle">Tap to enable on phone settings</string>
 
     <!--Date Formats-->

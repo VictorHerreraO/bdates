@@ -22,17 +22,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.soyvictorherrera.bdates.core.compose.theme.BdatesTheme
-import com.soyvictorherrera.bdates.core.compose.theme.BottomSheetDialogShape
-import com.soyvictorherrera.bdates.core.compose.theme.Dolphin
-import com.soyvictorherrera.bdates.core.compose.theme.Tradewind
-import com.soyvictorherrera.bdates.core.compose.theme.White
 import com.soyvictorherrera.bdates.modules.eventList.framework.presentation.EventViewState
 import com.soyvictorherrera.bdates.modules.eventList.framework.presentation.TodayEventViewState
 
@@ -55,7 +50,7 @@ fun UpcomingEventItem(
             modifier = Modifier
                 .wrapContentSize()
                 .clip(RoundedCornerShape(8.dp)),
-            color = Color.Transparent,
+            color = androidx.compose.ui.graphics.Color.Transparent,
             shape = RoundedCornerShape(8.dp),
         ) {
             Row(
@@ -77,14 +72,14 @@ fun UpcomingEventItem(
                                 fontSize = 20.sp,
                                 fontWeight = FontWeight.Bold
                             ),
-                            color = White,
+                            color = MaterialTheme.colorScheme.onSecondary,
                         )
                         Text(
                             text = event.remainingTimeUnit.uppercase(),
                             style = MaterialTheme.typography.labelSmall.copy(
                                 fontSize = 10.sp
                             ),
-                            color = White,
+                            color = MaterialTheme.colorScheme.onSecondary,
                         )
                     }
                 }
@@ -148,7 +143,7 @@ fun TodayEventItem(
             event.friendAge?.let { age ->
                 Text(
                     text = age,
-                    fontSize = 34.sp,
+                    style = MaterialTheme.typography.headlineLarge,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.tertiary,
                 )
@@ -208,3 +203,4 @@ private fun PreviewTodayEventItem() {
         )
     }
 }
+

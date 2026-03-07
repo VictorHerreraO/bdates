@@ -175,7 +175,7 @@ private fun EventNameSection(
 
         Text(
             text = stringResource(R.string.add_event_name),
-            style = androidx.compose.material3.MaterialTheme.typography.titleMedium
+            style = MaterialTheme.typography.subtitle1
         )
     }
 
@@ -207,7 +207,7 @@ fun EventDateSection(
 
         Text(
             text = stringResource(R.string.add_event_date),
-            style = androidx.compose.material3.MaterialTheme.typography.titleMedium
+            style = MaterialTheme.typography.subtitle1
         )
     }
 
@@ -240,7 +240,7 @@ fun EventYearSection(
 
         Text(
             text = stringResource(R.string.add_event_year),
-            style = androidx.compose.material3.MaterialTheme.typography.titleMedium
+            style = MaterialTheme.typography.subtitle1
         )
     }
 

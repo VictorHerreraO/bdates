@@ -8,7 +8,6 @@ import androidx.compose.material.TextField
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.TextStyle
 
 @Composable
@@ -27,7 +26,7 @@ fun BdatesTextField(
     TextField(
         value = value,
         onValueChange = onValueChange,
-        modifier = modifier.clip(MaterialTheme.shapes.medium),
+        modifier = modifier,
         enabled = enabled,
         textStyle = textStyle,
         leadingIcon = leadingIcon,

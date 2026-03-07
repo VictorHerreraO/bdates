@@ -48,8 +48,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.graphics.Color
-import com.soyvictorherrera.bdates.core.compose.theme.Gallery
-import com.soyvictorherrera.bdates.core.compose.theme.Paradiso
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -62,7 +60,6 @@ import com.soyvictorherrera.bdates.modules.eventList.framework.presentation.Even
 import com.soyvictorherrera.bdates.modules.eventList.framework.presentation.EventListState
 import com.soyvictorherrera.bdates.modules.eventList.framework.presentation.EventViewState
 import com.soyvictorherrera.bdates.modules.eventList.framework.presentation.TodayEventViewState
-import com.soyvictorherrera.bdates.core.compose.theme.Rajah
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalLayoutDirection
 import android.content.res.Configuration
@@ -84,6 +81,7 @@ fun EventListScreen(
     state.errorMessage?.let { message ->
         LaunchedEffect(message) {
             snackbarHostState.showSnackbar(message)
+            onAction(EventListAction.OnErrorShown)
         }
     }
 
@@ -364,7 +362,7 @@ private fun SearchBar(
             unfocusedTextColor = MaterialTheme.colorScheme.onSurface,
             focusedBorderColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f),
             unfocusedBorderColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f),
-            cursorColor = Paradiso
+            cursorColor = MaterialTheme.colorScheme.secondary
         ),
         shape = RoundedCornerShape(28.dp)
     )
@@ -380,7 +378,7 @@ private fun PermissionWarningBanner(
         modifier = modifier
             .height(56.dp)
             .clip(RoundedCornerShape(16.dp)),
-        color = Rajah,
+        color = MaterialTheme.colorScheme.tertiary,
         shape = RoundedCornerShape(16.dp),
     ) {
         Row(
@@ -394,15 +392,14 @@ private fun PermissionWarningBanner(
             )
             Column {
                 Text(
-                    text = stringResource(R.string.banner_notification_permission_not_granted_title)
-                        .replace("⛔️ ", ""),
-                    color = Color.Black,
+                    text = stringResource(R.string.banner_notification_permission_not_granted_title),
+                    color = MaterialTheme.colorScheme.onTertiary,
                     style = MaterialTheme.typography.bodyMedium,
                     fontWeight = FontWeight.Bold
                 )
                 Text(
                     text = stringResource(R.string.banner_notification_permission_not_granted_subtitle),
-                    color = Color.Black,
+                    color = MaterialTheme.colorScheme.onTertiary,
                     style = MaterialTheme.typography.labelSmall
                 )
             }

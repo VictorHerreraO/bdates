@@ -68,7 +68,6 @@ class EventListFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         setupResultListener()
         observeNavigation()
-        observePermissionSignal()
     }
 
     override fun onResume() {
@@ -83,52 +82,49 @@ class EventListFragment : Fragment() {
     private fun observeNavigation() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.uiState
-                    .map { it.navigationEvent }
-                    .distinctUntilChanged()
-                    .collect { event ->
-                        event?.consume {
-                            when (it) {
-                                is NavigationEvent.AddEventBottomSheet -> {
-                                    NavGraphDirections.actionCreateEventBottomSheet(
-                                        eventId = it.eventId
-                                    ).let { directions ->
-                                        findNavController().navigate(directions)
+                launch {
+                    viewModel.uiState
+                        .map { it.navigationEvent }
+                        .distinctUntilChanged()
+                        .collect { event ->
+                            event?.consume {
+                                when (it) {
+                                    is NavigationEvent.AddEventBottomSheet -> {
+                                        NavGraphDirections.actionCreateEventBottomSheet(
+                                            eventId = it.eventId
+                                        ).let { directions ->
+                                            findNavController().navigate(directions)
+                                        }
+                                    }
+                                    is NavigationEvent.PreviewEventBottomSheet -> {
+                                        NavGraphDirections.actionPreviewEventBottomSheet(
+                                            eventId = it.eventId
+                                        ).let { directions ->
+                                            findNavController().navigate(directions)
+                                        }
+                                    }
+                                    is NavigationEvent.NavigateBack -> {
+                                        findNavController().popBackStack()
                                     }
                                 }
-                                is NavigationEvent.PreviewEventBottomSheet -> {
-                                    NavGraphDirections.actionPreviewEventBottomSheet(
-                                        eventId = it.eventId
-                                    ).let { directions ->
-                                        findNavController().navigate(directions)
-                                    }
-                                }
-                                is NavigationEvent.NavigateBack -> {
-                                    findNavController().popBackStack()
-                                }
-                            }
-                            viewModel.onNavigationHandled()
-                        }
-                    }
-            }
-        }
-    }
-
-    private fun observePermissionSignal() {
-        viewLifecycleOwner.lifecycleScope.launch {
-            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.uiState
-                    .map { it.requestPermission }
-                    .distinctUntilChanged()
-                    .collect { shouldRequest ->
-                        if (shouldRequest) {
-                            permissionDelegate.requestNotificationPermission { isGranted ->
-                                viewModel.onAction(
-                                    EventListAction.NotificationPermissionStateChanged(isGranted)
-                                )
+                                viewModel.onNavigationHandled()
                             }
                         }
-                    }
+                }
+                launch {
+                    viewModel.uiState
+                        .map { it.requestPermission }
+                        .distinctUntilChanged()
+                        .collect { shouldRequest ->
+                            if (shouldRequest) {
+                                permissionDelegate.requestNotificationPermission { isGranted ->
+                                    viewModel.onAction(
+                                        EventListAction.NotificationPermissionStateChanged(isGranted)
+                                    )
+                                }
+                            }
+                        }
+                }
             }
         }
     }

@@ -8,4 +8,5 @@ sealed class EventListAction {
     data object OpenAppSettings : EventListAction()
     data class NotificationPermissionStateCheck(val isGranted: Boolean) : EventListAction()
     data class NotificationPermissionStateChanged(val isGranted: Boolean) : EventListAction()
+    data object OnErrorShown : EventListAction()
 }
