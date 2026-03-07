@@ -4,8 +4,12 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.calculateEndPadding
+import androidx.compose.foundation.layout.calculateStartPadding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
@@ -59,6 +63,9 @@ import com.soyvictorherrera.bdates.modules.eventList.framework.presentation.Even
 import com.soyvictorherrera.bdates.modules.eventList.framework.presentation.EventViewState
 import com.soyvictorherrera.bdates.modules.eventList.framework.presentation.TodayEventViewState
 import com.soyvictorherrera.bdates.core.compose.theme.Rajah
+import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalLayoutDirection
+import android.content.res.Configuration
 import androidx.compose.foundation.layout.Row
 import androidx.compose.ui.Alignment
 
@@ -69,6 +76,8 @@ fun EventListScreen(
     onAction: (EventListAction) -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val configuration = LocalConfiguration.current
+    val isLandscape = configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
     val snackbarHostState = remember { SnackbarHostState() }
 
     // Show snackbar when error message is set
@@ -82,48 +91,88 @@ fun EventListScreen(
         modifier = modifier.fillMaxSize(),
         color = MaterialTheme.colorScheme.primary,
     ) {
+        val fabModifier = if (isLandscape) {
+            Modifier.padding(bottom = 16.dp, end = 16.dp)
+        } else {
+            Modifier.padding(bottom = 16.dp)
+        }
+
         Scaffold(
             modifier = Modifier.fillMaxSize(),
             containerColor = androidx.compose.ui.graphics.Color.Transparent,
-            floatingActionButtonPosition = FabPosition.Center,
+            floatingActionButtonPosition = if (isLandscape) FabPosition.End else FabPosition.Center,
             floatingActionButton = {
                 AppExtendedFloatingActionButton(
                     text = stringResource(R.string.add_event).uppercase(),
                     icon = Icons.Filled.Add,
                     onClick = { onAction(EventListAction.AddEventClick) },
                     contentDescription = stringResource(R.string.add_event),
-                    modifier = Modifier.padding(bottom = 16.dp),
+                    modifier = fabModifier,
                 )
             },
             snackbarHost = { SnackbarHost(snackbarHostState) },
         ) { innerPadding ->
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(top = innerPadding.calculateTopPadding())
-            ) {
-                // Today's birthdays section
-                if (state.showTodayEvents) {
-                    TodayEventListSection(
-                        events = state.todayEvents,
-                        modifier = Modifier.fillMaxWidth(),
-                    )
-                }
-
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.surface,
-                    shape = BottomSheetDialogShape,
+            if (isLandscape) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(top = innerPadding.calculateTopPadding(), start = innerPadding.calculateStartPadding(LocalLayoutDirection.current), end = innerPadding.calculateEndPadding(LocalLayoutDirection.current))
                 ) {
-                    // Upcoming events section
-                    UpcomingEventsSection(
-                        state = state,
-                        onAction = onAction,
-                        modifier = Modifier.fillMaxWidth(),
-                        contentPadding = PaddingValues(
-                            bottom = 88.dp + innerPadding.calculateBottomPadding()
-                        ),
-                    )
+                    // Today's birthdays section
+                    if (state.showTodayEvents) {
+                        TodayEventListSection(
+                            events = state.todayEvents,
+                            isLandscape = true,
+                            modifier = Modifier.fillMaxHeight(),
+                        )
+                    }
+
+                    Surface(
+                        modifier = Modifier.weight(1f).fillMaxHeight(),
+                        color = MaterialTheme.colorScheme.surface,
+                        shape = BottomSheetDialogShape,
+                    ) {
+                        // Upcoming events section
+                        UpcomingEventsSection(
+                            state = state,
+                            onAction = onAction,
+                            modifier = Modifier.fillMaxSize(),
+                            contentPadding = PaddingValues(
+                                bottom = 88.dp + innerPadding.calculateBottomPadding()
+                            ),
+                        )
+                    }
+                }
+            } else {
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(top = innerPadding.calculateTopPadding())
+                ) {
+                    // Today's birthdays section
+                    if (state.showTodayEvents) {
+                        TodayEventListSection(
+                            events = state.todayEvents,
+                            isLandscape = false,
+                            modifier = Modifier.fillMaxWidth(),
+                        )
+                    }
+
+                    Surface(
+                        modifier = Modifier.fillMaxSize(),
+                        color = MaterialTheme.colorScheme.surface,
+                        shape = BottomSheetDialogShape,
+                    ) {
+                        // Upcoming events section
+                        UpcomingEventsSection(
+                            state = state,
+                            onAction = onAction,
+                            modifier = Modifier.fillMaxWidth(),
+                            contentPadding = PaddingValues(
+                                bottom = 88.dp + innerPadding.calculateBottomPadding()
+                            ),
+                        )
+                    }
                 }
             }
         }
@@ -133,9 +182,16 @@ fun EventListScreen(
 @Composable
 private fun TodayEventListSection(
     events: List<TodayEventViewState>,
+    isLandscape: Boolean,
     modifier: Modifier = Modifier,
 ) {
-    Column(modifier = modifier.padding(top = LocalSizes.current.dimen_16)) {
+    val sectionModifier = if (isLandscape) {
+        modifier.width(152.dp).padding(top = LocalSizes.current.dimen_16)
+    } else {
+        modifier.padding(top = LocalSizes.current.dimen_16)
+    }
+
+    Column(modifier = sectionModifier) {
         Text(
             text = stringResource(R.string.title_today_occasions),
             style = MaterialTheme.typography.headlineSmall,
@@ -143,12 +199,23 @@ private fun TodayEventListSection(
             color = MaterialTheme.colorScheme.onPrimary,
             modifier = Modifier.padding(horizontal = LocalSizes.current.dimen_16),
         )
-        LazyRow(
-            contentPadding = PaddingValues(horizontal = LocalSizes.current.dimen_16, vertical = 8.dp),
-            horizontalArrangement = Arrangement.spacedBy(12.dp),
-        ) {
-            items(events, key = { it.id }) { event ->
-                TodayEventItem(event = event)
+        if (isLandscape) {
+            LazyColumn(
+                contentPadding = PaddingValues(horizontal = LocalSizes.current.dimen_16, vertical = 8.dp),
+                verticalArrangement = Arrangement.spacedBy(12.dp),
+            ) {
+                items(events, key = { it.id }) { event ->
+                    TodayEventItem(event = event)
+                }
+            }
+        } else {
+            LazyRow(
+                contentPadding = PaddingValues(horizontal = LocalSizes.current.dimen_16, vertical = 8.dp),
+                horizontalArrangement = Arrangement.spacedBy(12.dp),
+            ) {
+                items(events, key = { it.id }) { event ->
+                    TodayEventItem(event = event)
+                }
             }
         }
     }
