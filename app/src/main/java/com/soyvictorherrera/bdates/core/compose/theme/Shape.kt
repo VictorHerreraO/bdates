@@ -8,17 +8,17 @@ import androidx.compose.ui.unit.dp
 val Shapes = Shapes(
     small = RoundedCornerShape(4.dp),
     medium = RoundedCornerShape(12.dp),
-    large = RoundedCornerShape(0.dp)
+    large = RoundedCornerShape(28.dp)
 )
 
-val BottomSheetDialogShape: RoundedCornerShape
-    @Composable get() = RoundedCornerShape(
+val BottomSheetDialogShape: RoundedCornerShape =
+    RoundedCornerShape(
         topStart = 28.dp,
         topEnd = 28.dp
     )
 
-val BottomSheetContentShape: RoundedCornerShape
-    @Composable get() = RoundedCornerShape(
-        bottomStart = LocalSizes.current.dimen_16,
-        bottomEnd = LocalSizes.current.dimen_16,
+val BottomSheetContentShape: RoundedCornerShape =
+    RoundedCornerShape(
+        bottomStart = 16.dp,
+        bottomEnd = 16.dp,
     )

@@ -55,6 +55,7 @@ import com.soyvictorherrera.bdates.R
 import com.soyvictorherrera.bdates.core.compose.theme.BdatesTheme
 import com.soyvictorherrera.bdates.core.compose.theme.BottomSheetDialogShape
 import com.soyvictorherrera.bdates.core.compose.theme.LocalSizes
+import com.soyvictorherrera.bdates.core.compose.theme.Shapes
 import com.soyvictorherrera.bdates.core.compose.widget.AppExtendedFloatingActionButton
 import com.soyvictorherrera.bdates.modules.eventList.framework.presentation.EventListAction
 import com.soyvictorherrera.bdates.modules.eventList.framework.presentation.EventListState
@@ -114,7 +115,11 @@ fun EventListScreen(
                 Row(
                     modifier = Modifier
                         .fillMaxSize()
-                        .padding(top = innerPadding.calculateTopPadding(), start = innerPadding.calculateStartPadding(LocalLayoutDirection.current), end = innerPadding.calculateEndPadding(LocalLayoutDirection.current))
+                        .padding(
+                            top = innerPadding.calculateTopPadding(),
+                            start = innerPadding.calculateStartPadding(LocalLayoutDirection.current),
+                            end = innerPadding.calculateEndPadding(LocalLayoutDirection.current)
+                        )
                 ) {
                     // Today's birthdays section
                     if (state.showTodayEvents) {
@@ -228,14 +233,18 @@ private fun UpcomingEventsSection(
     contentPadding: PaddingValues = PaddingValues(0.dp),
 ) {
     Column(
-        modifier = modifier.padding(top = 12.dp)
+        // modifier = modifier.padding(top = 12.dp)
     ) {
         if (state.showMissingPermissionMessage) {
             PermissionWarningBanner(
                 onBannerClick = { onAction(EventListAction.OpenAppSettings) },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(16.dp)
+                    .padding(
+                        top = 16.dp,
+                        start = 16.dp,
+                        end = 16.dp
+                    )
             )
         }
 
@@ -248,7 +257,7 @@ private fun UpcomingEventsSection(
                 modifier = Modifier.padding(
                     start = LocalSizes.current.dimen_16,
                     end = LocalSizes.current.dimen_16,
-                    top = 24.dp, // Slightly more padding for the larger radius
+                    top = LocalSizes.current.dimen_16,
                     bottom = 4.dp
                 ),
             )
@@ -364,7 +373,7 @@ private fun SearchBar(
             unfocusedBorderColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f),
             cursorColor = MaterialTheme.colorScheme.secondary
         ),
-        shape = RoundedCornerShape(28.dp)
+        shape = Shapes.medium
     )
 }
 
@@ -377,9 +386,9 @@ private fun PermissionWarningBanner(
         onClick = onBannerClick,
         modifier = modifier
             .height(56.dp)
-            .clip(RoundedCornerShape(16.dp)),
+            .clip(Shapes.medium),
         color = MaterialTheme.colorScheme.tertiary,
-        shape = RoundedCornerShape(16.dp),
+        shape = Shapes.medium,
     ) {
         Row(
             modifier = Modifier
