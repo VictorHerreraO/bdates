@@ -20,7 +20,6 @@ import com.soyvictorherrera.bdates.NavGraphDirections
 import com.soyvictorherrera.bdates.R
 import com.soyvictorherrera.bdates.core.compose.theme.setBdatesContent
 import com.soyvictorherrera.bdates.core.event.NavigationEvent
-import com.soyvictorherrera.bdates.core.event.consume
 import com.soyvictorherrera.bdates.modules.eventList.framework.presentation.PreviewEventViewModel
 import com.soyvictorherrera.bdates.modules.eventList.framework.ui.compose.PreviewEventSheetContent
 import dagger.hilt.android.AndroidEntryPoint
@@ -48,16 +47,16 @@ class PreviewEventBottomSheet : BottomSheetDialogFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         viewLifecycleOwner.lifecycleScope.launch {
-            viewModel.navigation.collect { consumable ->
-                consumable.consume { event ->
-                    when (event) {
+            viewModel.navigation.collect { event ->
+                event?.let {
+                    when (it) {
                         is NavigationEvent.NavigateBack -> {
                             dismiss()
                         }
 
                         is NavigationEvent.AddEventBottomSheet -> {
                             NavGraphDirections.actionCreateEventBottomSheet(
-                                eventId = event.eventId
+                                eventId = it.eventId
                             ).run {
                                 val navOptions = navOptions {
                                     popUpTo(R.id.previewEventBottomSheet) {
@@ -72,6 +71,7 @@ class PreviewEventBottomSheet : BottomSheetDialogFragment() {
                             /* No op */
                         }
                     }
+                    viewModel.onNavigationHandled()
                 }
             }
         }
