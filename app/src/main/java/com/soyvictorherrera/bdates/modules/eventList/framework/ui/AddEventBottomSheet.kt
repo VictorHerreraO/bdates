@@ -19,7 +19,6 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.soyvictorherrera.bdates.core.compose.theme.setBdatesContent
 import com.soyvictorherrera.bdates.core.event.NavigationEvent
-import com.soyvictorherrera.bdates.core.event.consume
 import com.soyvictorherrera.bdates.modules.eventList.framework.presentation.AddEventViewModel
 import com.soyvictorherrera.bdates.modules.eventList.framework.ui.compose.AddEventSheetContent
 import dagger.hilt.android.AndroidEntryPoint
@@ -54,12 +53,13 @@ class AddEventBottomSheet : BottomSheetDialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         setupBottomSheet()
         viewLifecycleOwner.lifecycleScope.launch {
-            viewModel.navigation.collect {
-                it.consume { event ->
-                    if (event is NavigationEvent.NavigateBack) {
+            viewModel.navigation.collect { event ->
+                event?.let {
+                    if (it is NavigationEvent.NavigateBack) {
                         notifyEventCreated()
                         dismiss()
                     }
+                    viewModel.onNavigationHandled()
                 }
             }
         }

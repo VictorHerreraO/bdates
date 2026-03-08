@@ -108,4 +108,9 @@ class PreviewEventViewModel @Inject constructor(
             )
         }
     }
+
+    fun onNavigationHandled() {
+        _navigation.value = null
+    }
+
 }

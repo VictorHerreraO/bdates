@@ -26,7 +26,7 @@ private val LightColorPalette = lightColors(
     secondaryVariant = Tradewind,
     background = Bossanova,
     surface = White,
-    error = Color(0xFFB00020),
+    error = Monza,
     onPrimary = White,
     onSecondary = White,
     onBackground = White,
@@ -40,22 +40,32 @@ private val LightColorScheme = lightColorScheme(
     secondary = Tradewind,
     onSecondary = White,
     background = Bossanova,
-    surface = White,
+    surface = Alabaster,
     onBackground = White,
     onSurface = Black,
-    tertiary = Bossanova
+    tertiary = Rajah,
+    onTertiary = Black,
+    tertiaryContainer = Dolphin,
+    onTertiaryContainer = White,
+    surfaceVariant = Gallery,
+    onSurfaceVariant = Black
 )
 
 private val DarkColorScheme = darkColorScheme(
     primary = Bossanova,
     onPrimary = White,
-    secondary = Tradewind,
+    secondary = Paradiso,
     onSecondary = White,
-    background = Color(0xFF121212),
-    surface = Cod_Gray,
+    background = Woodsmoke,
+    surface = Woodsmoke,
     onBackground = White,
     onSurface = White,
-    tertiary = White
+    tertiary = Rajah,
+    onTertiary = Black,
+    tertiaryContainer = Dolphin,
+    onTertiaryContainer = White,
+    surfaceVariant = Cod_Gray,
+    onSurfaceVariant = White
 )
 
 @Composable

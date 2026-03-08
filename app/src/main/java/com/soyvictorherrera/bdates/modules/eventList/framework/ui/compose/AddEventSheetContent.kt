@@ -5,6 +5,9 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.ui.draw.clip
+import androidx.compose.foundation.layout.size
+import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Checkbox
 import androidx.compose.material.Icon
@@ -12,10 +15,9 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.SnackbarDuration
 import androidx.compose.material.SnackbarHostState
 import androidx.compose.material.Text
-import androidx.compose.material.TextField
-import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DateRange
+import com.soyvictorherrera.bdates.core.compose.widget.BdatesTextField
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -23,6 +25,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardCapitalization
@@ -164,28 +167,25 @@ private fun EventNameSection(
         Icon(
             imageVector = Icons.Default.Edit,
             contentDescription = null,
-            tint = MaterialTheme.colors.secondary
+            tint = MaterialTheme.colors.secondary,
+            modifier = Modifier.size(18.dp)
         )
 
         SpacerXs()
 
         Text(
             text = stringResource(R.string.add_event_name),
-            style = MaterialTheme.typography.body1
+            style = MaterialTheme.typography.subtitle1
         )
     }
 
     SpacerSm()
 
-    TextField(
+    BdatesTextField(
         modifier = Modifier.fillMaxWidth(),
         value = eventName,
         onValueChange = onEventNameChange,
         singleLine = true,
-        colors = TextFieldDefaults.textFieldColors(
-            cursorColor = MaterialTheme.colors.secondary,
-            focusedIndicatorColor = MaterialTheme.colors.secondary
-        ),
         keyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Words),
     )
 }
@@ -199,14 +199,15 @@ fun EventDateSection(
         Icon(
             imageVector = Icons.Default.DateRange,
             contentDescription = null,
-            tint = MaterialTheme.colors.secondary
+            tint = MaterialTheme.colors.secondary,
+            modifier = Modifier.size(18.dp)
         )
 
         SpacerXs()
 
         Text(
             text = stringResource(R.string.add_event_date),
-            style = MaterialTheme.typography.body1
+            style = MaterialTheme.typography.subtitle1
         )
     }
 
@@ -231,14 +232,15 @@ fun EventYearSection(
         Icon(
             Icons.Default.DateRange,
             contentDescription = null,
-            tint = MaterialTheme.colors.secondary
+            tint = MaterialTheme.colors.secondary,
+            modifier = Modifier.size(18.dp)
         )
 
         SpacerXs()
 
         Text(
             text = stringResource(R.string.add_event_year),
-            style = MaterialTheme.typography.body1
+            style = MaterialTheme.typography.subtitle1
         )
     }
 

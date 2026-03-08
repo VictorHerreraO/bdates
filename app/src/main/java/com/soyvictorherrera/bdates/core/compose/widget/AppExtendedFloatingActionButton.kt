@@ -24,7 +24,7 @@ fun AppExtendedFloatingActionButton(
         onClick = onClick,
         icon = { Icon(icon, contentDescription = contentDescription) },
         text = { Text(text = text) },
-        containerColor = Tradewind,
+        containerColor = MaterialTheme.colorScheme.secondary,
         contentColor = MaterialTheme.colorScheme.onSecondary,
         shape = RoundedCornerShape(50),
         modifier = modifier

@@ -1,0 +1,450 @@
+package com.soyvictorherrera.bdates.modules.eventList.framework.ui.compose
+
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.calculateEndPadding
+import androidx.compose.foundation.layout.calculateStartPadding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.clickable
+import androidx.compose.ui.draw.clip
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FabPosition
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import com.soyvictorherrera.bdates.R
+import com.soyvictorherrera.bdates.core.compose.theme.BdatesTheme
+import com.soyvictorherrera.bdates.core.compose.theme.BottomSheetDialogShape
+import com.soyvictorherrera.bdates.core.compose.theme.LocalSizes
+import com.soyvictorherrera.bdates.core.compose.theme.Shapes
+import com.soyvictorherrera.bdates.core.compose.widget.AppExtendedFloatingActionButton
+import com.soyvictorherrera.bdates.modules.eventList.framework.presentation.EventListAction
+import com.soyvictorherrera.bdates.modules.eventList.framework.presentation.EventListState
+import com.soyvictorherrera.bdates.modules.eventList.framework.presentation.EventViewState
+import com.soyvictorherrera.bdates.modules.eventList.framework.presentation.TodayEventViewState
+import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalLayoutDirection
+import android.content.res.Configuration
+import androidx.compose.foundation.layout.Row
+import androidx.compose.ui.Alignment
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun EventListScreen(
+    state: EventListState,
+    onAction: (EventListAction) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    val configuration = LocalConfiguration.current
+    val isLandscape = configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
+    val snackbarHostState = remember { SnackbarHostState() }
+
+    // Show snackbar when error message is set
+    state.errorMessage?.let { message ->
+        LaunchedEffect(message) {
+            snackbarHostState.showSnackbar(message)
+            onAction(EventListAction.OnErrorShown)
+        }
+    }
+
+    Surface(
+        modifier = modifier.fillMaxSize(),
+        color = MaterialTheme.colorScheme.primary,
+    ) {
+        val fabModifier = if (isLandscape) {
+            Modifier.padding(bottom = 16.dp, end = 16.dp)
+        } else {
+            Modifier.padding(bottom = 16.dp)
+        }
+
+        Scaffold(
+            modifier = Modifier.fillMaxSize(),
+            containerColor = androidx.compose.ui.graphics.Color.Transparent,
+            floatingActionButtonPosition = if (isLandscape) FabPosition.End else FabPosition.Center,
+            floatingActionButton = {
+                AppExtendedFloatingActionButton(
+                    text = stringResource(R.string.add_event).uppercase(),
+                    icon = Icons.Filled.Add,
+                    onClick = { onAction(EventListAction.AddEventClick) },
+                    contentDescription = stringResource(R.string.add_event),
+                    modifier = fabModifier,
+                )
+            },
+            snackbarHost = { SnackbarHost(snackbarHostState) },
+        ) { innerPadding ->
+            if (isLandscape) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(
+                            top = innerPadding.calculateTopPadding(),
+                            start = innerPadding.calculateStartPadding(LocalLayoutDirection.current),
+                            end = innerPadding.calculateEndPadding(LocalLayoutDirection.current)
+                        )
+                ) {
+                    // Today's birthdays section
+                    if (state.showTodayEvents) {
+                        TodayEventListSection(
+                            events = state.todayEvents,
+                            isLandscape = true,
+                            modifier = Modifier.fillMaxHeight(),
+                        )
+                    }
+
+                    Surface(
+                        modifier = Modifier.weight(1f).fillMaxHeight(),
+                        color = MaterialTheme.colorScheme.surface,
+                        shape = BottomSheetDialogShape,
+                    ) {
+                        // Upcoming events section
+                        UpcomingEventsSection(
+                            state = state,
+                            onAction = onAction,
+                            modifier = Modifier.fillMaxSize(),
+                            contentPadding = PaddingValues(
+                                bottom = 88.dp + innerPadding.calculateBottomPadding()
+                            ),
+                        )
+                    }
+                }
+            } else {
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(top = innerPadding.calculateTopPadding())
+                ) {
+                    // Today's birthdays section
+                    if (state.showTodayEvents) {
+                        TodayEventListSection(
+                            events = state.todayEvents,
+                            isLandscape = false,
+                            modifier = Modifier.fillMaxWidth(),
+                        )
+                    }
+
+                    Surface(
+                        modifier = Modifier.fillMaxSize(),
+                        color = MaterialTheme.colorScheme.surface,
+                        shape = BottomSheetDialogShape,
+                    ) {
+                        // Upcoming events section
+                        UpcomingEventsSection(
+                            state = state,
+                            onAction = onAction,
+                            modifier = Modifier.fillMaxWidth(),
+                            contentPadding = PaddingValues(
+                                bottom = 88.dp + innerPadding.calculateBottomPadding()
+                            ),
+                        )
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun TodayEventListSection(
+    events: List<TodayEventViewState>,
+    isLandscape: Boolean,
+    modifier: Modifier = Modifier,
+) {
+    val sectionModifier = if (isLandscape) {
+        modifier.width(152.dp).padding(top = LocalSizes.current.dimen_16)
+    } else {
+        modifier.padding(top = LocalSizes.current.dimen_16)
+    }
+
+    Column(modifier = sectionModifier) {
+        Text(
+            text = stringResource(R.string.title_today_occasions),
+            style = MaterialTheme.typography.headlineSmall,
+            fontWeight = FontWeight.ExtraBold,
+            color = MaterialTheme.colorScheme.onPrimary,
+            modifier = Modifier.padding(horizontal = LocalSizes.current.dimen_16),
+        )
+        if (isLandscape) {
+            LazyColumn(
+                contentPadding = PaddingValues(horizontal = LocalSizes.current.dimen_16, vertical = 8.dp),
+                verticalArrangement = Arrangement.spacedBy(12.dp),
+            ) {
+                items(events, key = { it.id }) { event ->
+                    TodayEventItem(event = event)
+                }
+            }
+        } else {
+            LazyRow(
+                contentPadding = PaddingValues(horizontal = LocalSizes.current.dimen_16, vertical = 8.dp),
+                horizontalArrangement = Arrangement.spacedBy(12.dp),
+            ) {
+                items(events, key = { it.id }) { event ->
+                    TodayEventItem(event = event)
+                }
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun UpcomingEventsSection(
+    state: EventListState,
+    onAction: (EventListAction) -> Unit,
+    modifier: Modifier = Modifier,
+    contentPadding: PaddingValues = PaddingValues(0.dp),
+) {
+    Column(
+        // modifier = modifier.padding(top = 12.dp)
+    ) {
+        if (state.showMissingPermissionMessage) {
+            PermissionWarningBanner(
+                onBannerClick = { onAction(EventListAction.OpenAppSettings) },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(
+                        top = 16.dp,
+                        start = 16.dp,
+                        end = 16.dp
+                    )
+            )
+        }
+
+        if (!state.showEmptyState) {
+            Text(
+                text = stringResource(R.string.title_upcoming_events),
+                style = MaterialTheme.typography.headlineSmall,
+                fontWeight = FontWeight.ExtraBold,
+                color = MaterialTheme.colorScheme.onSurface,
+                modifier = Modifier.padding(
+                    start = LocalSizes.current.dimen_16,
+                    end = LocalSizes.current.dimen_16,
+                    top = LocalSizes.current.dimen_16,
+                    bottom = 4.dp
+                ),
+            )
+
+            // Search field
+            SearchBar(
+                query = state.query,
+                onQueryChange = { onAction(EventListAction.ChangeQuery(it)) },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = LocalSizes.current.dimen_16, vertical = 4.dp)
+            )
+        }
+
+        if (state.showEmptyState) {
+            // Empty state
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 40.dp)
+                    .padding(horizontal = LocalSizes.current.dimen_16),
+                horizontalAlignment = androidx.compose.ui.Alignment.CenterHorizontally,
+            ) {
+                Surface(
+                    shape = CircleShape,
+                    color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f),
+                    modifier = Modifier.size(120.dp)
+                ) {
+                    Image(
+                        painter = painterResource(id = R.drawable.vector_balloon),
+                        contentDescription = null,
+                        modifier = Modifier
+                            .padding(16.dp)
+                            .fillMaxSize(),
+                        alpha = 0.7f
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(32.dp))
+
+                Text(
+                    text = stringResource(R.string.event_list_no_events_title),
+                    style = MaterialTheme.typography.bodyLarge,
+                    fontWeight = FontWeight.Medium,
+                    color = MaterialTheme.colorScheme.onSurface,
+                )
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                Text(
+                    text = stringResource(R.string.event_list_no_events_description),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
+                )
+            }
+        } else {
+            PullToRefreshBox(
+                isRefreshing = state.isRefreshing,
+                onRefresh = { onAction(EventListAction.Refresh) },
+                modifier = Modifier.weight(1f),
+            ) {
+                LazyColumn(
+                    modifier = Modifier.fillMaxSize(),
+                    contentPadding = contentPadding,
+                ) {
+                    items(state.events, key = { it.id }) { event ->
+                        UpcomingEventItem(
+                            event = event,
+                            onClick = { id -> onAction(EventListAction.EventClick(id)) },
+                        )
+                        HorizontalDivider(modifier = Modifier.padding(horizontal = 16.dp))
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun SearchBar(
+    query: String,
+    onQueryChange: (String) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    OutlinedTextField(
+        value = query,
+        onValueChange = onQueryChange,
+        modifier = modifier
+            .fillMaxWidth()
+            .height(56.dp),
+        placeholder = {
+            Text(
+                text = stringResource(R.string.hint_search_event_by_name),
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f)
+            )
+        },
+        leadingIcon = {
+            Icon(
+                imageVector = Icons.Default.Search,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f)
+            )
+        },
+        singleLine = true,
+        colors = OutlinedTextFieldDefaults.colors(
+            focusedContainerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f),
+            unfocusedContainerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f),
+            disabledContainerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f),
+            focusedTextColor = MaterialTheme.colorScheme.onSurface,
+            unfocusedTextColor = MaterialTheme.colorScheme.onSurface,
+            focusedBorderColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f),
+            unfocusedBorderColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f),
+            cursorColor = MaterialTheme.colorScheme.secondary
+        ),
+        shape = Shapes.medium
+    )
+}
+
+@Composable
+private fun PermissionWarningBanner(
+    onBannerClick: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Surface(
+        onClick = onBannerClick,
+        modifier = modifier
+            .height(56.dp)
+            .clip(Shapes.medium),
+        color = MaterialTheme.colorScheme.tertiary,
+        shape = Shapes.medium,
+    ) {
+        Row(
+            modifier = Modifier
+                .padding(horizontal = 16.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = "⛔️",
+                modifier = Modifier.padding(end = 12.dp)
+            )
+            Column {
+                Text(
+                    text = stringResource(R.string.banner_notification_permission_not_granted_title),
+                    color = MaterialTheme.colorScheme.onTertiary,
+                    style = MaterialTheme.typography.bodyMedium,
+                    fontWeight = FontWeight.Bold
+                )
+                Text(
+                    text = stringResource(R.string.banner_notification_permission_not_granted_subtitle),
+                    color = MaterialTheme.colorScheme.onTertiary,
+                    style = MaterialTheme.typography.labelSmall
+                )
+            }
+        }
+    }
+}
+
+// ---- Previews ----
+
+@Preview(showBackground = true)
+@Composable
+private fun PreviewEventListScreenWithData() {
+    BdatesTheme {
+        EventListScreen(
+            state = EventListState(
+                events = listOf(
+                    EventViewState("1", "3", "days", "Dwight Schrute", "Friday, 03/06 • Turns 45", "🎂"),
+                    EventViewState("2", "12", "days", "Jim Halpert", "Sunday, 03/15 • Turns 38", "🎂"),
+                    EventViewState("3", "30", "days", "Pam Beesly", "Thursday, 04/02 • Turns 36", "🎂"),
+                ),
+                todayEvents = listOf(
+                    TodayEventViewState("4", "41", "Michael Scott", "Birthday"),
+                ),
+            ),
+            onAction = {},
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun PreviewEventListScreenEmpty() {
+    BdatesTheme {
+        EventListScreen(
+            state = EventListState(),
+            onAction = {},
+        )
+    }
+}

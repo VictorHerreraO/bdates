@@ -124,7 +124,7 @@ class AddEventViewModel @Inject constructor(
             upsertEventUseCase.runCatching {
                 execute(event)
             }.onSuccess {
-                _navigation.value = NavigationEvent.NavigateBack()
+                _navigation.value = NavigationEvent.NavigateBack
             }.onFailure {
                 _state.update { it.copy(isLoading = false) }
             }
@@ -142,7 +142,7 @@ class AddEventViewModel @Inject constructor(
             eventRepository.runCatching {
                 deleteEvent(eventId)
             }.onSuccess {
-                _navigation.value = NavigationEvent.NavigateBack()
+                _navigation.value = NavigationEvent.NavigateBack
             }.onFailure { throwable ->
                 Timber.e(throwable, "Unable to delete event")
                 _state.update {
@@ -185,6 +185,10 @@ class AddEventViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+    fun onNavigationHandled() {
+        _navigation.value = null
     }
 
 }

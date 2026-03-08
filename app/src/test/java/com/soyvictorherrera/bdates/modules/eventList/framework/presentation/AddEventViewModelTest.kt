@@ -195,8 +195,7 @@ class AddEventViewModelTest {
         val finalNavigationValue = subjectUnderTest.navigation.value
         coVerify(exactly = 1) { upsertEventUseCase.execute(any()) }
         assertThat(finalNavigationValue).isNotEqualTo(initialNavigationValue)
-        assertThat(finalNavigationValue?.consumed).isFalse()
-        assertThat(finalNavigationValue).isInstanceOf(NavigationEvent.NavigateBack::class.java)
+        assertThat(finalNavigationValue).isEqualTo(NavigationEvent.NavigateBack)
     }
 
     @Test
@@ -225,8 +224,7 @@ class AddEventViewModelTest {
         assertThat(slot.captured.id).isEqualTo(expectedEvent.id)
         assertThat(slot.captured.circleId).isEqualTo(expectedEvent.circleId)
         assertThat(finalNavigationValue).isNotEqualTo(initialNavigationValue)
-        assertThat(finalNavigationValue?.consumed).isFalse()
-        assertThat(finalNavigationValue).isInstanceOf(NavigationEvent.NavigateBack::class.java)
+        assertThat(finalNavigationValue).isEqualTo(NavigationEvent.NavigateBack)
     }
 
     @Test
@@ -246,7 +244,6 @@ class AddEventViewModelTest {
         val finalNavigationValue = subjectUnderTest.navigation.value
         coVerify(exactly = 1) { eventRepository.deleteEvent(eq(expectedEvent.id!!)) }
         assertThat(finalNavigationValue).isNotEqualTo(initialNavigationValue)
-        assertThat(finalNavigationValue?.consumed).isFalse()
-        assertThat(finalNavigationValue).isInstanceOf(NavigationEvent.NavigateBack::class.java)
+        assertThat(finalNavigationValue).isEqualTo(NavigationEvent.NavigateBack)
     }
 }

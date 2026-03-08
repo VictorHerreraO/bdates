@@ -4,7 +4,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.soyvictorherrera.bdates.core.arch.execute
 import com.soyvictorherrera.bdates.core.date.DateProviderContract
-import com.soyvictorherrera.bdates.core.event.ConsumableEvent
 import com.soyvictorherrera.bdates.core.event.NavigationEvent
 import com.soyvictorherrera.bdates.core.network.onError
 import com.soyvictorherrera.bdates.core.network.onSuccess
@@ -17,17 +16,15 @@ import com.soyvictorherrera.bdates.modules.eventList.domain.usecase.GetDayEventL
 import com.soyvictorherrera.bdates.modules.eventList.domain.usecase.GetNonDayEventListUseCaseContract
 import com.soyvictorherrera.bdates.modules.eventList.domain.usecase.UpdateEventsUseCaseContract
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.launch
-import timber.log.Timber
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
-import java.time.temporal.ChronoUnit
-import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import timber.log.Timber
+import java.time.LocalDate
+import java.time.temporal.ChronoUnit
+import javax.inject.Inject
 import kotlin.properties.Delegates
 
 @HiltViewModel
@@ -40,29 +37,10 @@ class EventListViewModel @Inject constructor(
     private val updateEventList: UpdateEventsUseCaseContract,
 ) : ViewModel() {
 
-    private val _navigation = MutableStateFlow<NavigationEvent?>(null)
-    val navigation: StateFlow<NavigationEvent?> = _navigation.asStateFlow()
-
-    private val _events = MutableStateFlow<List<EventViewState>>(emptyList())
-    val events: StateFlow<List<EventViewState>> = _events.asStateFlow()
-
-    private val _todayEvents = MutableStateFlow<List<TodayEventViewState>>(emptyList())
-    val todayEvents: StateFlow<List<TodayEventViewState>> = _todayEvents.asStateFlow()
-
-    private val _isRefreshing = MutableStateFlow(false)
-    val isRefreshing: StateFlow<Boolean> = _isRefreshing.asStateFlow()
-
-    private val _errorMessage = MutableStateFlow<ConsumableEvent<Error>?>(null)
-    val errorMessage: StateFlow<ConsumableEvent<Error>?> = _errorMessage.asStateFlow()
-
-    private val _requestPermissionSignal = MutableStateFlow(true)
-    val requestPermissionSignal: StateFlow<Boolean> = _requestPermissionSignal.asStateFlow()
-
-    private val _showMissingPermissionMessage = MutableStateFlow(false)
-    val showMissingPermissionMessage: StateFlow<Boolean> = _showMissingPermissionMessage.asStateFlow()
+    private val _uiState = MutableStateFlow(EventListState())
+    val uiState: StateFlow<EventListState> = _uiState.asStateFlow()
 
     private val today: LocalDate = dateProvider.currentLocalDate
-    private val longFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("EEEE, d/MM")
 
     private var allEvents by Delegates.observable(emptyList<Event>()) { _, _, list ->
         processEventList(list)
@@ -70,11 +48,45 @@ class EventListViewModel @Inject constructor(
     private var dayEvents by Delegates.observable(emptyList<Event>()) { _, _, list ->
         processDayEventList(list)
     }
-    private var query = ""
 
     init {
         getData()
         refreshData()
+    }
+
+    fun onAction(action: EventListAction) {
+        when (action) {
+            is EventListAction.Refresh -> getData()
+            is EventListAction.ChangeQuery -> {
+                _uiState.update { it.copy(query = action.query) }
+                processEventList(allEvents)
+            }
+            is EventListAction.EventClick -> {
+                _uiState.update { it.copy(navigationEvent = NavigationEvent.PreviewEventBottomSheet(eventId = action.eventId)) }
+            }
+            is EventListAction.AddEventClick -> {
+                _uiState.update { it.copy(navigationEvent = NavigationEvent.AddEventBottomSheet()) }
+            }
+            is EventListAction.NotificationPermissionStateCheck -> {
+                _uiState.update { it.copy(showMissingPermissionMessage = !action.isGranted) }
+            }
+            is EventListAction.NotificationPermissionStateChanged -> {
+                _uiState.update {
+                    it.copy(
+                        requestPermission = false,
+                        showMissingPermissionMessage = !action.isGranted,
+                    )
+                }
+            }
+            is EventListAction.OnErrorShown -> {
+                _uiState.update { it.copy(errorMessage = null) }
+            }
+            is EventListAction.OpenAppSettings -> Unit // Handled by the Fragment/Screen
+        }
+    }
+
+    fun onNavigationHandled() {
+        _uiState.update { it.copy(navigationEvent = null) }
     }
 
     private fun getData(): Unit = with(viewModelScope) {
@@ -88,7 +100,7 @@ class EventListViewModel @Inject constructor(
 
     private fun refreshData() {
         viewModelScope.launch {
-            _isRefreshing.value = true
+            _uiState.update { it.copy(isRefreshing = true) }
 
             updateEventList.execute()
                 .onSuccess {
@@ -97,52 +109,27 @@ class EventListViewModel @Inject constructor(
                 }
                 .onError { _, cause ->
                     Timber.d(cause, "Show refresh error")
-                    _errorMessage.value = ConsumableEvent(Error.UnableToRefresh)
+                    _uiState.update { it.copy(errorMessage = resourceManager.getString("event_list_error_fetch_list")) }
                 }
 
-            _isRefreshing.value = false
+            _uiState.update { it.copy(isRefreshing = false) }
         }
     }
 
-    fun onQueryTextChanged(query: String) {
-        this.query = query
-        processEventList(allEvents)
-    }
-
-    fun onEventClick(eventId: String) {
-        _navigation.value = NavigationEvent.PreviewEventBottomSheet(eventId = eventId)
-    }
-
-    fun onAddEventClick() {
-        _navigation.value = NavigationEvent.AddEventBottomSheet()
-    }
-
-    fun onNotificationPermissionStateCheck(isGranted: Boolean) {
-        val requiresPermission = !isGranted
-        _showMissingPermissionMessage.value = requiresPermission
-    }
-
-    fun onNotificationPermissionStateChanged(isGranted: Boolean) {
-        _requestPermissionSignal.value = false
-        _showMissingPermissionMessage.value = !isGranted
-    }
-
     private fun processEventList(events: List<Event>) = viewModelScope.launch {
+        val currentQuery = _uiState.value.query
         filterEventListUseCase.execute(
             FilterEventListArgs(
                 eventList = events,
-                query = query
+                query = currentQuery,
             )
         ).fold(
             onSuccess = { filtered ->
                 filtered.sortedBy { event ->
-                    // Sort by upcoming
                     event.nextOccurrence
                 }.map { event ->
-                    // Map to View State
                     val nextOccurrence = event.nextOccurrence!!
-                    val remainingTime = ChronoUnit.DAYS
-                        .between(today, nextOccurrence)
+                    val remainingTime = ChronoUnit.DAYS.between(today, nextOccurrence)
                     EventViewState(
                         id = event.id!!,
                         remainingTimeValue = remainingTime.toString(),
@@ -159,7 +146,8 @@ class EventListViewModel @Inject constructor(
                                     yearsOld
                                 )
                             } ?: formatted
-                        }
+                        },
+                        eventEmoji = "🎂"
                     )
                 }
             },
@@ -167,7 +155,7 @@ class EventListViewModel @Inject constructor(
                 emptyList()
             }
         ).let { result ->
-            _events.update { result }
+            _uiState.update { it.copy(events = result) }
         }
     }
 
@@ -182,11 +170,9 @@ class EventListViewModel @Inject constructor(
                 eventType = resourceManager.getString("event_birthday_title")
             )
         }.let { result ->
-            _todayEvents.update { result }
+            _uiState.update { it.copy(todayEvents = result) }
         }
     }
-
-    fun refresh() = getData()
 }
 
 sealed class Error {

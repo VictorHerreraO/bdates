@@ -1,21 +1,15 @@
 package com.soyvictorherrera.bdates.modules.eventList.framework.ui
 
-import android.app.Activity
 import android.content.Intent
-import android.content.res.Configuration
 import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.inputmethod.EditorInfo
-import android.view.inputmethod.InputMethodManager
-import androidx.annotation.StringRes
-import androidx.core.content.ContextCompat
-import androidx.core.view.isGone
-import androidx.core.view.isVisible
-import androidx.core.widget.addTextChangedListener
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResultListener
 import androidx.fragment.app.viewModels
@@ -23,206 +17,126 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
-import kotlinx.coroutines.launch
-import androidx.recyclerview.widget.DividerItemDecoration
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.snackbar.Snackbar
 import com.soyvictorherrera.bdates.NavGraphDirections
-import com.soyvictorherrera.bdates.R
+import com.soyvictorherrera.bdates.core.compose.theme.BdatesTheme
 import com.soyvictorherrera.bdates.core.event.NavigationEvent
-import com.soyvictorherrera.bdates.core.event.consume
-import com.soyvictorherrera.bdates.core.event.consumeValue
-import com.soyvictorherrera.bdates.databinding.FragmentEventListBinding
-import com.soyvictorherrera.bdates.modules.eventList.framework.presentation.Error
+import com.soyvictorherrera.bdates.modules.eventList.framework.presentation.EventListAction
 import com.soyvictorherrera.bdates.modules.eventList.framework.presentation.EventListViewModel
+import com.soyvictorherrera.bdates.modules.eventList.framework.ui.compose.EventListScreen
 import com.soyvictorherrera.bdates.modules.permissions.PermissionDelegate
 import com.soyvictorherrera.bdates.modules.permissions.PermissionDelegateFactory
 import com.soyvictorherrera.bdates.modules.permissions.isPostNotificationPermissionGranted
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.launch
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 
 @AndroidEntryPoint
 class EventListFragment : Fragment() {
 
-    private var _binding: FragmentEventListBinding? = null
-    private val binding: FragmentEventListBinding
-        get() = _binding!!
-
     private val viewModel: EventListViewModel by viewModels()
-
-    private lateinit var adapter: EventListAdapter
     private lateinit var permissionDelegate: PermissionDelegate
-    private lateinit var todayAdapter: TodayEventListAdapter
-
-    private var onScrollListener: RecyclerView.OnScrollListener? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View {
-        _binding = FragmentEventListBinding.inflate(inflater, container, false)
         permissionDelegate = PermissionDelegateFactory.create { requireActivity() }
-        return binding.root
+        return ComposeView(requireContext()).apply {
+            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+            setContent {
+                BdatesTheme {
+                    val state by viewModel.uiState.collectAsStateWithLifecycle()
+                    EventListScreen(
+                        state = state,
+                        onAction = { action ->
+                            when (action) {
+                                is EventListAction.OpenAppSettings -> openAppSettings()
+                                else -> viewModel.onAction(action)
+                            }
+                        },
+                    )
+                }
+            }
+        }
     }
 
-    override fun onViewCreated(
-        view: View,
-        savedInstanceState: Bundle?,
-    ) {
-        initRecyclerView()
-        setupListeners()
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         setupResultListener()
-        bindViewModel()
-    }
-
-    override fun onDestroyView() {
-        _binding = null
-        onScrollListener = null
-        super.onDestroyView()
+        observeNavigation()
     }
 
     override fun onResume() {
         super.onResume()
-        viewModel.onNotificationPermissionStateCheck(
-            requireContext().isPostNotificationPermissionGranted
+        viewModel.onAction(
+            EventListAction.NotificationPermissionStateCheck(
+                requireContext().isPostNotificationPermissionGranted
+            )
         )
     }
 
-    private fun initRecyclerView() = with(binding) {
-        val orientation = resources.configuration.orientation
-        // Setup all events recycler view
-        LinearLayoutManager(requireActivity()).also {
-            layoutUpcomingEvents.recyclerEvents.layoutManager = it
-        }
-        adapter = EventListAdapter(onItemClick = {
-            viewModel.onEventClick(it)
-        }).also {
-            layoutUpcomingEvents.recyclerEvents.adapter = it
-        }
-        onScrollListener = FabScrollBehavior(btnAddEvent).also {
-            layoutUpcomingEvents.recyclerEvents.addOnScrollListener(it)
-        }
-        // Setup today events recycler view
-        LinearLayoutManager(
-            requireContext(),
-            if (orientation == Configuration.ORIENTATION_PORTRAIT) RecyclerView.HORIZONTAL
-            else RecyclerView.VERTICAL,
-            false
-        ).also {
-            recyclerTodayEvents.apply {
-                layoutManager = it
-                val decoration = DividerItemDecoration(requireContext(), it.orientation)
-                decoration.setDrawable(
-                    ContextCompat.getDrawable(
-                        requireContext(),
-                        R.drawable.item_decorator_day_events
-                    )!!
-                )
-                addItemDecoration(decoration)
-            }
-        }
-        todayAdapter = TodayEventListAdapter().also {
-            recyclerTodayEvents.adapter = it
-        }
-    }
-
-    private fun bindViewModel() {
+    private fun observeNavigation() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 launch {
-                    viewModel.events.collect { eventList ->
-                        adapter.submitList(eventList)
-                        with(binding.layoutUpcomingEvents) {
-                            val showEmptyIcon = eventList.isEmpty() && inputSearch.text.isEmpty()
-                            lblUpcomingEventsTitle.isGone = showEmptyIcon
-                            swipeLayout.isGone = showEmptyIcon
-                            inputSearch.isGone = showEmptyIcon
-                            layoutEventListEmpty.root.isVisible = showEmptyIcon
-                        }
-                    }
-                }
-                launch {
-                    viewModel.todayEvents.collect { todayEvents ->
-                        todayAdapter.submitList(todayEvents)
-                        binding.layoutTodayEvents.isVisible = todayEvents.isNotEmpty()
-                    }
-                }
-                launch {
-                    viewModel.isRefreshing.collect {
-                        binding.layoutUpcomingEvents.swipeLayout.isRefreshing = it
-                    }
-                }
-                launch {
-                    viewModel.errorMessage.collect {
-                        it?.consumeValue(::showSnackBar)
-                    }
-                }
-                launch {
-                    viewModel.requestPermissionSignal.collect { shouldRequestPermission ->
-                        if (shouldRequestPermission) {
-                            permissionDelegate.requestNotificationPermission(
-                                viewModel::onNotificationPermissionStateChanged
-                            )
-                        }
-                    }
-                }
-                launch {
-                    viewModel.showMissingPermissionMessage.collect { showMessage ->
-                        binding.layoutUpcomingEvents.layoutWarningBanner.root.isVisible = showMessage
-                    }
-                }
-                launch {
-                    viewModel.navigation.collect { event ->
-                        event?.consume {
-                            when (it) {
-                                is NavigationEvent.AddEventBottomSheet -> {
-                                    NavGraphDirections.actionCreateEventBottomSheet(
-                                        eventId = it.eventId
-                                    ).let { directions ->
-                                        findNavController().navigate(directions)
+                    viewModel.uiState
+                        .map { it.navigationEvent }
+                        .distinctUntilChanged()
+                        .collect { event ->
+                            event?.let {
+                                when (it) {
+                                    is NavigationEvent.AddEventBottomSheet -> {
+                                        NavGraphDirections.actionCreateEventBottomSheet(
+                                            eventId = it.eventId
+                                        ).let { directions ->
+                                            findNavController().navigate(directions)
+                                        }
+                                    }
+
+                                    is NavigationEvent.PreviewEventBottomSheet -> {
+                                        NavGraphDirections.actionPreviewEventBottomSheet(
+                                            eventId = it.eventId
+                                        ).let { directions ->
+                                            findNavController().navigate(directions)
+                                        }
+                                    }
+
+                                    is NavigationEvent.NavigateBack -> {
+                                        findNavController().popBackStack()
                                     }
                                 }
-                                is NavigationEvent.PreviewEventBottomSheet -> {
-                                    NavGraphDirections.actionPreviewEventBottomSheet(
-                                        eventId = it.eventId
-                                    ).let { directions ->
-                                        findNavController().navigate(directions)
-                                    }
-                                }
-                                is NavigationEvent.NavigateBack -> {
-                                    findNavController().popBackStack()
+                                viewModel.onNavigationHandled()
+                            }
+                        }
+                }
+                launch {
+                    viewModel.uiState
+                        .map { it.requestPermission }
+                        .distinctUntilChanged()
+                        .collect { shouldRequest ->
+                            if (shouldRequest) {
+                                permissionDelegate.requestNotificationPermission { isGranted ->
+                                    viewModel.onAction(
+                                        EventListAction.NotificationPermissionStateChanged(isGranted)
+                                    )
                                 }
                             }
                         }
-                    }
                 }
             }
         }
     }
 
-    private fun setupListeners() = with(binding) {
-        layoutUpcomingEvents.inputSearch.addTextChangedListener { text ->
-            viewModel.onQueryTextChanged(text.toString())
-        }
-        layoutUpcomingEvents.inputSearch.setOnEditorActionListener { _, actionId, _ ->
-            return@setOnEditorActionListener when (actionId) {
-                EditorInfo.IME_ACTION_SEARCH -> {
-                    hideSoftKeyboard()
-                    true
+    private fun setupResultListener() {
+        setFragmentResultListener(REQUEST_KEY_ADD_EVENT) { _, bundle ->
+            bundle.getBoolean(RESULT_KEY_ADD_EVENT).let { created ->
+                if (created) {
+                    viewModel.onAction(EventListAction.Refresh)
                 }
-
-                else -> false
             }
-        }
-        btnAddEvent.setOnClickListener {
-            viewModel.onAddEventClick()
-        }
-        layoutUpcomingEvents.swipeLayout.setOnRefreshListener {
-            viewModel.refresh()
-        }
-        layoutUpcomingEvents.layoutWarningBanner.root.setOnClickListener {
-            openAppSettings()
         }
     }
 
@@ -232,39 +146,4 @@ class EventListFragment : Fragment() {
         }
         startActivity(intent)
     }
-
-    private fun hideSoftKeyboard() {
-        activity?.let {
-            it.currentFocus?.let { view ->
-                (it.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager)
-                    .hideSoftInputFromWindow(view.windowToken, 0)
-            }
-        }
-    }
-
-    private fun setupResultListener() {
-        setFragmentResultListener(REQUEST_KEY_ADD_EVENT) { _, bundle ->
-            bundle.getBoolean(RESULT_KEY_ADD_EVENT).let { created ->
-                if (created) {
-                    viewModel.refresh()
-                }
-            }
-        }
-    }
-
-    private fun showSnackBar(error: Error): Unit = with(binding) {
-        Snackbar.make(
-            layoutRoot,
-            error.getMessage(),
-            Snackbar.LENGTH_SHORT
-        ).apply {
-            anchorView = btnAddEvent
-        }.show()
-    }
-
-}
-
-@StringRes
-private fun Error.getMessage(): Int = when (this) {
-    Error.UnableToRefresh -> R.string.event_list_error_fetch_list
 }

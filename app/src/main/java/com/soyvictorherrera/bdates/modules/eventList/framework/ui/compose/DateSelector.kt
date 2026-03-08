@@ -107,12 +107,10 @@ private fun MonthSelector(
     modifier: Modifier = Modifier,
 ) = Surface(
     modifier = modifier.fillMaxWidth(),
-    shape = LocalSizes.current.run {
-        RoundedCornerShape(
-            topStart = dimen_4,
-            topEnd = dimen_4,
-        )
-    },
+    shape = MaterialTheme.shapes.medium.copy(
+        bottomStart = androidx.compose.foundation.shape.CornerSize(0.dp),
+        bottomEnd = androidx.compose.foundation.shape.CornerSize(0.dp),
+    ),
     color = MaterialTheme.colors.onSurface.copy(alpha = TextFieldDefaults.BackgroundOpacity),
 ) {
     Row(
