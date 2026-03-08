@@ -20,7 +20,6 @@ import androidx.navigation.fragment.findNavController
 import com.soyvictorherrera.bdates.NavGraphDirections
 import com.soyvictorherrera.bdates.core.compose.theme.BdatesTheme
 import com.soyvictorherrera.bdates.core.event.NavigationEvent
-import com.soyvictorherrera.bdates.core.event.consume
 import com.soyvictorherrera.bdates.modules.eventList.framework.presentation.EventListAction
 import com.soyvictorherrera.bdates.modules.eventList.framework.presentation.EventListViewModel
 import com.soyvictorherrera.bdates.modules.eventList.framework.ui.compose.EventListScreen
@@ -87,7 +86,7 @@ class EventListFragment : Fragment() {
                         .map { it.navigationEvent }
                         .distinctUntilChanged()
                         .collect { event ->
-                            event?.consume {
+                            event?.let {
                                 when (it) {
                                     is NavigationEvent.AddEventBottomSheet -> {
                                         NavGraphDirections.actionCreateEventBottomSheet(
@@ -96,6 +95,7 @@ class EventListFragment : Fragment() {
                                             findNavController().navigate(directions)
                                         }
                                     }
+
                                     is NavigationEvent.PreviewEventBottomSheet -> {
                                         NavGraphDirections.actionPreviewEventBottomSheet(
                                             eventId = it.eventId
@@ -103,6 +103,7 @@ class EventListFragment : Fragment() {
                                             findNavController().navigate(directions)
                                         }
                                     }
+
                                     is NavigationEvent.NavigateBack -> {
                                         findNavController().popBackStack()
                                     }
